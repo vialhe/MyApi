@@ -5,6 +5,7 @@
         public int id { get; set; }
         public int idTipoProductoServicio { get; set; }
         public string folioProductoServicio { get; set; } = "";
+        public decimal precio { get; set; }
         public string descripcion { get; set; } = "";
         public bool recurrente { get; set; }
         public string comentarios { get; set; } = "";

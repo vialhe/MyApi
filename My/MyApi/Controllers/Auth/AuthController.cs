@@ -62,13 +62,21 @@ namespace MyApi.Controllers.Auth
 
                 if (dtUsuario.Rows.Count > 0)
                 {
+
                     Hash = BCrypt.Net.BCrypt.HashPassword(user.password, dtUsuario.Rows[0]["salt"].ToString());
                     Verify = dtUsuario.Rows[0]["hashpassword"].ToString() == Hash;
-                }
 
+                    Code = Verify;
+                    Message = Verify ? "Acceso Autorizado" : "Contraseña incorrecta";
+                }
+                else 
+                {
+                    Code = false;
+                    Message = "Usuario incorrecto";
+                }
+                
                 /*Define return */
-                Code = Verify;
-                Message = Verify ? "Succes" : "Acceso denegado";
+                
                 Response = ToJson(Code, Message);
 
                 return Response;
