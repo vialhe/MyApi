@@ -14,7 +14,7 @@ namespace MyApi.Controllers
 
         [HttpGet]
         [Route("get-user")]
-        public IActionResult UsuariosGet(int id = 0)
+        public IActionResult UsuariosGet(int id = 0, int idEntidad = 0)
         {
             /*Declara variables*/
             JsonResult Response;
@@ -27,7 +27,8 @@ namespace MyApi.Controllers
 
                 /*Inicia proceso*/
                 List<Parametro> parametros = new List<Parametro>{
-                    new Parametro("id", id.ToString())
+                    new Parametro("id", id.ToString()),
+                    new Parametro("idEntidad", idEntidad.ToString())
                 };
                 dt = DataBase.Listar("sp_se_usuarios", parametros);
 

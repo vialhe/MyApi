@@ -16,7 +16,7 @@ namespace MyApi.Controllers.Menu
 
         [HttpPost]
         [Route("get-productoservicio")]
-        public IActionResult ProductoServicioGet(int id = 0)
+        public IActionResult ProductoServicioGet(int id = 0, int idEntidad = 0)
         {
             /*Declara variables*/
             JsonResult Response;
@@ -28,7 +28,8 @@ namespace MyApi.Controllers.Menu
             {
                 /*Inicia proceso*/
                 List<Parametro> parametros = new List<Parametro>{
-                    new Parametro("id", id.ToString())
+                    new Parametro("id", id.ToString()),
+                    new Parametro("idEntidad", idEntidad.ToString())
                 };
 
                 dt = Models.MyDB.DataBase.Listar("sp_se_productosServicio", parametros);
