@@ -79,7 +79,6 @@ namespace MyApi.Controllers.Auth
                 
                 Response = ToJson(Code, Message);
 
-                return Response;
             }
             catch (Exception ex)
             {
@@ -88,8 +87,9 @@ namespace MyApi.Controllers.Auth
                 Message = "Exception: " + ex;
                 Response = ToJson(Code, Message);
 
-                return Response;
             }
+            return Response;
+
 
         }
 
@@ -127,8 +127,6 @@ namespace MyApi.Controllers.Auth
                 Code = true;
                 Message = "Succes";
                 Response = ToJson(Code, Message, dt);
-
-                return Response;
             }
             catch (Exception ex)
             {
@@ -137,10 +135,12 @@ namespace MyApi.Controllers.Auth
                 Message = "Exception: " + ex;
                 Response = ToJson(Code, Message);
 
-                return Response;
             }
+            /* Retorna  */
+            return Response;
 
         }
+
         // ===================================================================================================
         // Class Convert To JSON
         // ===================================================================================================
