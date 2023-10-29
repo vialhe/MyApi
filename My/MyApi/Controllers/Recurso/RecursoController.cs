@@ -2,22 +2,22 @@ using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using Newtonsoft.Json;
 using MyApi.Models.MyDB;
-using MyApi.Class.Tools;
-using MyApi.Models.User;
 using MyApi.Models.ProductoServicio;
-using System.Net.Http.Headers;
 using MyApi.Controllers.MyTools;
+using MyApi.Models.Recurso;
+using Microsoft.Data.SqlClient;
+using System.Text;
 
-namespace MyApi.Controllers.Menu
+namespace MyApi.Controllers.Recurso
 {
     [ApiController]
     [Route("[controller]")]
-    public class MenuController : ControllerBase
+    public class RecursoController : ControllerBase
     {
 
         [HttpPost]
-        [Route("get-productoservicio")]
-        public IActionResult ProductoServicioGet(int id = 0, int idEntidad = 0, int isAdmin = 0)
+        [Route("get-recurso")]
+        public IActionResult RecursoGet(int id = 0, int idEntidad = 0, int isAdmin = 0)
         {
             /*Declara variables*/
             JsonResult Response;
@@ -36,7 +36,7 @@ namespace MyApi.Controllers.Menu
                     new Parametro("isAdmin", isAdmin.ToString())
                 };
 
-                dt = Models.MyDB.DataBase.Listar("sp_se_productosServicio", parametros);
+                dt = Models.MyDB.DataBase.Listar("sp_se_recursos", parametros);
                 Code = true;
                 Message = "Succes";
                 Response = ToolsController.ToJson(Code, Message, dt);
@@ -52,33 +52,33 @@ namespace MyApi.Controllers.Menu
         }
 
         [HttpPost]
-        [Route("insert-productoservicio")]
-        public IActionResult ProductoServicioPut(ProductoServicio cProductoServicio)
+        [Route("insert-recurso")]
+        public IActionResult RecursoPut(Models.Recurso.Recurso cRecurso)
         {
             /*Se declaran Variables*/
             JsonResult Response;
             bool Code;
             string Message;
             DataTable dt;
-            cProductoServicio.id = 0;
+            cRecurso.id = 0;
 
+            DataBase db = new DataBase();
             try
             {
                 /*Inicia proceso*/
                 List<Parametro> parametros = new List<Parametro>{
-                    new Parametro("id", cProductoServicio.id.ToString()),
-                    new Parametro("idTipoProductoServicio", cProductoServicio.idTipoProductoServicio.ToString()),
-                    new Parametro("folioProductoServicio", cProductoServicio.folioProductoServicio.ToString()),
-                    new Parametro("precio", cProductoServicio.precio.ToString()),
-                    new Parametro("descripcion", cProductoServicio.descripcion.ToString()),
-                    new Parametro("recurrente", cProductoServicio.recurrente.ToString()),
-                    new Parametro("comentarios", cProductoServicio.comentarios.ToString()),
-                    new Parametro("activo", cProductoServicio.activo.ToString()),
-                    new Parametro("idEntidad", cProductoServicio.idEntidad.ToString()),
-                    new Parametro("idUsuarioModifica", cProductoServicio.idUsuarioModifica.ToString())
+                    new Parametro("idTabla", cRecurso.idTabla.ToString()),
+                    new Parametro("idRegistro", cRecurso.idRegistro.ToString()),
+                    new Parametro("descripcion", cRecurso.descripcion.ToString()),
+                    new Parametro("recurso", Encoding.UTF8.GetString(cRecurso.recurso)),
+                    new Parametro("comentarios", cRecurso.comentarios.ToString()),
+                    new Parametro("activo", cRecurso.activo.ToString()),
+                    new Parametro("idEntidad", cRecurso.idEntidad.ToString()),
+                    new Parametro("idUsuarioModifica", cRecurso.idUsuarioModifica.ToString())
                 };
-                
-                dt = DataBase.Listar("sp_ui_productosServicios", parametros);
+
+
+               dt = DataBase.Listar("sp_ui_recurso", parametros);
 
                 Code = true;
                 Message = "Succes";
@@ -97,8 +97,8 @@ namespace MyApi.Controllers.Menu
         }
 
         [HttpPost]
-        [Route("update-productoservicio")]
-        public IActionResult ProductoServicioUpdate(ProductoServicio cProductoServicio)
+        [Route("update-recurso")]
+        public IActionResult RecursoUpdate(Models.Recurso.Recurso cRecurso)
         {
             /*Se declaran variables*/
             JsonResult Response;
@@ -110,19 +110,18 @@ namespace MyApi.Controllers.Menu
             {
                 /*Inicia proceso*/
                 List<Parametro> parametros = new List<Parametro>{
-                    new Parametro("id", cProductoServicio.id.ToString()),
-                    new Parametro("idTipoProductoServicio", cProductoServicio.idTipoProductoServicio.ToString()),
-                    new Parametro("folioProductoServicio", cProductoServicio.folioProductoServicio.ToString()),
-                    new Parametro("precio", cProductoServicio.precio.ToString()),
-                    new Parametro("descripcion", cProductoServicio.descripcion.ToString()),
-                    new Parametro("recurrente", cProductoServicio.recurrente.ToString()),
-                    new Parametro("comentarios", cProductoServicio.comentarios.ToString()),
-                    new Parametro("activo", cProductoServicio.activo.ToString()),
-                    new Parametro("idEntidad", cProductoServicio.idEntidad.ToString()),
-                    new Parametro("idUsuarioModifica", cProductoServicio.idUsuarioModifica.ToString()),
+                    new Parametro("id", cRecurso.id.ToString()),
+                    new Parametro("idTabla", cRecurso.idTabla.ToString()),
+                    new Parametro("idRegistro", cRecurso.idRegistro.ToString()),
+                    new Parametro("descripcion", cRecurso.descripcion.ToString()),
+                    new Parametro("recurso", Encoding.UTF8.GetString(cRecurso.recurso)),
+                    new Parametro("comentarios", cRecurso.comentarios.ToString()),
+                    new Parametro("activo", cRecurso.activo.ToString()),
+                    new Parametro("idEntidad", cRecurso.idEntidad.ToString()),
+                    new Parametro("idUsuarioModifica", cRecurso.idUsuarioModifica.ToString())
                 };
 
-                dt = DataBase.Listar("sp_ui_productosServicios", parametros);
+                dt = DataBase.Listar("sp_ui_recurso", parametros);
                 Code = true;
                 Message = "Succes";
                 Response = ToolsController.ToJson(Code, Message, dt);
@@ -142,14 +141,14 @@ namespace MyApi.Controllers.Menu
 
 
         [HttpPost]
-        [Route("delete-productoservicio")]
-        public IActionResult ProductoServicioDelete(int id, string nombreTabla = "")
+        [Route("delete-recurso")]
+        public IActionResult RecursoDelete(int id, string nombreTabla = "")
         {
             /*Define variables*/
             JsonResult Response;
             bool Code;
             string Message;
-            nombreTabla = "cat_productosServicios";
+            nombreTabla = "cat_recursos";
 
             try
             {

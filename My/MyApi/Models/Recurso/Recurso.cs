@@ -1,13 +1,12 @@
-﻿namespace MyApi.Models.ProductoServicio
+﻿namespace MyApi.Models.Recurso
 {
-    public class ProductoServicio
+    public class Recurso
     {
         public int id { get; set; }
-        public int idTipoProductoServicio { get; set; }
-        public string folioProductoServicio { get; set; } = "";
-        public decimal precio { get; set; }
+        public int idTabla { get; set; }
+        public int idRegistro { get; set; } 
         public string descripcion { get; set; } = "";
-        public bool recurrente { get; set; }
+        public byte[] recurso { get; set; } = { };
         public string comentarios { get; set; } = "";
         public bool activo { get; set; }
         public int idEntidad { get; set; }

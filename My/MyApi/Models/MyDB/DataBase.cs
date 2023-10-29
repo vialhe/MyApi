@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Text;
 
 namespace MyApi.Models.MyDB
 {
@@ -60,7 +61,10 @@ namespace MyApi.Models.MyDB
                 {
                     foreach (var parametro in parametros)
                     {
-                        cmd.Parameters.AddWithValue(parametro.Nombre, parametro.Valor);
+                        if(parametro.Nombre == "recurso")
+                            cmd.Parameters.AddWithValue(parametro.Nombre, Encoding.UTF8.GetBytes(parametro.Valor));
+                        else
+                            cmd.Parameters.AddWithValue(parametro.Nombre, parametro.Valor);
                     }
                 }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);

@@ -3,6 +3,7 @@ using MyApi.Models.MyDB;
 using System.Data;
 using MyApi.Class.Auth;
 using MyApi.Models.User;
+using MyApi.Controllers.MyTools;
 
 namespace MyApi.Controllers.Auth
 {
@@ -74,10 +75,12 @@ namespace MyApi.Controllers.Auth
                     Code = false;
                     Message = "Usuario incorrecto";
                 }
-                
+
+                if (!Code)
+                    dtUsuario.Clear();
                 /*Define return */
                 
-                Response = ToJson(Code, Message);
+                Response = ToolsController.ToJson(Code, Message,dtUsuario);
 
             }
             catch (Exception ex)
@@ -85,7 +88,7 @@ namespace MyApi.Controllers.Auth
                 /*Define return ex*/
                 Code = false;
                 Message = "Exception: " + ex;
-                Response = ToJson(Code, Message);
+                Response = ToolsController.ToJson(Code, Message);
 
             }
             return Response;
@@ -126,85 +129,19 @@ namespace MyApi.Controllers.Auth
                 /*Define return success*/
                 Code = true;
                 Message = "Succes";
-                Response = ToJson(Code, Message, dt);
+                Response = ToolsController.ToJson(Code, Message, dt);
             }
             catch (Exception ex)
             {
                 /*Define return ex*/
                 Code = false;
                 Message = "Exception: " + ex;
-                Response = ToJson(Code, Message);
+                Response = ToolsController.ToJson(Code, Message);
 
             }
             /* Retorna  */
             return Response;
 
         }
-
-        // ===================================================================================================
-        // Class Convert To JSON
-        // ===================================================================================================
-        #region
-        /**/
-        public JsonResult ToJson(bool Code, string Message, DataTable dt, string NameObj = "Data")
-        {
-            DataTable dataTable = dt;
-            var resultDictionary = new Dictionary<string, object>();
-
-            try
-            {
-
-                // Agregar el campo "Code" al diccionario con el valor booleano
-                resultDictionary.Add("Code", Code);
-
-                // Agregar el campo "Mensaje" al diccionario con el valor del mensaje
-                resultDictionary.Add("Mensaje", Message);
-
-                // Obtener el resto de los datos del DataTable y agregarlos al diccionario
-                var data = dataTable.AsEnumerable()
-                    .Select(row =>
-                    {
-                        return row.Table.Columns.Cast<DataColumn>()
-                            .ToDictionary(column => column.ColumnName, column => row[column]);
-                    })
-                    .ToList();
-
-                // Agregar el arreglo de datos al diccionario con la clave "Data"
-                resultDictionary.Add(NameObj, data);
-
-                return new JsonResult(resultDictionary);
-
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public JsonResult ToJson(bool Code, string Message)
-        {
-            var resultDictionary = new Dictionary<string, object>();
-
-            try
-            {
-
-                // Agregar el campo "Code" al diccionario con el valor booleano
-                resultDictionary.Add("Code", Code);
-
-                // Agregar el campo "Mensaje" al diccionario con el valor del mensaje
-                resultDictionary.Add("Mensaje", Message);
-
-                return new JsonResult(resultDictionary);
-
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        #endregion
-
-
     }
 }

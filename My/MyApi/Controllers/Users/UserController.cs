@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using MyApi.Models.MyDB;
 using MyApi.Class.Tools;
 using MyApi.Models.User;
+using MyApi.Controllers.MyTools;
 
 namespace MyApi.Controllers
 {
@@ -14,7 +15,7 @@ namespace MyApi.Controllers
 
         [HttpGet]
         [Route("get-user")]
-        public IActionResult UsuariosGet(int id = 0, int idEntidad = 0)
+        public IActionResult UsuariosGet(int id = 0, int idEntidad = 0, int isAdmin = 0)
         {
             /*Declara variables*/
             JsonResult Response;
@@ -28,27 +29,27 @@ namespace MyApi.Controllers
                 /*Inicia proceso*/
                 List<Parametro> parametros = new List<Parametro>{
                     new Parametro("id", id.ToString()),
-                    new Parametro("idEntidad", idEntidad.ToString())
+                    new Parametro("idEntidad", idEntidad.ToString()),
+                    new Parametro("isAdmin", isAdmin.ToString())
                 };
                 dt = DataBase.Listar("sp_se_usuarios", parametros);
 
                 /*Define return success*/
                 Code = true;
                 Message = "Succes";
-                Response = ToJson(Code,Message, dt);
+                Response = ToolsController.ToJson(Code,Message, dt);
 
-                return Response;
             }
             catch (Exception ex)
             {
                 /*Define return ex*/
                 Code = false;
                 Message = "Exception: " + ex;
-                Response = ToJson(Code, Message);
+                Response = ToolsController.ToJson(Code, Message);
 
-                return Response;
             }
-            
+             return Response;
+
         }
 
         [HttpPost]
@@ -90,20 +91,19 @@ namespace MyApi.Controllers
                 /*Define return success*/
                 Code = true;
                 Message = "Succes";
-                Response = ToJson(Code, Message, dt);
+                Response = ToolsController.ToJson(Code, Message, dt);
 
-                return Response;
             }
             catch (Exception ex)
             {
                 /*Define return ex*/
                 Code = false;
                 Message = "Exception: " + ex;
-                Response = ToJson(Code, Message);
+                Response = ToolsController.ToJson(Code, Message);
 
-                return Response;
             }
-            
+            return Response;
+
         }
 
         [HttpPost]
@@ -144,7 +144,7 @@ namespace MyApi.Controllers
                 /*Define return success*/
                 Code = true;
                 Message = "Succes";
-                Response = ToJson(Code, Message, dt);
+                Response = ToolsController.ToJson(Code, Message, dt);
 
                 return Response;
             }
@@ -153,77 +153,45 @@ namespace MyApi.Controllers
                 /*Define return ex*/
                 Code = false;
                 Message = "Exception: " + ex;
-                Response = ToJson(Code, Message);
+                Response = ToolsController.ToJson(Code, Message);
 
                 return Response;
             }
         }
 
-
-        
-        // ===================================================================================================
-        // Class Convert To JSON
-        // ===================================================================================================
-        #region
-        /**/
-        public JsonResult ToJson(bool Code, string Message, DataTable dt, string NameObj = "Data")
+        [HttpPost]
+        [Route("delete-user")]
+        public IActionResult UsuariosDelete(int id, string nombreTabla = "")
         {
-            DataTable dataTable = dt;
-            var resultDictionary = new Dictionary<string, object>();
+            /*Define variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            nombreTabla = "sys_usuarios";
 
             try
             {
+                /*Inicia proceso*/
+                List<Parametro> parametros = new List<Parametro>{
+                    new Parametro("id", id.ToString()),
+                    new Parametro("nombreTabla", nombreTabla.ToString())
+                };
 
-                // Agregar el campo "Code" al diccionario con el valor booleano
-                resultDictionary.Add("Code", Code);
+                DataBase.Ejecutar("sp_del_fromNameTable", parametros);
+                Code = true;
+                Message = "Succes";
 
-                // Agregar el campo "Mensaje" al diccionario con el valor del mensaje
-                resultDictionary.Add("Mensaje", Message);
-
-                // Obtener el resto de los datos del DataTable y agregarlos al diccionario
-                var data = dataTable.AsEnumerable()
-                    .Select(row =>
-                    {
-                        return row.Table.Columns.Cast<DataColumn>()
-                            .ToDictionary(column => column.ColumnName, column => row[column]);
-                    })
-                    .ToList();
-
-                // Agregar el arreglo de datos al diccionario con la clave "Data"
-                resultDictionary.Add(NameObj, data);
-
-                return new JsonResult(resultDictionary);
-
+                Response = ToolsController.ToJson(Code, Message);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                Code = false;
+                Message = "Ex: " + ex.Message;
+
+                Response = ToolsController.ToJson(Code, Message);
             }
+            return Response;
         }
-
-        public JsonResult ToJson(bool Code, string Message)
-        {
-            var resultDictionary = new Dictionary<string, object>();
-
-            try
-            {
-
-                // Agregar el campo "Code" al diccionario con el valor booleano
-                resultDictionary.Add("Code", Code);
-
-                // Agregar el campo "Mensaje" al diccionario con el valor del mensaje
-                resultDictionary.Add("Mensaje", Message);
-
-                return new JsonResult(resultDictionary);
-
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        #endregion
 
     }
 }
