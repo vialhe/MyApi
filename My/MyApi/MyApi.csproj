@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <Folder Include="Class\User\" />
+    <Folder Include="Controllers\MyTools\" />
   </ItemGroup>
 
 </Project>

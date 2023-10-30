@@ -10,11 +10,11 @@ using MyApi.Controllers.MyTools;
 namespace MyApi.Controllers.MyScale
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]")] 
     public class MenuController : ControllerBase
     {
 
-        [HttpGet]
+        [HttpPost]
         [Route("insert-scale")]
         public IActionResult UsuariosGet(int id = 0)
 
