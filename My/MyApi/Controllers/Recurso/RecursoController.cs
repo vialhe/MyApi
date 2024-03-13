@@ -77,7 +77,6 @@ namespace MyApi.Controllers.Recurso
                     new Parametro("idUsuarioModifica", cRecurso.idUsuarioModifica.ToString())
                 };
 
-
                dt = DataBase.Listar("sp_ui_recurso", parametros);
 
                 Code = true;
@@ -134,8 +133,6 @@ namespace MyApi.Controllers.Recurso
                 Response = ToolsController.ToJson(Code, Message);
             }
             return Response;
-
-
         }
 
 

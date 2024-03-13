@@ -106,7 +106,7 @@ namespace MyApi.Controllers
             bool Code;
             string Message;
             DataTable dt;
-            string salt;
+            //string salt;
 
             try
             {

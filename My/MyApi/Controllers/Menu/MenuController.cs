@@ -7,6 +7,7 @@ using MyApi.Models.User;
 using MyApi.Models.ProductoServicio;
 using System.Net.Http.Headers;
 using MyApi.Controllers.MyTools;
+using Microsoft.Extensions.ObjectPool;
 
 namespace MyApi.Controllers.Menu
 {
@@ -26,20 +27,26 @@ namespace MyApi.Controllers.Menu
             DataTable dt;
 
             //Referencias
-
+            DataBase2 db = new DataBase2();
             try
             {
-                /*Inicia proceso*/
-                List<Parametro> parametros = new List<Parametro>{
-                    new Parametro("id", id.ToString()),
-                    new Parametro("idEntidad", idEntidad.ToString()),
-                    new Parametro("isAdmin", isAdmin.ToString())
-                };
+                db.Open();
 
-                dt = Models.MyDB.DataBase.Listar("sp_se_productosServicio", parametros);
+                db.SetCommand("sp_se_productosServicio", true);
+                db.AddParameter("id", id);
+                db.AddParameter("idEntidad", idEntidad);
+                db.AddParameter("isAdmin", isAdmin);
+
+                DataSet ds = db.ExecuteWithDataSet();
+
+                db.Close();
+
+                ds.Tables[0].TableName = "Data";
+                ds.Tables[1].TableName = "Pager";
+
                 Code = true;
                 Message = "Succes";
-                Response = ToolsController.ToJson(Code, Message, dt);
+                Response = ToolsController.ToJson(Code, Message, ds);
 
             }
             catch (Exception ex)
