@@ -2,3 +2,4 @@
 /My/.vs/My/DesignTimeBuild
 /My/.vs/My/FileContentIndex
 /My/MyApi/obj/Debug
+*.vsidx
