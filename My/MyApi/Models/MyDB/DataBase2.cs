@@ -66,6 +66,10 @@ namespace MyApi.Models.MyDB
                 Rollback();
                 throw;
             }
+            finally
+            {
+                ClearParameters();
+            }
         }
 
         public DataSet ExecuteWithDataSet()
@@ -85,6 +89,10 @@ namespace MyApi.Models.MyDB
                 Console.WriteLine($"Error: {ex.Message}");
                 Rollback();
                 throw;
+            }
+            finally 
+            {
+                ClearParameters();
             }
         }
 

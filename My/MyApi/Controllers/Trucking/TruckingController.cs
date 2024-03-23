@@ -61,7 +61,7 @@ namespace MyApi.Controllers.Trucking
 
         [HttpPost]
         [Route("insert-trucking")]
-        public IActionResult TruckingPut(TruckingH cTrasladoH)
+        public IActionResult TruckingPut(TruckingData data)
         {
             /*Declara variables*/
             JsonResult Response;
@@ -75,10 +75,12 @@ namespace MyApi.Controllers.Trucking
             string FolioMovimiento = "";
             //Referencias
             DataBase2 db = new DataBase2();
-            ToolsController tools = new ToolsController();   
+            ToolsController tools = new ToolsController();
+            TruckingH? cTrasladoH = data.CTrasladoH;
+            List<TruckingD>? cTrasladoD = data.CTrasladoD;
 
             try
-            {
+            { 
                 db.BeginTransaction();
 
                 FolioTraslado = tools.generatFolio(idFolioTras, cTrasladoH.idEntidad, cTrasladoH.idUsuarioModifica, db);
@@ -99,9 +101,21 @@ namespace MyApi.Controllers.Trucking
                 db.AddParameter("@activo", cTrasladoH.activo);
                 db.AddParameter("@idEntidad", cTrasladoH.idEntidad);
                 db.AddParameter("@idUsuarioModifica", cTrasladoH.idUsuarioModifica);
-
                 DataSet ds = db.ExecuteWithDataSet();
-                db.ClearParameters();
+
+                foreach (TruckingD d in cTrasladoD) 
+                {
+                    db.SetCommand("sp_in_trasladosDetalles", true);
+                    db.AddParameter("@folioTraslado", cTrasladoH.folioTraslado);
+                    db.AddParameter("@idProductoServicio", d.idProductoServicio);
+                    db.AddParameter("@idUnidadMedida", d.idUnidadMedida);
+                    db.AddParameter("@cantidad", d.cantidad);
+                    db.AddParameter("@comentarios", d.comentarios);
+                    db.AddParameter("@activo", cTrasladoH.activo);
+                    db.AddParameter("@idEntidad", cTrasladoH.idEntidad);
+                    db.AddParameter("@idUsuarioModifica", cTrasladoH.idUsuarioModifica);
+                    db.Execute();
+                }
 
                 db.SetCommand("sp_in_movimentosInventarios", true);
                 db.AddParameter("@folioMovimientoInventario", cTrasladoH.folioMovimientoInventario);
@@ -110,8 +124,21 @@ namespace MyApi.Controllers.Trucking
                 db.AddParameter("@activo", cTrasladoH.activo);
                 db.AddParameter("@idEntidad", cTrasladoH.idEntidad);
                 db.AddParameter("@idUsuarioModifica", cTrasladoH.idUsuarioModifica);
+                db.Execute();
 
-                ds.Merge(db.ExecuteWithDataSet());
+                foreach (TruckingD d in cTrasladoD)
+                {
+                    db.SetCommand("sp_in_movimentosInventariosDetalles", true);
+                    db.AddParameter("@folioMovimientoInventario", cTrasladoH.folioMovimientoInventario);
+                    db.AddParameter("@idProductoServicio", d.idProductoServicio);
+                    db.AddParameter("@idUnidadMedida", d.idUnidadMedida);
+                    db.AddParameter("@cantidad", d.cantidad);
+                    db.AddParameter("@comentarios", d.comentarios);
+                    db.AddParameter("@activo", cTrasladoH.activo);
+                    db.AddParameter("@idEntidad", cTrasladoH.idEntidad);
+                    db.AddParameter("@idUsuarioModifica", cTrasladoH.idUsuarioModifica);
+                    db.Execute();
+                }
 
                 db.Commit();
 
@@ -128,8 +155,6 @@ namespace MyApi.Controllers.Trucking
                 Response = ToolsController.ToJson(Code, Message);
             }
             return Response;
-
-
         }
 
         [HttpPost]

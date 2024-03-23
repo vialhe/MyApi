@@ -14,4 +14,17 @@
         public int idEntidad { get; set; }
         public int idUsuarioModifica { get; set; }
     }
+
+    public class TruckingD
+    {
+        public int idProductoServicio { get; set; }
+        public int idUnidadMedida{ get; set; }
+        public decimal cantidad { get; set; }
+        public string comentarios { get; set; } = "";
+    }
+    public class TruckingData
+    {
+        public TruckingH? CTrasladoH { get; set; }
+        public List<TruckingD>? CTrasladoD { get; set; }
+    }
 }
