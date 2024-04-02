@@ -16,9 +16,16 @@ namespace MyApi.Controllers.Menu
     public class MenuController : ControllerBase
     {
 
+        public class ProductoServicioRequest
+        {
+            public int Id { get; set; }
+            public int IdEntidad { get; set; }
+            public int IsAdmin { get; set; }
+        }
+
         [HttpPost]
         [Route("get-productoservicio")]
-        public IActionResult ProductoServicioGet(int id = 0, int idEntidad = 0, int isAdmin = 0)
+        public IActionResult ProductoServicioGet([FromBody] ProductoServicioRequest request)
         {
             /*Declara variables*/
             JsonResult Response;
@@ -26,16 +33,16 @@ namespace MyApi.Controllers.Menu
             string Message;
             DataTable dt;
 
-            //Referencias
+            // Referencias
             DataBase2 db = new DataBase2();
             try
             {
                 db.Open();
 
                 db.SetCommand("sp_se_productosServicio", true);
-                db.AddParameter("id", id);
-                db.AddParameter("idEntidad", idEntidad);
-                db.AddParameter("isAdmin", isAdmin);
+                db.AddParameter("id", request.Id);
+                db.AddParameter("idEntidad", request.IdEntidad);
+                db.AddParameter("isAdmin", request.IsAdmin);
 
                 DataSet ds = db.ExecuteWithDataSet();
 
@@ -45,7 +52,7 @@ namespace MyApi.Controllers.Menu
                 ds.Tables[1].TableName = "Pager";
 
                 Code = true;
-                Message = "Succes";
+                Message = "Success";
                 Response = ToolsController.ToJson(Code, Message, ds);
 
             }

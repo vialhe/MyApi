@@ -8,8 +8,10 @@ namespace MyApi.Models.MyDB
     public class DataBase
     {
         //public static string cadenaConexion = "database=db_a9b21d_prueba;server=PONCHO;User Id=dev; Password=admin; TrustServerCertificate=false";
-        public static string cadenaConexion = "server=PONCHO;database=db_a9b21d_prueba;User Id=dev; Password=admin; Integrated Security=True; TrustServerCertificate=True";
+        //public static string cadenaConexion = "server=PONCHO;database=db_a9b21d_prueba;User Id=dev; Password=admin; Integrated Security=True; TrustServerCertificate=True";
         //public static string cadenaConexion = "data source=localhost; initial catalog = my_db;   TrustServerCertificate=True";
+        public static string cadenaConexion = "server=SQL5112.site4now.net;database=db_aa6711_bdmyst;User Id=db_aa6711_bdmyst_admin; Password=l12345678;";
+
         public static DataSet ListarTablas(string nombreProcedimiento, List<Parametro> parametros)
         {
             SqlConnection conexion = new SqlConnection(cadenaConexion);

@@ -9,7 +9,7 @@ namespace MyApi.Models.MyDB
         private SqlConnection connection;
         private SqlCommand command;
         private SqlTransaction transaction;
-        private static string cadenaConexion = "server=SQL5112.site4now.net;database=db_aa6711_bdmyst;User Id=db_aa6711_bdmyst_admin; Password=l12345678; Integrated Security=False; TrustServerCertificate=True";
+        public static string cadenaConexion = "server=SQL5112.site4now.net;database=db_aa6711_bdmyst;User Id=db_aa6711_bdmyst_admin; Password=l12345678;";
         //private static string cadenaConexion = "server=PONCHO;database=db_a9b21d_prueba;User Id=dev; Password=admin; Integrated Security=True; TrustServerCertificate=True";
 
         public DataBase2(string connectionString ="")
