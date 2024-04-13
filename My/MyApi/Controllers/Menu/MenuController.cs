@@ -21,6 +21,7 @@ namespace MyApi.Controllers.Menu
             public int Id { get; set; }
             public int IdEntidad { get; set; }
             public int IsAdmin { get; set; }
+            public int idTipoProductoServicio { get; set; }
         }
 
         [HttpPost]
@@ -43,6 +44,8 @@ namespace MyApi.Controllers.Menu
                 db.AddParameter("id", request.Id);
                 db.AddParameter("idEntidad", request.IdEntidad);
                 db.AddParameter("isAdmin", request.IsAdmin);
+                db.AddParameter("idTipoProductoServicio", request.idTipoProductoServicio);
+
 
                 DataSet ds = db.ExecuteWithDataSet();
 
@@ -139,7 +142,7 @@ namespace MyApi.Controllers.Menu
                 dt = DataBase.Listar("sp_ui_productosServicios", parametros);
                 Code = true;
                 Message = "Succes";
-                Response = ToolsController.ToJson(Code, Message, dt);
+                Response = ToolsController.ToJson(Code, Message,dt);
 
             }
             catch (Exception ex)
