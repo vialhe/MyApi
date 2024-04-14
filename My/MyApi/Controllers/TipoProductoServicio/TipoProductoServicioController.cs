@@ -2,6 +2,8 @@
 using MyApi.Controllers.MyTools;
 using MyApi.Models.MyDB;
 using System.Data;
+using System.Reflection.Metadata;
+using static MyApi.Controllers.Menu.MenuController;
 
 namespace MyApi.Controllers.TipoProductoServicio
 {
@@ -11,9 +13,16 @@ namespace MyApi.Controllers.TipoProductoServicio
     {
         public static string NombreTabla = "cat_tipoProductoServicio";
 
+        public class TipoProductoServicioRequest
+        {
+            public int Id { get; set; }
+            public int IdEntidad { get; set; }
+            public int IsAdmin { get; set; }
+        }
+
         [HttpPost]
         [Route("get-tipoProductoServicio")]
-        public IActionResult TipoProductoServicioGet(int id = 0, int idEntidad = 0, int isAdmin = 0)
+        public IActionResult TipoProductoServicioGet([FromBody] TipoProductoServicioRequest request)
         {
             /*Declara variables*/
             JsonResult Response;
@@ -22,20 +31,21 @@ namespace MyApi.Controllers.TipoProductoServicio
             DataTable dt;
 
             //Referencias
-
+            DataBase2 db = new DataBase2();
             try
             {
-                /*Inicia proceso*/
-                List<Parametro> parametros = new List<Parametro>{
-                    new Parametro("id", id.ToString()),
-                    new Parametro("idEntidad", idEntidad.ToString()),
-                    new Parametro("isAdmin", isAdmin.ToString())
-                };
+                db.Open();
 
-                dt = Models.MyDB.DataBase.Listar("sp_se_perfil", parametros);
+                db.SetCommand("sp_se_tipoProductosServicio", true);
+                db.AddParameter("id", request.Id);
+                db.AddParameter("idEntidad", request.IdEntidad);
+                db.AddParameter("isAdmin", request.IsAdmin);
+
+                DataSet ds = db.ExecuteWithDataSet();
+
                 Code = true;
                 Message = "Succes";
-                Response = ToolsController.ToJson(Code, Message, dt);
+                Response = ToolsController.ToJson(Code, Message, ds);
 
             }
             catch (Exception ex)
