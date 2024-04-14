@@ -4,6 +4,10 @@ using System.Data;
 using MyApi.Class.Auth;
 using MyApi.Models.User;
 using MyApi.Controllers.MyTools;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace MyApi.Controllers.Auth
 {
@@ -25,7 +29,7 @@ namespace MyApi.Controllers.Auth
 
                 /*Inicia proceso*/
                 List<Parametro> parametros = new List<Parametro>{
-                    new Parametro("user", oUsuario.usuario)
+                    new Parametro("user", oUsuario.username)
 
                 };
                 dt = DataBase.Listar("sp_proc_ValidaLogin", parametros);
@@ -54,6 +58,7 @@ namespace MyApi.Controllers.Auth
             DataTable dtUsuario = new DataTable();
             bool Verify = false;
             string Hash;
+            string Token = null;
 
             /*Definicion de Variables*/
             try
@@ -67,13 +72,23 @@ namespace MyApi.Controllers.Auth
                     Hash = BCrypt.Net.BCrypt.HashPassword(user.password, dtUsuario.Rows[0]["salt"].ToString());
                     Verify = dtUsuario.Rows[0]["hashpassword"].ToString() == Hash;
 
-                    Code = Verify;
-                    Message = Verify ? "Acceso Autorizado" : "Contraseña incorrecta";
+                    if (Verify)
+                    {
+                        // Usuario verificado correctamente, genera el token
+                        Token = GenerateJwtToken(dtUsuario.Rows[0]);
+                        Code = true;
+                        Message = "Access Authorized";
+                    }
+                    else
+                    {
+                        Code = false;
+                        Message = "Incorrect password";
+                    }
                 }
                 else 
                 {
                     Code = false;
-                    Message = "Usuario incorrecto";
+                    Message = "Incorrect user";
                 }
 
                 if (!Code)
@@ -94,6 +109,29 @@ namespace MyApi.Controllers.Auth
             return Response;
 
 
+        }
+
+        private string GenerateJwtToken(DataRow userInfo)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_secret_key_here")); // Asegúrate de almacenar esto de forma segura y no hard-codearlo así
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, userInfo["id"].ToString()),
+        // Agrega cualquier claim adicional que necesites
+    };
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddHours(1), // El token expira en 1 hora
+                SigningCredentials = credentials
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
         [HttpPost]
@@ -117,7 +155,7 @@ namespace MyApi.Controllers.Auth
 
                 List<Parametro> parametros = new List<Parametro>{
                     new Parametro("id", Usuarios.id.ToString()),
-                    new Parametro("usuario", Usuarios.usuario.ToString()),
+                    new Parametro("usuario", Usuarios.username.ToString()),
                     new Parametro("password", Usuarios.password.ToString()),
                     new Parametro("salt", salt),
                     new Parametro("comentarios", Usuarios.comentarios.ToString()),
