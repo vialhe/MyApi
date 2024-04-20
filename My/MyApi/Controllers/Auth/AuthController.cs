@@ -95,7 +95,7 @@ namespace MyApi.Controllers.Auth
                     dtUsuario.Clear();
                 /*Define return */
                 
-                Response = ToolsController.ToJson(Code, Message,dtUsuario);
+                Response = ToolsController.ToJson(Code, Message,dtUsuario,Token,true);
 
             }
             catch (Exception ex)

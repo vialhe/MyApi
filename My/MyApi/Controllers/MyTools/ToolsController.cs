@@ -37,6 +37,35 @@ namespace MyApi.Controllers.MyTools
             }
         }
 
+        public static JsonResult ToJson(bool Code, string Message, DataTable dt, string Token , bool forLogin)
+        {
+            DataTable dataTable = dt;
+            var resultDictionary = new Dictionary<string, object>();
+
+            try
+            {
+                resultDictionary.Add("Code", Code);
+                resultDictionary.Add("Mensaje", Message);
+                resultDictionary.Add("Token", Token);
+
+                var data = dataTable.AsEnumerable()
+                    .Select(row =>
+                    {
+                        return row.Table.Columns.Cast<DataColumn>()
+                            .ToDictionary(column => column.ColumnName, column => row[column]);
+                    })
+                    .ToList();
+
+                resultDictionary.Add("table", data);
+
+                return new JsonResult(resultDictionary);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public static JsonResult ToJson(bool Code, string Message, DataSet dataSet)
         {
             var resultDictionary = new Dictionary<string, object>();
@@ -99,6 +128,8 @@ namespace MyApi.Controllers.MyTools
 
             return new JsonResult(jsonData);
         }
+
+
         #endregion
 
         #region Config 
