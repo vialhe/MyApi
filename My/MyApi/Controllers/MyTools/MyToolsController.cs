@@ -6,8 +6,56 @@ using System.Data;
 
 namespace MyApi.Controllers.MyTools
 {
-    public class ToolsController : Controller
+    public class MyToolsController : Controller
     {
+        #region Cátalogos
+        [HttpPost]
+        [Route("get-empresa")]
+        public IActionResult GetEmpresa(GenericReques rEmpresa)
+        {
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataTable dt;
+            DataBase2 db = new DataBase2();
+
+
+            try
+            {
+                db.SetCommand("sp_se_empresas", true);
+                db.AddParameter("id", rEmpresa.id.ToString());
+                db.AddParameter("idEntidad", rEmpresa.idEntidad.ToString());
+                db.AddParameter("isAdmin", rEmpresa.isAdmin.ToString());
+
+                /*Inicia proceso*/
+                //List<Parametro> parametros = new List<Parametro>{
+                //    new Parametro("id", rEntidad.id.ToString()),
+                //    new Parametro("idEntidad", rEntidad.idEntidad.ToString()),
+                //    new Parametro("isAdmin", rEntidad.isAdmin.ToString())
+                //};
+                //dt = DataBase.Listar("sp_se_entidad", parametros);
+
+                /*Define return success*/
+
+                dt = db.ExecuteWithDataSet().Tables[0];
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message, dt);
+
+            }
+            catch (Exception ex)
+            {
+                /*Define return ex*/
+                Code = false;
+                Message = "Exception: " + ex;
+                Response = MyToolsController.ToJson(Code, Message);
+
+            }
+            return Response;
+
+        }
+        #endregion
         #region JSON 
         public static JsonResult ToJson(bool Code, string Message, DataTable dt, string NameObj = "Data")
         {
@@ -56,7 +104,7 @@ namespace MyApi.Controllers.MyTools
                     })
                     .ToList();
 
-                resultDictionary.Add("table", data);
+                resultDictionary.Add("Data", data);
 
                 return new JsonResult(resultDictionary);
             }
@@ -196,6 +244,13 @@ namespace MyApi.Controllers.MyTools
         #endregion
 
         #region Class
+
+        public class GenericReques
+        {
+            public int id { get; set; }
+            public int idEntidad { get; set; }
+            public bool isAdmin { get; set; }
+        }
         class Foliador 
         {
             private int idFolio { get; set; }

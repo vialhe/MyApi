@@ -9,6 +9,7 @@ using MyApi.Models.Trucking;
 using System.Net.Http.Headers;
 using MyApi.Controllers.MyTools;
 using Microsoft.Extensions.ObjectPool;
+using static MyApi.Controllers.MyTools.MyToolsController;
 
 namespace MyApi.Controllers.Trucking
 {
@@ -47,14 +48,14 @@ namespace MyApi.Controllers.Trucking
 
                 Code = true;
                 Message = "Succes";
-                Response = ToolsController.ToJson(Code, Message, ds);
+                Response = MyToolsController.ToJson(Code, Message, ds);
 
             }
             catch (Exception ex)
             {
                 Code = false;
                 Message = "Ex: " + ex.Message;
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
             }
             return Response;
         }
@@ -75,7 +76,7 @@ namespace MyApi.Controllers.Trucking
             string FolioMovimiento = "";
             //Referencias
             DataBase2 db = new DataBase2();
-            ToolsController tools = new ToolsController();
+            MyToolsController tools = new MyToolsController();
             TruckingH? cTrasladoH = data.CTrasladoH;
             List<TruckingD>? cTrasladoD = data.CTrasladoD;
 
@@ -102,7 +103,7 @@ namespace MyApi.Controllers.Trucking
                 db.AddParameter("@idEntidad", cTrasladoH.idEntidad);
                 db.AddParameter("@idUsuarioModifica", cTrasladoH.idUsuarioModifica);
                 DataSet ds = db.ExecuteWithDataSet();
-
+                ds.Tables[0].TableName = "Data";
                 foreach (TruckingD d in cTrasladoD) 
                 {
                     db.SetCommand("sp_in_trasladosDetalles", true);
@@ -144,7 +145,7 @@ namespace MyApi.Controllers.Trucking
 
                 Code = true;
                 Message = "Succes";
-                Response = ToolsController.ToJson(Code, Message, ds);
+                Response = MyToolsController.ToJson(Code, Message, ds);
 
             }
             catch (Exception ex)
@@ -152,7 +153,7 @@ namespace MyApi.Controllers.Trucking
                 db.Rollback();
                 Code = false;
                 Message = "Ex: " + ex.Message;
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
             }
             return Response;
         }
@@ -186,14 +187,14 @@ namespace MyApi.Controllers.Trucking
                 dt = DataBase.Listar("sp_ui_productosServicios", parametros);
                 Code = true;
                 Message = "Succes";
-                Response = ToolsController.ToJson(Code, Message, dt);
+                Response = MyToolsController.ToJson(Code, Message, dt);
 
             }
             catch (Exception ex)
             {
                 Code = false;
                 Message = "Ex: " + ex.Message;
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
             }
             return Response;
 
@@ -224,18 +225,93 @@ namespace MyApi.Controllers.Trucking
                 Code = true;
                 Message = "Succes";
 
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
             }
             catch (Exception ex)
             {
                 Code = false;
                 Message = "Ex: " + ex.Message;
 
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
             }
             return Response;
         }
 
+        #region Catalogos 
+        [HttpPost]
+        [Route("get-empresa")]
+        public IActionResult GetEmpresa(GenericReques rEmpresa)
+        {
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataTable dt;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.SetCommand("sp_se_empresas", true);
+                db.AddParameter("id", rEmpresa.id.ToString());
+                db.AddParameter("idEntidad", rEmpresa.idEntidad.ToString());
+                db.AddParameter("isAdmin", rEmpresa.isAdmin.ToString());
+
+                /*Define return success*/
+                dt = db.ExecuteWithDataSet().Tables[0];
+                Code = true;
+                Message = "Succes";
+
+                Response = MyToolsController.ToJson(Code, Message, dt);
+            }
+            catch (Exception ex)
+            {
+                /*Define return ex*/
+                Code = false;
+                Message = "Exception: " + ex;
+                Response = MyToolsController.ToJson(Code, Message);
+
+            }
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("get-traslados-bancos")]
+        public IActionResult GetBancos(GenericReques rEmpresa)
+        {
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.SetCommand("sp_se_bancos", true);
+                db.AddParameter("id", rEmpresa.id.ToString());
+                db.AddParameter("idEntidad", rEmpresa.idEntidad.ToString());
+                db.AddParameter("isAdmin", rEmpresa.isAdmin.ToString());
+
+                /*Define return success*/
+                ds = db.ExecuteWithDataSet();
+                ds.Tables[0].TableName = "Data";
+                ds.Tables[1].TableName = "Data2";
+                Code = true;
+                Message = "Succes";
+
+                Response = MyToolsController.ToJson(Code, Message, ds);
+            }
+            catch (Exception ex)
+            {
+                /*Define return ex*/
+                Code = false;
+                Message = "Exception: " + ex;
+                Response = MyToolsController.ToJson(Code, Message);
+
+            }
+            return Response;
+        }
+        #endregion
 
     }
 }

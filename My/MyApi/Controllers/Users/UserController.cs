@@ -37,7 +37,7 @@ namespace MyApi.Controllers
                 /*Define return success*/
                 Code = true;
                 Message = "Succes";
-                Response = ToolsController.ToJson(Code,Message, dt);
+                Response = MyToolsController.ToJson(Code,Message, dt);
 
             }
             catch (Exception ex)
@@ -45,7 +45,7 @@ namespace MyApi.Controllers
                 /*Define return ex*/
                 Code = false;
                 Message = "Exception: " + ex;
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
 
             }
              return Response;
@@ -91,7 +91,7 @@ namespace MyApi.Controllers
                 /*Define return success*/
                 Code = true;
                 Message = "Succes";
-                Response = ToolsController.ToJson(Code, Message, dt);
+                Response = MyToolsController.ToJson(Code, Message, dt);
 
             }
             catch (Exception ex)
@@ -99,7 +99,7 @@ namespace MyApi.Controllers
                 /*Define return ex*/
                 Code = false;
                 Message = "Exception: " + ex;
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
 
             }
             return Response;
@@ -144,7 +144,7 @@ namespace MyApi.Controllers
                 /*Define return success*/
                 Code = true;
                 Message = "Succes";
-                Response = ToolsController.ToJson(Code, Message, dt);
+                Response = MyToolsController.ToJson(Code, Message, dt);
 
                 return Response;
             }
@@ -153,7 +153,7 @@ namespace MyApi.Controllers
                 /*Define return ex*/
                 Code = false;
                 Message = "Exception: " + ex;
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
 
                 return Response;
             }
@@ -181,14 +181,14 @@ namespace MyApi.Controllers
                 Code = true;
                 Message = "Succes";
 
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
             }
             catch (Exception ex)
             {
                 Code = false;
                 Message = "Ex: " + ex.Message;
 
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
             }
             return Response;
         }

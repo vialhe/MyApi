@@ -45,14 +45,14 @@ namespace MyApi.Controllers.TipoProductoServicio
 
                 Code = true;
                 Message = "Succes";
-                Response = ToolsController.ToJson(Code, Message, ds);
+                Response = MyToolsController.ToJson(Code, Message, ds);
 
             }
             catch (Exception ex)
             {
                 Code = false;
                 Message = "Ex: " + ex.Message;
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
             }
             return Response;
         }
@@ -86,14 +86,14 @@ namespace MyApi.Controllers.TipoProductoServicio
 
                 Code = true;
                 Message = "Succes";
-                Response = ToolsController.ToJson(Code, Message, dt);
+                Response = MyToolsController.ToJson(Code, Message, dt);
 
             }
             catch (Exception ex)
             {
                 Code = false;
                 Message = "Ex: " + ex.Message;
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
             }
             return Response;
 
@@ -127,14 +127,14 @@ namespace MyApi.Controllers.TipoProductoServicio
                 dt = DataBase.Listar("sp_ui_catalogos", parametros);
                 Code = true;
                 Message = "Succes";
-                Response = ToolsController.ToJson(Code, Message, dt);
+                Response = MyToolsController.ToJson(Code, Message, dt);
 
             }
             catch (Exception ex)
             {
                 Code = false;
                 Message = "Ex: " + ex.Message;
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
             }
             return Response;
 
@@ -164,14 +164,14 @@ namespace MyApi.Controllers.TipoProductoServicio
                 Code = true;
                 Message = "Succes";
 
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
             }
             catch (Exception ex)
             {
                 Code = false;
                 Message = "Ex: " + ex.Message;
 
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
             }
             return Response;
         }

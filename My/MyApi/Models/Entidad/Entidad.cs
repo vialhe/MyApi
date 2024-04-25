@@ -18,4 +18,10 @@ namespace MyApi.Models.User
         public DateTime fechaAlta { get; set; }
         public int idUsuarioAlta { get; set; }
     }
+    public class EntidadRequest
+    {
+        public int id { get; set; }
+        public int idEntidad { get; set; }
+        public bool isAdmin { get; set; }
+    }
 }

@@ -36,14 +36,14 @@ namespace MyApi.Controllers.MyScale
                 /*Define return*/
                 Code = true;
                 Message = "Success";
-                Response = ToolsController.ToJson(Code, Message, dt);
+                Response = MyToolsController.ToJson(Code, Message, dt);
             }
             catch (Exception ex)
             {
                 /* Retorna error */
                 Code = false;
                 Message = "Ex:" + ex.Message;
-                Response= ToolsController.ToJson(Code,Message);
+                Response= MyToolsController.ToJson(Code,Message);
             }
             /* Retorna Datos */
             return Response;
@@ -80,13 +80,13 @@ namespace MyApi.Controllers.MyScale
 
                 Code= true;
                 Message = "Success";
-                Response = ToolsController.ToJson(Code,Message,dt);
+                Response = MyToolsController.ToJson(Code,Message,dt);
             }
             catch (Exception ex)
             {
                 Code = false;
                 Message = "Ex: " + ex;
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
             }
 
 
@@ -126,7 +126,7 @@ namespace MyApi.Controllers.MyScale
             }
 
 
-            return ToolsController.ToJson(dt);
+            return MyToolsController.ToJson(dt);
         }
 
     }

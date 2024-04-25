@@ -95,7 +95,7 @@ namespace MyApi.Controllers.Auth
                     dtUsuario.Clear();
                 /*Define return */
                 
-                Response = ToolsController.ToJson(Code, Message,dtUsuario,Token,true);
+                Response = MyToolsController.ToJson(Code, Message,dtUsuario,Token,true);
 
             }
             catch (Exception ex)
@@ -103,7 +103,7 @@ namespace MyApi.Controllers.Auth
                 /*Define return ex*/
                 Code = false;
                 Message = "Exception: " + ex;
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
 
             }
             return Response;
@@ -167,14 +167,14 @@ namespace MyApi.Controllers.Auth
                 /*Define return success*/
                 Code = true;
                 Message = "Succes";
-                Response = ToolsController.ToJson(Code, Message, dt);
+                Response = MyToolsController.ToJson(Code, Message, dt);
             }
             catch (Exception ex)
             {
                 /*Define return ex*/
                 Code = false;
                 Message = "Exception: " + ex;
-                Response = ToolsController.ToJson(Code, Message);
+                Response = MyToolsController.ToJson(Code, Message);
 
             }
             /* Retorna  */
