@@ -1,8 +1,12 @@
+D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\MyApi.deps.json
+D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\Newtonsoft.Json.dll
+D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\System.Drawing.Common.dll
+D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\System.Windows.Extensions.dll
+D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\appsettings.Development.json
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\appsettings.json
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\MyApi.staticwebassets.runtime.json
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\MyApi.exe
-D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\MyApi.deps.json
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\MyApi.runtimeconfig.json
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\MyApi.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\MyApi.pdb
@@ -21,15 +25,12 @@ D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\Microsoft.SqlServer.Server.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
-D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\Newtonsoft.Json.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\System.Configuration.ConfigurationManager.dll
-D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\System.Drawing.Common.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\System.Memory.Data.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\System.Runtime.Caching.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\System.Security.Permissions.dll
-D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\System.Windows.Extensions.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
@@ -40,7 +41,6 @@ D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\runtimes\win\lib\net6.0\Microsoft.
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
-D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 D:\Proyectos\My\API\My\MyApi\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 D:\Proyectos\My\API\My\MyApi\obj\Debug\net6.0\MyApi.csproj.AssemblyReference.cache
 D:\Proyectos\My\API\My\MyApi\obj\Debug\net6.0\MyApi.GeneratedMSBuildEditorConfig.editorconfig

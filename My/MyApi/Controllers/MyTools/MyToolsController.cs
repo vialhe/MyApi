@@ -70,8 +70,19 @@ namespace MyApi.Controllers.MyTools
                 var data = dataTable.AsEnumerable()
                     .Select(row =>
                     {
-                        return row.Table.Columns.Cast<DataColumn>()
+                        //return row.Table.Columns.Cast<DataColumn>()
+                        //    .ToDictionary(column => column.ColumnName, column => row[column]);
+
+                        // Crear un diccionario para cada fila de la tabla
+                        var rowData = row.Table.Columns.Cast<DataColumn>()
                             .ToDictionary(column => column.ColumnName, column => row[column]);
+
+                        // Filtrar los valores nulos en el diccionario de la fila
+                        var filteredRowData = rowData.Where(kv => kv.Value != DBNull.Value)
+                                                     .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+                        return filteredRowData;
+
                     })
                     .ToList();
 
