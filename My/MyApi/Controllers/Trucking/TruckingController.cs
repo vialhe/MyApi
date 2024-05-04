@@ -351,6 +351,45 @@ namespace MyApi.Controllers.Trucking
             return Response;
         }
 
+        [HttpPost]
+        [Route("get-vehiculo")]
+        public IActionResult GetVehiculo(GenericReques rUnidadMedida)
+        {
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            string NombreTablaEnBD = "cat_vehiculos";
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+
+            try
+            {
+                db.SetCommand("sp_se_catalogos", true);
+                db.AddParameter("id", rUnidadMedida.id.ToString());
+                db.AddParameter("idEntidad", rUnidadMedida.idEntidad.ToString());
+                db.AddParameter("isAdmin", rUnidadMedida.isAdmin.ToString());
+                db.AddParameter("catalogo", NombreTablaEnBD);
+
+                /*Define return success*/
+                ds = db.ExecuteWithDataSet();
+                ds.Tables[0].TableName = "Data";
+                Code = true;
+                Message = "Succes";
+
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                /*Define return ex*/
+                Code = false;
+                Message = "Exception: " + ex;
+                Response = MyToolsController.ToJson(Code, Message);
+
+            }
+            return Response;
+        }
 
         #endregion
 
