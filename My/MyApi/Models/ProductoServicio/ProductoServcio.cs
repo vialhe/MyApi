@@ -15,5 +15,8 @@
         public int idUsuarioModifica { get; set; }
         public DateTime fechaAlta { get; set; }
         public int idUsuarioAlta { get; set; }
+        public decimal calificacion { get; set; } 
+        public bool popular { get; set; }
+
     }
 }

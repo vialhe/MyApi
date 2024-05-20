@@ -65,12 +65,23 @@ namespace MyApi.Controllers.Recurso
             DataBase db = new DataBase();
             try
             {
+                string base64EncodedData = cRecurso.recursoBase64;
+
+                // Verificar y limpiar el prefijo si es necesario
+                if (base64EncodedData.Contains(","))
+                    base64EncodedData = base64EncodedData.Substring(base64EncodedData.IndexOf(',') + 1);
+
+                // Eliminar todos los espacios en blanco no válidos
+                base64EncodedData = base64EncodedData.Replace(" ", string.Empty).Replace("\r", "").Replace("\n", "");
+
+                byte[] data = Convert.FromBase64String(base64EncodedData);
+
                 /*Inicia proceso*/
                 List<Parametro> parametros = new List<Parametro>{
                     new Parametro("idTabla", cRecurso.idTabla.ToString()),
                     new Parametro("idRegistro", cRecurso.idRegistro.ToString()),
                     new Parametro("descripcion", cRecurso.descripcion.ToString()),
-                    new Parametro("recurso", Encoding.UTF8.GetString(cRecurso.recurso)),
+                    new Parametro("recurso", Convert.ToBase64String(data)),
                     new Parametro("comentarios", cRecurso.comentarios.ToString()),
                     new Parametro("activo", cRecurso.activo.ToString()),
                     new Parametro("idEntidad", cRecurso.idEntidad.ToString()),
@@ -107,13 +118,24 @@ namespace MyApi.Controllers.Recurso
 
             try
             {
+                 string base64EncodedData = cRecurso.recursoBase64;
+
+                // Verificar y limpiar el prefijo si es necesario
+                if (base64EncodedData.Contains(","))
+                    base64EncodedData = base64EncodedData.Substring(base64EncodedData.IndexOf(',') + 1);
+
+                // Eliminar todos los espacios en blanco no válidos
+                base64EncodedData = base64EncodedData.Replace(" ", string.Empty).Replace("\r", "").Replace("\n", "");
+
+                byte[] data = Convert.FromBase64String(base64EncodedData);
+
                 /*Inicia proceso*/
                 List<Parametro> parametros = new List<Parametro>{
                     new Parametro("id", cRecurso.id.ToString()),
                     new Parametro("idTabla", cRecurso.idTabla.ToString()),
                     new Parametro("idRegistro", cRecurso.idRegistro.ToString()),
                     new Parametro("descripcion", cRecurso.descripcion.ToString()),
-                    new Parametro("recurso", Encoding.UTF8.GetString(cRecurso.recurso)),
+                    new Parametro("recurso", Convert.ToBase64String(data)),
                     new Parametro("comentarios", cRecurso.comentarios.ToString()),
                     new Parametro("activo", cRecurso.activo.ToString()),
                     new Parametro("idEntidad", cRecurso.idEntidad.ToString()),

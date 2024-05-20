@@ -92,7 +92,10 @@ namespace MyApi.Controllers.Menu
                     new Parametro("comentarios", cProductoServicio.comentarios.ToString()),
                     new Parametro("activo", cProductoServicio.activo.ToString()),
                     new Parametro("idEntidad", cProductoServicio.idEntidad.ToString()),
-                    new Parametro("idUsuarioModifica", cProductoServicio.idUsuarioModifica.ToString())
+                    new Parametro("idUsuarioModifica", cProductoServicio.idUsuarioModifica.ToString()),
+                    new Parametro("calificacion", cProductoServicio.calificacion.ToString()),
+                    new Parametro("popular", cProductoServicio.popular.ToString())
+
                 };
                 
                 dt = DataBase.Listar("sp_ui_productosServicios", parametros);
@@ -137,6 +140,8 @@ namespace MyApi.Controllers.Menu
                     new Parametro("activo", cProductoServicio.activo.ToString()),
                     new Parametro("idEntidad", cProductoServicio.idEntidad.ToString()),
                     new Parametro("idUsuarioModifica", cProductoServicio.idUsuarioModifica.ToString()),
+                    new Parametro("calificacion", cProductoServicio.calificacion.ToString()),
+                    new Parametro("popular", cProductoServicio.popular.ToString())
                 };
 
                 dt = DataBase.Listar("sp_ui_productosServicios", parametros);
