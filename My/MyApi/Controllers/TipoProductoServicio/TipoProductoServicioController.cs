@@ -42,6 +42,8 @@ namespace MyApi.Controllers.TipoProductoServicio
                 db.AddParameter("isAdmin", request.IsAdmin);
 
                 DataSet ds = db.ExecuteWithDataSet();
+                if (ds.Tables.Count > 0)
+                    ds.Tables[0].TableName = "Data";
 
                 Code = true;
                 Message = "Succes";
