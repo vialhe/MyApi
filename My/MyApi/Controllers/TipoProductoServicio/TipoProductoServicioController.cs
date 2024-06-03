@@ -11,7 +11,7 @@ namespace MyApi.Controllers.TipoProductoServicio
     [Route("[controller]")]
     public class TipoProductoServicioController : ControllerBase
     {
-        public static string NombreTabla = "cat_tipoProductoServicio";
+        public static string NombreTabla = "cat_tiposProductosServicios";
 
         public class TipoProductoServicioRequest
         {
