@@ -22,13 +22,12 @@
 
     public class SalePay
     {
-        public int idEntradaSalida { get; set; }
         public int idTipoPago { get; set; }
         public decimal montoPago { get; set; }
-        public int numeroAutorizacion { get; set; }
+        public string numeroAutorizacion { get; set; }
         public string comentarios { get; set; } = "";
     }
-    public class TruckingData
+    public class SaleData
     {
         public SaleH? CSaleH { get; set; }
         public List<SaleD>? CSaleD { get; set; }
