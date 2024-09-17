@@ -8,6 +8,7 @@ using MyApi.Models.ProductoServicio;
 using System.Net.Http.Headers;
 using MyApi.Controllers.MyTools;
 using Microsoft.Extensions.ObjectPool;
+using Microsoft.Data.SqlClient;
 
 namespace MyApi.Controllers.Menu
 {
@@ -163,39 +164,52 @@ namespace MyApi.Controllers.Menu
 
 
 
+        public class DeleteProductRequest
+        {
+            public int Id { get; set; }
+            public string NombreTabla { get; set; }
+        }
+
         [HttpPost]
         [Route("delete-productoservicio")]
-        public IActionResult ProductoServicioDelete(int id, string nombreTabla = "")
+        public IActionResult ProductoServicioDelete([FromBody] DeleteProductRequest request)
         {
-            /*Define variables*/
-            JsonResult Response;
-            bool Code;
-            string Message;
-            nombreTabla = "cat_productosServicios";
+            // Validar la entrada
+            if (request.Id <= 0)
+            {
+                return BadRequest(MyToolsController.ToJson(false, "El ID proporcionado no es válido."));
+            }
+
+            if (string.IsNullOrWhiteSpace(request.NombreTabla))
+            {
+                request.NombreTabla = "cat_productosServicios";
+            }
 
             try
             {
-                /*Inicia proceso*/
-                List<Parametro> parametros = new List<Parametro>{
-                    new Parametro("id", id.ToString()),
-                    new Parametro("nombreTabla", nombreTabla.ToString())
-                };
+                // Iniciar proceso
+                List<Parametro> parametros = new List<Parametro>
+        {
+            new Parametro("id", request.Id.ToString()),
+            new Parametro("nombreTabla", request.NombreTabla)
+        };
 
                 DataBase.Ejecutar("sp_del_fromNameTable", parametros);
-                Code = true;
-                Message = "Succes";
 
-                Response = MyToolsController.ToJson(Code, Message);
+                // Retornar respuesta exitosa
+                return Ok(MyToolsController.ToJson(true, "Producto eliminado exitosamente."));
+            }
+            catch (SqlException sqlEx)
+            {
+                return StatusCode(500, MyToolsController.ToJson(false, "Error en la base de datos: " + sqlEx.Message));
             }
             catch (Exception ex)
             {
-                Code = false;
-                Message = "Ex: " + ex.Message;
-
-                Response = MyToolsController.ToJson(Code, Message);
+                return StatusCode(500, MyToolsController.ToJson(false, "Ocurrió un error: " + ex.Message));
             }
-            return Response;
         }
+
+
 
 
     }
