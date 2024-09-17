@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyApi.Controllers.MyTools;
 using MyApi.Models.MyDB;
+using MyApi.Models.ProductoServicio;
+using MyApi.Models.Profile;
 using System.Data;
+using static MyApi.Controllers.MyTools.MyToolsController;
 
 namespace MyApi.Controllers.Profile
 {
@@ -165,5 +168,153 @@ namespace MyApi.Controllers.Profile
             }
             return Response;
         }
+
+        #region Persona
+        [HttpPost]
+        [Route("insert-persona")]
+        public IActionResult insertPersona(Persona cPersona)
+        {
+            /*Se declaran Variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataTable dt;
+            DataBase2 db = new DataBase2();
+            cPersona.id = 0;
+
+            try
+            {
+                db.SetCommand("sp_ui_persona", true);
+                db.AddParameter("@id", cPersona.id);
+                db.AddParameter("@idTipoPersona", cPersona.idTipoPersona);
+                db.AddParameter("@nombre", cPersona.nombre);
+                db.AddParameter("@apellidoPaterno", cPersona.apellidoPaterno);
+                db.AddParameter("@apellidoMaterno", cPersona.apellidoMaterno);
+                db.AddParameter("@genero", cPersona.genero);
+                db.AddParameter("@fechaNacimiento", cPersona.fechaNacimiento);
+                db.AddParameter("@calle", cPersona.calle);
+                db.AddParameter("@numExterior", cPersona.numExterior);
+                db.AddParameter("@numInterior", cPersona.numInterior);
+                db.AddParameter("@colonia", cPersona.colonia);
+                db.AddParameter("@municipio", cPersona.municipio);
+                db.AddParameter("@estado", cPersona.estado);
+                db.AddParameter("@cp", cPersona.cp);
+                db.AddParameter("@referenciasDomicilio", cPersona.referenciasDomicilio);
+                db.AddParameter("@nss", cPersona.nss); // Número de Seguro Social
+                db.AddParameter("@correo", cPersona.correo);
+                db.AddParameter("@comentarios", cPersona.comentarios);
+                db.AddParameter("@activo", cPersona.activo);
+                db.AddParameter("@idEntidad", cPersona.idEntidad);
+                db.AddParameter("@idUsuarioModifica", cPersona.idUsuarioModifica);
+
+                dt = db.ExecuteWithDataSet().Tables[0];
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message, dt);
+
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+
+
+        }
+
+        [HttpPost]
+        [Route("update-persona")]
+        public IActionResult updatePersona(Persona cPersona)
+        {
+            /*Se declaran Variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataTable dt;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.SetCommand("sp_ui_persona", true);
+                db.AddParameter("@id", cPersona.id);
+                db.AddParameter("@idTipoPersona", cPersona.idTipoPersona);
+                db.AddParameter("@nombre", cPersona.nombre);
+                db.AddParameter("@apellidoPaterno", cPersona.apellidoPaterno);
+                db.AddParameter("@apellidoMaterno", cPersona.apellidoMaterno);
+                db.AddParameter("@genero", cPersona.genero);
+                db.AddParameter("@fechaNacimiento", cPersona.fechaNacimiento);
+                db.AddParameter("@calle", cPersona.calle);
+                db.AddParameter("@numExterior", cPersona.numExterior);
+                db.AddParameter("@numInterior", cPersona.numInterior);
+                db.AddParameter("@colonia", cPersona.colonia);
+                db.AddParameter("@municipio", cPersona.municipio);
+                db.AddParameter("@estado", cPersona.estado);
+                db.AddParameter("@cp", cPersona.cp);
+                db.AddParameter("@referenciasDomicilio", cPersona.referenciasDomicilio);
+                db.AddParameter("@nss", cPersona.nss); // Número de Seguro Social
+                db.AddParameter("@correo", cPersona.correo);
+                db.AddParameter("@comentarios", cPersona.comentarios);
+                db.AddParameter("@activo", cPersona.activo);
+                db.AddParameter("@idEntidad", cPersona.idEntidad);
+                db.AddParameter("@idUsuarioModifica", cPersona.idUsuarioModifica);
+
+                dt = db.ExecuteWithDataSet().Tables[0];
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message, dt);
+
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+        }
+
+
+        [HttpPost]
+        [Route("get-personas")]
+        public IActionResult GetPersonas(GenericReques rPersona)
+        {
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            string NombreTablaEnBD = "cat_personas";
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+
+            try
+            {
+                db.SetCommand("sp_se_catalogos", true);
+                db.AddParameter("id", rPersona.id.ToString());
+                db.AddParameter("idEntidad", rPersona.idEntidad.ToString());
+                db.AddParameter("isAdmin", rPersona.isAdmin.ToString());
+                db.AddParameter("catalogo", NombreTablaEnBD);
+
+                /*Define return success*/
+                ds = db.ExecuteWithDataSet();
+                ds.Tables[0].TableName = "Data";
+                Code = true;
+                Message = "Succes";
+
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                /*Define return ex*/
+                Code = false;
+                Message = "Exception: " + ex;
+                Response = MyToolsController.ToJson(Code, Message);
+
+            }
+            return Response;
+        }
+        #endregion
     }
 }
