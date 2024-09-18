@@ -6,6 +6,7 @@ using MyApi.Class.Tools;
 using MyApi.Models.User;
 using Microsoft.AspNetCore.ResponseCompression;
 using MyApi.Controllers.MyTools;
+using static MyApi.Controllers.MyTools.MyToolsController;
 
 namespace MyApi.Controllers.MyScale
 {
@@ -127,6 +128,46 @@ namespace MyApi.Controllers.MyScale
 
 
             return MyToolsController.ToJson(dt);
+        }
+
+        [HttpPost]
+        [Route("get-tiposPagos")]
+        public IActionResult GetTiposPagos(GenericReques rTipoPago)
+        {
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            string NombreTablaEnBD = "cat_tiposPago";
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+
+            try
+            {
+                db.SetCommand("sp_se_catalogos", true);
+                db.AddParameter("id", rTipoPago.id.ToString());
+                db.AddParameter("idEntidad", rTipoPago.idEntidad.ToString());
+                db.AddParameter("isAdmin", rTipoPago.isAdmin.ToString());
+                db.AddParameter("catalogo", NombreTablaEnBD);
+
+                /*Define return success*/
+                ds = db.ExecuteWithDataSet();
+                ds.Tables[0].TableName = "Data";
+                Code = true;
+                Message = "Succes";
+
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                /*Define return ex*/
+                Code = false;
+                Message = "Exception: " + ex;
+                Response = MyToolsController.ToJson(Code, Message);
+
+            }
+            return Response;
         }
 
     }

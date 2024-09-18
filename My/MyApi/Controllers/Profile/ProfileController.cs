@@ -315,6 +315,46 @@ namespace MyApi.Controllers.Profile
             }
             return Response;
         }
+
+        [HttpPost]
+        [Route("get-tiposPersona")]
+        public IActionResult GetTiposPersona(GenericReques rPersona)
+        {
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            string NombreTablaEnBD = "cat_tiposPersonas";
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+
+            try
+            {
+                db.SetCommand("sp_se_catalogos", true);
+                db.AddParameter("id", rPersona.id.ToString());
+                db.AddParameter("idEntidad", rPersona.idEntidad.ToString());
+                db.AddParameter("isAdmin", rPersona.isAdmin.ToString());
+                db.AddParameter("catalogo", NombreTablaEnBD);
+
+                /*Define return success*/
+                ds = db.ExecuteWithDataSet();
+                ds.Tables[0].TableName = "Data";
+                Code = true;
+                Message = "Succes";
+
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                /*Define return ex*/
+                Code = false;
+                Message = "Exception: " + ex;
+                Response = MyToolsController.ToJson(Code, Message);
+
+            }
+            return Response;
+        }
         #endregion
     }
 }
