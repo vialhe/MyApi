@@ -14,6 +14,12 @@ namespace MyApi.Controllers.Profile
     {
         public static string NombreTabla = "sys_perfiles";
 
+        public class PostalCodeRequest
+        {
+            public string CodigoPostal { get; set; }
+        }
+
+
         [HttpPost]
         [Route("get-profile")]
         public IActionResult ProfileGet(int id = 0, int idEntidad = 0, int isAdmin = 0)
@@ -355,6 +361,50 @@ namespace MyApi.Controllers.Profile
             }
             return Response;
         }
+        #endregion
+
+
+
+        #region CP
+        [HttpPost]
+        [Route("get-location")]
+        public IActionResult GetLocationByPostalCode([FromBody] PostalCodeRequest request)
+        {
+            /* Declara variables */
+            JsonResult response;
+            bool code;
+            string message;
+            DataTable dt;
+
+            try
+            {
+                /* Inicia proceso */
+                // Crear la lista de parámetros para el procedimiento almacenado
+                List<Parametro> parametros = new List<Parametro> {
+            new Parametro("@CodigoPostal", request.CodigoPostal)  // Usar el valor recibido en el JSON
+        };
+
+                // Llamar al procedimiento almacenado 'sp_GetLocationByPostalCode' con los parámetros
+                dt = Models.MyDB.DataBase.Listar("sp_se_obtieneDireccionPorCP", parametros);
+
+                // Definir respuesta exitosa
+                code = true;
+                message = "Success";
+                response = MyToolsController.ToJson(code, message, dt);
+            }
+            catch (Exception ex)
+            {
+                // Definir respuesta en caso de error
+                code = false;
+                message = "Exception: " + ex.Message;
+                response = MyToolsController.ToJson(code, message);
+            }
+
+            // Devolver la respuesta en formato JSON
+            return response;
+        }
+
+
         #endregion
     }
 }

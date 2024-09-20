@@ -8,6 +8,15 @@ using MyApi.Controllers.MyTools;
 
 namespace MyApi.Controllers
 {
+
+    public class UsuarioRequest
+    {
+        public int Id { get; set; } = 0;
+        public int IdEntidad { get; set; } = 0;
+        public int IsAdmin { get; set; } = 0;
+    }
+
+
     [ApiController]
     [Route("[controller]")]
     public class UserController : ControllerBase
@@ -15,42 +24,42 @@ namespace MyApi.Controllers
 
         [HttpPost]
         [Route("get-user")]
-        public IActionResult UsuariosGet(int id = 0, int idEntidad = 0, int isAdmin = 0)
+        public IActionResult UsuariosGet([FromBody] UsuarioRequest request)
         {
-            /*Declara variables*/
-            JsonResult Response;
-            bool Code;
-            string Message;
+            JsonResult response;
+            bool code;
+            string message;
             DataTable dt;
 
             try
             {
+                // Inicia proceso: crear lista de parámetros
+                List<Parametro> parametros = new List<Parametro>
+        {
+            new Parametro("id", request.Id.ToString()),
+            new Parametro("idEntidad", request.IdEntidad.ToString()),
+            new Parametro("isAdmin", request.IsAdmin.ToString())
+        };
 
-                /*Inicia proceso*/
-                List<Parametro> parametros = new List<Parametro>{
-                    new Parametro("id", id.ToString()),
-                    new Parametro("idEntidad", idEntidad.ToString()),
-                    new Parametro("isAdmin", isAdmin.ToString())
-                };
+                // Llamar al procedimiento almacenado
                 dt = DataBase.Listar("sp_se_usuarios", parametros);
 
-                /*Define return success*/
-                Code = true;
-                Message = "Succes";
-                Response = MyToolsController.ToJson(Code,Message, dt);
-
+                // Definir respuesta exitosa
+                code = true;
+                message = "Success";
+                response = MyToolsController.ToJson(code, message, dt);
             }
             catch (Exception ex)
             {
-                /*Define return ex*/
-                Code = false;
-                Message = "Exception: " + ex;
-                Response = MyToolsController.ToJson(Code, Message);
-
+                // Definir respuesta en caso de excepción
+                code = false;
+                message = "Exception: " + ex.Message;
+                response = MyToolsController.ToJson(code, message);
             }
-             return Response;
 
+            return response;
         }
+
 
         [HttpPost]
         [Route("insert-user")]
