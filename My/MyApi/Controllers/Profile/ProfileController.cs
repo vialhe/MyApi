@@ -175,6 +175,101 @@ namespace MyApi.Controllers.Profile
             return Response;
         }
 
+        [HttpPost]
+        [Route("insert-domicilio")]
+        public IActionResult insertDomicilio(Domicilio  cDomicilio)
+        {
+            /*Se declaran Variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataTable dt;
+            DataBase2 db = new DataBase2();
+            cDomicilio.id = 0;
+
+            try
+            {
+                db.SetCommand("sp_ui_direccion", true);
+                db.AddParameter("@id", cDomicilio.id);
+                db.AddParameter("@idPersona", cDomicilio.idPersona);
+                db.AddParameter("@cp", cDomicilio.cp);
+                db.AddParameter("@idEstado", cDomicilio.idEstado);
+                db.AddParameter("@idMunicipio", cDomicilio.idMunicipio);
+                db.AddParameter("@idColonia", cDomicilio.idColonia);
+                db.AddParameter("@calle", cDomicilio.calle);
+                db.AddParameter("@numeroExt", cDomicilio.numExterior);
+                db.AddParameter("@numeroInt", cDomicilio.numInterior);
+                db.AddParameter("@latitud", cDomicilio.latitud);
+                db.AddParameter("@longitud", cDomicilio.longitud);
+                db.AddParameter("@referencias", cDomicilio.referencias);
+                db.AddParameter("@comentarios", cDomicilio.comentarios);
+                db.AddParameter("@activo", cDomicilio.activo);
+                db.AddParameter("@idEntidad", cDomicilio.idEntidad);
+                db.AddParameter("@idUsuarioModifica", cDomicilio.idUsuarioModifica);
+
+                dt = db.ExecuteWithDataSet().Tables[0];
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message, dt);
+
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+
+
+        }
+
+        [HttpPost]
+        [Route("update-domicilio")]
+        public IActionResult updatePersona(Domicilio cDomicilio)
+        {
+            /*Se declaran Variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataTable dt;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.SetCommand("sp_ui_direccion", true);
+                db.AddParameter("@id", cDomicilio.id);
+                db.AddParameter("@idPersona", cDomicilio.idPersona);
+                db.AddParameter("@cp", cDomicilio.cp);
+                db.AddParameter("@idEstado", cDomicilio.idEstado);
+                db.AddParameter("@idMunicipio", cDomicilio.idMunicipio);
+                db.AddParameter("@idColonia", cDomicilio.idColonia);
+                db.AddParameter("@calle", cDomicilio.calle);
+                db.AddParameter("@numeroExt", cDomicilio.numExterior);
+                db.AddParameter("@numeroInt", cDomicilio.numInterior);
+                db.AddParameter("@latitud", cDomicilio.latitud);
+                db.AddParameter("@longitud", cDomicilio.longitud);
+                db.AddParameter("@referencias", cDomicilio.referencias);
+                db.AddParameter("@comentarios", cDomicilio.comentarios);
+                db.AddParameter("@activo", cDomicilio.activo);
+                db.AddParameter("@idEntidad", cDomicilio.idEntidad);
+                db.AddParameter("@idUsuarioModifica", cDomicilio.idUsuarioModifica);
+
+                dt = db.ExecuteWithDataSet().Tables[0];
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message, dt);
+
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+        }
+
         #region Persona
         [HttpPost]
         [Route("insert-persona")]
@@ -198,15 +293,6 @@ namespace MyApi.Controllers.Profile
                 db.AddParameter("@apellidoMaterno", cPersona.apellidoMaterno);
                 db.AddParameter("@genero", cPersona.genero);
                 db.AddParameter("@fechaNacimiento", cPersona.fechaNacimiento);
-                db.AddParameter("@calle", cPersona.calle);
-                db.AddParameter("@numExterior", cPersona.numExterior);
-                db.AddParameter("@numInterior", cPersona.numInterior);
-                db.AddParameter("@colonia", cPersona.colonia);
-                db.AddParameter("@municipio", cPersona.municipio);
-                db.AddParameter("@estado", cPersona.estado);
-                db.AddParameter("@cp", cPersona.cp);
-                db.AddParameter("@referenciasDomicilio", cPersona.referenciasDomicilio);
-                db.AddParameter("@nss", cPersona.nss); // Número de Seguro Social
                 db.AddParameter("@correo", cPersona.correo);
                 db.AddParameter("@comentarios", cPersona.comentarios);
                 db.AddParameter("@activo", cPersona.activo);
@@ -251,15 +337,6 @@ namespace MyApi.Controllers.Profile
                 db.AddParameter("@apellidoMaterno", cPersona.apellidoMaterno);
                 db.AddParameter("@genero", cPersona.genero);
                 db.AddParameter("@fechaNacimiento", cPersona.fechaNacimiento);
-                db.AddParameter("@calle", cPersona.calle);
-                db.AddParameter("@numExterior", cPersona.numExterior);
-                db.AddParameter("@numInterior", cPersona.numInterior);
-                db.AddParameter("@colonia", cPersona.colonia);
-                db.AddParameter("@municipio", cPersona.municipio);
-                db.AddParameter("@estado", cPersona.estado);
-                db.AddParameter("@cp", cPersona.cp);
-                db.AddParameter("@referenciasDomicilio", cPersona.referenciasDomicilio);
-                db.AddParameter("@nss", cPersona.nss); // Número de Seguro Social
                 db.AddParameter("@correo", cPersona.correo);
                 db.AddParameter("@comentarios", cPersona.comentarios);
                 db.AddParameter("@activo", cPersona.activo);

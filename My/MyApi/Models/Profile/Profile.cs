@@ -22,16 +22,27 @@
         public string apellidoMaterno { get; set; } = "";
         public string genero { get; set; } = "";
         public DateTime fechaNacimiento { get; set; }
-        public string calle { get; set; } = "";
+        public string correo { get; set; } = "";
+        public string comentarios { get; set; } = "";
+        public bool activo { get; set; }
+        public int idEntidad { get; set; }
+        public int idUsuarioModifica { get; set; }
+    }
+
+    public class Domicilio
+    {
+        public int id { get; set; }
+        public int idPersona { get; set; }
+        public int cp { get; set; }
+        public int idEstado { get; set; } 
+        public int idColonia { get; set; } 
+        public int idMunicipio { get; set; } 
+        public string calle { get; set; } 
         public int numExterior { get; set; }
         public int numInterior { get; set; }
-        public string colonia { get; set; } = "";
-        public string municipio { get; set; } = "";
-        public string estado { get; set; } = "";
-        public int cp { get; set; }
-        public string referenciasDomicilio { get; set; } = "";
-        public string nss { get; set; } = "";  // Número de Seguro Social
-        public string correo { get; set; } = "";
+        public string latitud { get; set; } = "";
+        public string longitud { get; set; } = "";
+        public string referencias { get; set; } 
         public string comentarios { get; set; } = "";
         public bool activo { get; set; }
         public int idEntidad { get; set; }
