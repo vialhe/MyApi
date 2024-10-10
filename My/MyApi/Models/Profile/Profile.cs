@@ -20,9 +20,10 @@
         public string nombre { get; set; } = "";
         public string apellidoPaterno { get; set; } = "";
         public string apellidoMaterno { get; set; } = "";
-        public string genero { get; set; } = "";
+        public int idGenero { get; set; } 
         public DateTime fechaNacimiento { get; set; }
         public string correo { get; set; } = "";
+        public string numeroTelefono { get; set; } = "";
         public string comentarios { get; set; } = "";
         public bool activo { get; set; }
         public int idEntidad { get; set; }

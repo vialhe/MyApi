@@ -291,10 +291,11 @@ namespace MyApi.Controllers.Profile
                 db.AddParameter("@nombre", cPersona.nombre);
                 db.AddParameter("@apellidoPaterno", cPersona.apellidoPaterno);
                 db.AddParameter("@apellidoMaterno", cPersona.apellidoMaterno);
-                db.AddParameter("@genero", cPersona.genero);
+                db.AddParameter("@idGenero", cPersona.idGenero);
                 db.AddParameter("@fechaNacimiento", cPersona.fechaNacimiento);
                 db.AddParameter("@correo", cPersona.correo);
                 db.AddParameter("@comentarios", cPersona.comentarios);
+                db.AddParameter("@numeroTelefono", cPersona.numeroTelefono);
                 db.AddParameter("@activo", cPersona.activo);
                 db.AddParameter("@idEntidad", cPersona.idEntidad);
                 db.AddParameter("@idUsuarioModifica", cPersona.idUsuarioModifica);
@@ -335,9 +336,10 @@ namespace MyApi.Controllers.Profile
                 db.AddParameter("@nombre", cPersona.nombre);
                 db.AddParameter("@apellidoPaterno", cPersona.apellidoPaterno);
                 db.AddParameter("@apellidoMaterno", cPersona.apellidoMaterno);
-                db.AddParameter("@genero", cPersona.genero);
+                db.AddParameter("@idGenero", cPersona.idGenero);
                 db.AddParameter("@fechaNacimiento", cPersona.fechaNacimiento);
                 db.AddParameter("@correo", cPersona.correo);
+                db.AddParameter("@numeroTelefono", cPersona.numeroTelefono);
                 db.AddParameter("@comentarios", cPersona.comentarios);
                 db.AddParameter("@activo", cPersona.activo);
                 db.AddParameter("@idEntidad", cPersona.idEntidad);
