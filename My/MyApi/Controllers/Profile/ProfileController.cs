@@ -440,6 +440,52 @@ namespace MyApi.Controllers.Profile
             }
             return Response;
         }
+
+
+
+        [HttpPost]
+        [Route("insert-genero")]
+        public IActionResult SalePut(catalogo data)
+        {
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataTable dt;
+            DataBase2 db = new DataBase2();
+            string catalogo = "cat_generos";
+
+            try
+            {
+                db.BeginTransaction();
+
+                db.SetCommand("sp_ui_catalogos", true);
+                db.AddParameter("@id", data.id);
+                db.AddParameter("@descripcion", data.descripcion);
+                db.AddParameter("@comentarios", data.comentarios);
+                db.AddParameter("@activo", data.activo);
+                db.AddParameter("@idEntidad", data.idEntidad);
+                db.AddParameter("@idUsuarioModifica", data.idUsuarioModifica);
+                db.AddParameter("@catalogo", catalogo);
+                DataSet ds = db.ExecuteWithDataSet();
+                ds.Tables[0].TableName = "Data";
+
+                db.Commit();
+
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message, ds);
+
+            }
+            catch (Exception ex)
+            {
+                db.Rollback();
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+        }
         #endregion
 
 

@@ -49,4 +49,14 @@
         public int idEntidad { get; set; }
         public int idUsuarioModifica { get; set; }
     }
+
+    public class catalogo
+    {
+        public int id { get; set; }
+        public string descripcion { get; set; } = "";
+        public string comentarios { get; set; } = "";
+        public bool activo { get; set; }
+        public int idEntidad { get; set; }
+        public int idUsuarioModifica { get; set; }
+    }
 }
