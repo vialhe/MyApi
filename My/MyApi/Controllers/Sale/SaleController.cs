@@ -1,14 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
-using Newtonsoft.Json;
 using MyApi.Models.MyDB;
-using MyApi.Class.Tools;
-using MyApi.Models.User;
-using MyApi.Models.ProductoServicio;
 using MyApi.Models.Sale;
-using System.Net.Http.Headers;
 using MyApi.Controllers.MyTools;
-using Microsoft.Extensions.ObjectPool;
 using static MyApi.Controllers.MyTools.MyToolsController;
 
 namespace MyApi.Controllers.Sale
