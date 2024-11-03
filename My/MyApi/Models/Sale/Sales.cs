@@ -1,4 +1,6 @@
-﻿namespace MyApi.Models.Sale
+﻿using MyApi.Models.Inventory;
+
+namespace MyApi.Models.Sale
 {
     public class SaleH
     {
@@ -32,5 +34,11 @@
         public SaleH? CSaleH { get; set; }
         public List<SaleD>? CSaleD { get; set; }
         public List<SalePay>? CSalePay { get; set; }
+    }
+
+    public class SaleAndInventoryData
+    {
+        public SaleData SaleData { get; set; }
+        public InventoryData InventoryData { get; set; }
     }
 }

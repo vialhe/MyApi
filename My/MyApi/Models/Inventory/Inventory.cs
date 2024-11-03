@@ -1,4 +1,6 @@
-﻿namespace MyApi.Models.Inventory
+﻿using MyApi.Models.MyDB;
+
+namespace MyApi.Models.Inventory
 {
     public class InventoryH
     {
@@ -9,7 +11,7 @@
         public int? idMotivoMovimiento { get; set; }
         public int? idEstadoMovimiento { get; set; }
         public int? idPersona { get; set; } // Puede ser cliente o proveedor
-        public decimal? stockAntesMovimiento { get; set; }
+        //public decimal? stockAntesMovimiento { get; set; }
         public string comentarios { get; set; } = "";
         public bool activo { get; set; }
         public int idEntidad { get; set; }
@@ -54,6 +56,6 @@
     {
         public InventoryH? CInventoryH { get; set; }
         public List<InventoryD>? CInventoryD { get; set; }
-        public List<InventoryUpdate>? CInventoryUpdate { get; set; }
+        public DataBase2? cDB { get; set; }
     }
 }
