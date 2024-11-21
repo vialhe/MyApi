@@ -41,4 +41,10 @@ namespace MyApi.Models.Sale
         public SaleData SaleData { get; set; }
         public InventoryData InventoryData { get; set; }
     }
+
+    public class RequestReporteVenta
+    {
+        public DateTime fechaInicio { get; set; }
+        public DateTime fechaFin { get; set; }
+    }
 }
