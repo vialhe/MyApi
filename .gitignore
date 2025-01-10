@@ -6,3 +6,5 @@
 /My/.vs/My/v17
 /My/MyApi/bin
 /My/MyApi/obj
+My/MyApi/bin/Debug/net6.0/MyApi.exe
+*.pdb

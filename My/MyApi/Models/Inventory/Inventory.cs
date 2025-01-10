@@ -35,6 +35,11 @@ namespace MyApi.Models.Inventory
         public int idUsuarioModifica { get; set; }
     }
 
+    public class InventoryMovementData
+    {
+        public InventoryH? CInventoryH { get; set; }
+        public List<InventoryD>? CInventoryD { get; set; }
+    }
     public class InventoryUpdate
     {
         public int folioMovimientoInventario { get; set; }
@@ -58,4 +63,5 @@ namespace MyApi.Models.Inventory
         public List<InventoryD>? CInventoryD { get; set; }
         public DataBase2? cDB { get; set; }
     }
+    
 }
