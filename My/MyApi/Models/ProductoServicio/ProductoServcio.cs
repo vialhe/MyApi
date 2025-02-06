@@ -17,6 +17,8 @@
         public int idUsuarioAlta { get; set; }
         public decimal calificacion { get; set; } 
         public bool popular { get; set; }
+        public int idTipoPrecio { get; set; }
+        public decimal costo { get; set; }
 
     }
 }

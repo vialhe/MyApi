@@ -96,7 +96,9 @@ namespace MyApi.Controllers.Menu
                     new Parametro("idEntidad", cProductoServicio.idEntidad.ToString()),
                     new Parametro("idUsuarioModifica", cProductoServicio.idUsuarioModifica.ToString()),
                     new Parametro("calificacion", cProductoServicio.calificacion.ToString()),
-                    new Parametro("popular", cProductoServicio.popular.ToString())
+                    new Parametro("popular", cProductoServicio.popular.ToString()),
+                    new Parametro("idTipoPrecio", cProductoServicio.idTipoPrecio.ToString()),
+                    new Parametro("costo", cProductoServicio.costo.ToString()),
 
                 };
                 
