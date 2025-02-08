@@ -35,11 +35,11 @@ namespace MyApi.Controllers
             {
                 // Inicia proceso: crear lista de parámetros
                 List<Parametro> parametros = new List<Parametro>
-        {
-            new Parametro("id", request.Id.ToString()),
-            new Parametro("idEntidad", request.IdEntidad.ToString()),
-            new Parametro("isAdmin", request.IsAdmin.ToString())
-        };
+                {
+                    new Parametro("id", request.Id.ToString()),
+                    new Parametro("idEntidad", request.IdEntidad.ToString()),
+                    new Parametro("isAdmin", request.IsAdmin.ToString())
+                };
 
                 // Llamar al procedimiento almacenado
                 dt = DataBase.Listar("sp_se_usuarios", parametros);
