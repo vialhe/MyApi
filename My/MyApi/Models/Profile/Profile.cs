@@ -15,7 +15,7 @@
 
     public class Persona
     {
-        public int id { get; set; }
+        public int? id { get; set; }
         public int idTipoPersona { get; set; }
         public string nombre { get; set; } = "";
         public string apellidoPaterno { get; set; } = "";

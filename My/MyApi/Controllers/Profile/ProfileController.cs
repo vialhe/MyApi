@@ -273,7 +273,7 @@ namespace MyApi.Controllers.Profile
         #region Persona
         [HttpPost]
         [Route("insert-persona")]
-        public IActionResult insertPersona(Persona cPersona)
+        public IActionResult insertPersona([FromBody]Persona cPersona)
         {
             /*Se declaran Variables*/
             JsonResult Response;
@@ -372,7 +372,6 @@ namespace MyApi.Controllers.Profile
             string NombreTablaEnBD = "cat_personas";
             DataSet ds;
             DataBase2 db = new DataBase2();
-
 
             try
             {
