@@ -152,6 +152,9 @@ namespace MyApi.Controllers.Sale
             db.AddParameter("@activo", saleHeader.activo);
             db.AddParameter("@idEntidad", saleHeader.idEntidad);
             db.AddParameter("@idUsuarioModifica", saleHeader.idUsuarioModifica);
+            db.AddParameter("@montoTotalTicket", saleHeader.montoTotalTicket);
+            db.AddParameter("@pagoTotal", saleHeader.pagoTotal  );
+            db.AddParameter("@suCambio", saleHeader.suCambio);
             DataSet ds = db.ExecuteWithDataSet();
             return ds;
         }

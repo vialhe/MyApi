@@ -11,6 +11,9 @@ namespace MyApi.Models.Sale
         public bool activo { get; set; }
         public int idEntidad { get; set; }
         public int idUsuarioModifica { get; set; }
+        public decimal montoTotalTicket { get; set; }
+        public decimal pagoTotal { get; set; }
+        public decimal suCambio { get; set; }
     }
 
     public class SaleD
