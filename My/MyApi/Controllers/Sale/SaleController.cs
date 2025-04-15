@@ -89,73 +89,35 @@ namespace MyApi.Controllers.Sale
         }
 
         [HttpPost]
-        [Route("open-cashregister")]
-        public IActionResult OpenCashRegister(SaleData data)
+        [Route("open-casher")]
+        public IActionResult OpenCashRegister(RequestInicioCorteDeCaja data)
         {
-            if (data == null || data.CSaleH == null || data.CSaleD == null || data.CSalePay == null)
+            if (data == null)
             {
                 return BadRequest("Los datos de venta no pueden ser nulos.");
             }
             /*Declara variables*/
             JsonResult Response;
             bool Code;
-            int idFoliadorTienda = 6; // FOLIO DE ENTRADA SALIDA
-            int idFoliadorCaja = 7; // FOLIO DE MOVIMIENTO INVETNARIO
             string Message;
 
-
             //Referencias
-            var db = new DataBase2();
-            var tools = new MyToolsController();
-            var invmov = new InventoryController();
-            var inventoryData = new InventoryData();
-            var cSaleH = data.CSaleH;
-            var cSaleD = data.CSaleD;
-            var cSalePay = data.CSalePay;
-            var cMovInvH = new InventoryH();
-            var cMovInvD = new List<InventoryD>();
-            inventoryData.cDB = db;
 
             try
             {
-                db.BeginTransaction();
-
-                //FolioEntradaSalida = tools.generatFolio(idFoliadorEntradaSalida, cSaleH.idEntidad, cSaleH.idUsuarioModifica, db);
-                //FolioMovimiento = tools.generatFolio(idFoliadorMovInv, cSaleH.idEntidad, cSaleH.idUsuarioModifica, db);
-                //cSaleH.folioEntradaSalida = Convert.ToInt32(FolioEntradaSalida);
-                //cSaleH.folioMovimientoInventario = Convert.ToInt32(FolioMovimiento);
-
-                //inventoryData.CInventoryH = CreateInventoryHeader(cSaleH, idTipoMovInv);
-                DataSet ds = ExecuteSaleHeader(db, cSaleH);
-
-                foreach (SaleD d in cSaleD)
-                {
-                    ExecuteSaleDetail(db, cSaleH, d);
-                    cMovInvD.Add(CreateInventoryDetail(cSaleH, d));
-                }
-                inventoryData.CInventoryD = cMovInvD;
-
-                foreach (SalePay p in cSalePay)
-                {
-                    ExecuteSalePayment(db, cSaleH, p);
-                }
-
-                invmov.InventoryMovementPutSale(inventoryData);
-                db.Commit();
-
+                DataSet ds = ExecuteOpenStoreCash(data);
                 Code = true;
                 Message = "Success";
-                Response = MyToolsController.ToJson(Code, Message, ds);
+                //return Ok(ds);
+                return ToJson(Code, Message, ds);
 
             }
             catch (Exception ex)
             {
-                db.Rollback();
                 Code = false;
                 Message = "Ex: " + ex.Message;
-                Response = MyToolsController.ToJson(Code, Message);
+                return StatusCode(400, "Error: " + Message);
             }
-            return Response;
         }
 
         [HttpPost]
@@ -211,6 +173,33 @@ namespace MyApi.Controllers.Sale
             }
             return Response;
         }
+        private DataSet ExecuteOpenStoreCash(RequestInicioCorteDeCaja data)
+        {
+            try
+            {
+                var db = new DataBase2();
+                db.Open();
+
+                db.SetCommand("proc_IniciaCorteCaja", true);
+                db.AddParameter("idUsuario", data.idUsuario);
+                db.AddParameter("idCaja", data.idCaja);
+                db.AddParameter("saldoInicial", data.saldoInicial);
+                db.AddParameter("idEntidad", data.idEntidad);
+                db.AddParameter("folioCorteCaja", 0);
+                db.AddParameter("folioCorteTienda", 0);
+                DataSet ds = db.ExecuteWithDataSet();
+
+                db.Close();
+
+                return ds;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         private InventoryH CreateInventoryHeader(SaleH saleHeader, int idTipoMovInv)
         {
             return new InventoryH

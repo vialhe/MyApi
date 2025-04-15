@@ -63,7 +63,7 @@ namespace MyApi.Models.MyDB
             {
                 // Manejar la excepción según tus necesidades
                 Console.WriteLine($"Error: {ex.Message}");
-                Rollback();
+                //Rollback();
                 throw;
             }
             finally
@@ -87,7 +87,7 @@ namespace MyApi.Models.MyDB
             {
                 // Manejar la excepción según tus necesidades
                 Console.WriteLine($"Error: {ex.Message}");
-                Rollback();
+                //Rollback();
                 throw;
             }
             finally 
