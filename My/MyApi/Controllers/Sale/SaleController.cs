@@ -121,6 +121,70 @@ namespace MyApi.Controllers.Sale
         }
 
         [HttpPost]
+        [Route("close-casher")]
+        public IActionResult CloseCashRegister(RequestCierreCorteDeCaja data)
+        {
+            if (data == null)
+            {
+                return BadRequest("Los datos de venta no pueden ser nulos.");
+            }
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+
+            //Referencias
+
+            try
+            {
+                DataSet ds = ExecuteCloseStoreCash(data);
+                Code = true;
+                Message = "Success";
+                //return Ok(ds);
+                return ToJson(Code, Message, ds);
+
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                return StatusCode(400, "Error: " + Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("close-store")]
+        public IActionResult CloseStore(RequestCierreCorteDeTienda data)
+        {
+            if (data == null)
+            {
+                return BadRequest("Los datos de venta no pueden ser nulos.");
+            }
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+
+            //Referencias
+
+            try
+            {
+                DataSet ds = ExecuteCloseStore(data);
+                Code = true;
+                Message = "Success";
+                //return Ok(ds);
+                return ToJson(Code, Message, ds);
+
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                return StatusCode(400, "Error: " + Message);
+            }
+        }
+
+        [HttpPost]
         [Route("get-cashregister")]
         public IActionResult GetCashRegister()
         {
@@ -199,7 +263,56 @@ namespace MyApi.Controllers.Sale
                 throw;
             }
         }
+        private DataSet ExecuteCloseStoreCash(RequestCierreCorteDeCaja data)
+        {
+            try
+            {
+                var db = new DataBase2();
+                db.Open();
 
+                db.SetCommand("proc_CierreCorteCaja", true);
+                db.AddParameter("idUsuario", data.idUsuario);
+                db.AddParameter("idCaja", data.idCaja);
+                db.AddParameter("saldoFinal", data.saldoFinal);
+                db.AddParameter("idEntidad", data.idEntidad);
+                db.AddParameter("folioCorteCaja", data.folioCorteCaja);
+                db.AddParameter("folioCorteTienda", data.folioCorteTienda);
+                DataSet ds = db.ExecuteWithDataSet();
+
+                db.Close();
+
+                return ds;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        private DataSet ExecuteCloseStore(RequestCierreCorteDeTienda data)
+        {
+            try
+            {
+                var db = new DataBase2();
+                db.Open();
+
+                db.SetCommand("proc_CierreCorteTienda", true);
+                db.AddParameter("idUsuario", data.idUsuario);
+                db.AddParameter("saldoFinal", data.saldoFinal);
+                db.AddParameter("idEntidad", data.idEntidad);
+                db.AddParameter("folioCorteTienda", data.folioCorteTienda);
+                DataSet ds = db.ExecuteWithDataSet();
+
+                db.Close();
+
+                return ds;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         private InventoryH CreateInventoryHeader(SaleH saleHeader, int idTipoMovInv)
         {
             return new InventoryH
