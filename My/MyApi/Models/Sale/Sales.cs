@@ -50,4 +50,33 @@ namespace MyApi.Models.Sale
         public DateTime fechaInicio { get; set; }
         public DateTime fechaFin { get; set; }
     }
+
+    public class RequestInicioCorteDeCaja
+    {
+        public int idUsuario { get; set; }
+        public int idCaja { get; set; }
+        public decimal saldoInicial { get; set; }
+        public int idEntidad { get;set; }
+
+    }
+
+    public class RequestCierreCorteDeCaja
+    {
+        public int idUsuario { get; set; }
+        public int idCaja { get; set; }
+        public decimal saldoFinal { get; set; }
+        public int idEntidad { get; set; }
+        public int folioCorteCaja { get; set; }
+        public int folioCorteTienda { get; set; }
+
+    }
+
+    public class RequestCierreCorteDeTienda
+    {
+        public int idUsuario { get; set; }
+        public int idEntidad { get; set; }
+        public decimal saldoFinal { get; set; }
+        public int folioCorteTienda { get; set; }
+
+    }
 }
