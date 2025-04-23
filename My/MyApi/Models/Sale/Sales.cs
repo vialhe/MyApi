@@ -49,6 +49,13 @@ namespace MyApi.Models.Sale
     {
         public DateTime fechaInicio { get; set; }
         public DateTime fechaFin { get; set; }
+        public int idEntidad { get; set; }
+    }
+
+    public class RequestGetCashRegister
+    {
+        public int idUsuarioIniciaCorte { get; set; }
+        public int idEntidad { get; set; }
     }
 
     public class RequestInicioCorteDeCaja
