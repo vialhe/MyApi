@@ -14,6 +14,8 @@ namespace MyApi.Models.Sale
         public decimal montoTotalTicket { get; set; }
         public decimal pagoTotal { get; set; }
         public decimal suCambio { get; set; }
+        public int folioCorteCaja { get; set; }
+        public int folioCorteTienda { get; set; }
     }
 
     public class SaleD

@@ -379,6 +379,8 @@ namespace MyApi.Controllers.Sale
             db.AddParameter("@montoTotalTicket", saleHeader.montoTotalTicket);
             db.AddParameter("@pagoTotal", saleHeader.pagoTotal  );
             db.AddParameter("@suCambio", saleHeader.suCambio);
+            db.AddParameter("@folioCorteCaja", saleHeader.folioCorteCaja);
+            db.AddParameter("@folioCorteTienda", saleHeader.folioCorteTienda);
             DataSet ds = db.ExecuteWithDataSet();
             return ds;
         }
