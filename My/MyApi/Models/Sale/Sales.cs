@@ -77,6 +77,7 @@ namespace MyApi.Models.Sale
         public int idEntidad { get; set; }
         public int folioCorteCaja { get; set; }
         public int folioCorteTienda { get; set; }
+        public string? comentarios { get; set; } 
 
     }
 
