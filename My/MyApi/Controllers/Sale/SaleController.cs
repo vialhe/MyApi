@@ -307,8 +307,11 @@ namespace MyApi.Controllers.Sale
                 db.SetCommand("sp_se_reporteDeVentas", true);
                 db.AddParameter("@fechaInicio", data.fechaInicio);
                 db.AddParameter("@fechaFin", data.fechaFin);
+                db.AddParameter("@idEntidad", data.idEntidad);
                 DataSet ds = db.ExecuteWithDataSet();
                 ds.Tables[0].TableName = "Data";
+                ds.Tables[1].TableName = "DataD";
+                ds.Tables[2].TableName = "DataP";
                 db.Close();
                 Code = true;
                 Message = "Success";
