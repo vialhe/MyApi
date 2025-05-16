@@ -459,6 +459,8 @@ namespace MyApi.Controllers.Sale
                 cantidad = saleDetail.cantidad,
                 idUnidadMedida = saleDetail.idUnidadMedida,
                 precioVentaUnitario = saleDetail.precioFinal,
+                serie = saleDetail.serie,
+                lote = saleDetail.lote,
                 comentarios = saleDetail.comentarios,
                 idEntidad = saleHeader.idEntidad,
                 idUsuarioModifica = saleHeader.idUsuarioModifica

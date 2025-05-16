@@ -23,6 +23,8 @@ namespace MyApi.Models.Sale
         public int idProductoServicio { get; set; }
         public decimal cantidad { get; set; }
         public decimal precioFinal { get; set; }
+        public string lote { get; set; } = "";
+        public string serie { get; set; } = "";
         public int idUnidadMedida { get; set; }
         public string comentarios { get; set; } = "";
     }
