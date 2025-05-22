@@ -13,6 +13,7 @@ namespace MyApi.Models.Sale
         public int idUsuarioModifica { get; set; }
         public decimal montoTotalTicket { get; set; }
         public decimal pagoTotal { get; set; }
+        public decimal totalDescuento { get; set; }
         public decimal suCambio { get; set; }
         public int folioCorteCaja { get; set; }
         public int folioCorteTienda { get; set; }
@@ -23,6 +24,7 @@ namespace MyApi.Models.Sale
         public int idProductoServicio { get; set; }
         public decimal cantidad { get; set; }
         public decimal precioFinal { get; set; }
+        public decimal precio { get; set; }
         public string lote { get; set; } = "";
         public string serie { get; set; } = "";
         public int idUnidadMedida { get; set; }

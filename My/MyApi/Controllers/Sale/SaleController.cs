@@ -434,6 +434,7 @@ namespace MyApi.Controllers.Sale
             db.AddParameter("@suCambio", saleHeader.suCambio);
             db.AddParameter("@folioCorteCaja", saleHeader.folioCorteCaja);
             db.AddParameter("@folioCorteTienda", saleHeader.folioCorteTienda);
+            db.AddParameter("@totalDescuento", saleHeader.totalDescuento);
             DataSet ds = db.ExecuteWithDataSet();
             return ds;
         }
@@ -444,6 +445,7 @@ namespace MyApi.Controllers.Sale
             db.AddParameter("@idProductoServicio", d.idProductoServicio);
             db.AddParameter("@cantidad", d.cantidad);
             db.AddParameter("@precioFinal", d.precioFinal);
+            db.AddParameter("@precio", d.precio);
             db.AddParameter("@idUnidadMedida", d.idUnidadMedida);
             db.AddParameter("@comentarios", d.comentarios);
             db.AddParameter("@activo", cSaleH.activo);
