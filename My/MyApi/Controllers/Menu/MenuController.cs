@@ -54,7 +54,7 @@ namespace MyApi.Controllers.Menu
                 db.Close();
 
                 ds.Tables[0].TableName = "Data";
-                ds.Tables[1].TableName = "Pager";
+                ds.Tables[1].TableName = "DataD";
 
                 Code = true;
                 Message = "Success";

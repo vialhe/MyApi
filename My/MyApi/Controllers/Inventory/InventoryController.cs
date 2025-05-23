@@ -81,10 +81,10 @@ namespace MyApi.Controllers.Inventory
                 // Ejecutar SP para actualizar el inventario
                 foreach (InventoryD d in cInventoryD)
                 {
-                    db.SetCommand("sp_up_inventario", true);
+                    db.SetCommand("sp_up_inventarioV2", true);
                     db.AddParameter("@folioMovimientoInventario", cInventoryH.folioMovimientoInventario);
                     db.AddParameter("@idProductoServicio", d.idProductoServicio);
-                    db.AddParameter("@idProveedor", d.idEntidad); // Suponiendo que el proveedor se deriva del idEntidad
+                    db.AddParameter("@idProveedor", cInventoryH.idPersona); 
                     db.AddParameter("@cantidad", d.cantidad);
                     db.AddParameter("@idUnidadMedida", d.idUnidadMedida);
                     db.AddParameter("@idTipoMovimientoInventario", cInventoryH.idTipoMovimientoInventario);
@@ -177,7 +177,7 @@ namespace MyApi.Controllers.Inventory
                 // Ejecutar SP para actualizar el inventario
                 foreach (InventoryD d in cInventoryD)
                 {
-                    db.SetCommand("sp_up_inventario", true);
+                    db.SetCommand("sp_up_inventarioV2", true);
                     db.AddParameter("@folioMovimientoInventario", cInventoryH.folioMovimientoInventario);
                     db.AddParameter("@idProductoServicio", d.idProductoServicio);
                     db.AddParameter("@idProveedor", d.idEntidad); // Suponiendo que el proveedor se deriva del idEntidad
@@ -276,7 +276,7 @@ namespace MyApi.Controllers.Inventory
                 // Ejecutar SP para actualizar el inventario
                 foreach (InventoryD d in cInventoryD)
                 {
-                    db.SetCommand("sp_up_inventario", true);
+                    db.SetCommand("sp_up_inventarioV2", true);
                     db.AddParameter("@folioMovimientoInventario", cInventoryH.folioMovimientoInventario);
                     db.AddParameter("@idProductoServicio", d.idProductoServicio);
                     db.AddParameter("@idProveedor", d.idEntidad); // Suponiendo que el proveedor se deriva del idEntidad
