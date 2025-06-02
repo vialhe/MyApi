@@ -26,6 +26,13 @@ namespace MyApi.Controllers.Menu
             public int idTipoProductoServicio { get; set; }
         }
 
+        public class UnidadMedidaRequest
+        {
+            public int id { get; set; }
+            public int idEntidad { get; set; }
+            public int isAdmin { get; set; }
+        }
+
         [HttpPost]
         [Route("get-productoservicio")]
         public IActionResult ProductoServicioGet([FromBody] ProductoServicioRequest request)
@@ -91,6 +98,13 @@ namespace MyApi.Controllers.Menu
                     new Parametro("precio", cProductoServicio.precio.ToString()),
                     new Parametro("descripcion", cProductoServicio.descripcion.ToString()),
                     new Parametro("recurrente", cProductoServicio.recurrente.ToString()),
+                    new Parametro("requiereSerie", cProductoServicio.requiereSerie.ToString()),
+                    new Parametro("requiereFechaCaducidad", cProductoServicio.requiereFechaCaducidad.ToString()),
+                    new Parametro("requiereLote", cProductoServicio.requiereLote.ToString()),
+                    new Parametro("idUnidadMedidaCompra", cProductoServicio.idUnidadMedidaCompra.ToString()),
+                    new Parametro("idUnidadMedidaVenta", cProductoServicio.idUnidadMedidaVenta.ToString()),
+                    new Parametro("stockMin", cProductoServicio.stockMin.ToString()),
+                    new Parametro("stockMax", cProductoServicio.stockMax.ToString()),
                     new Parametro("comentarios", cProductoServicio.comentarios.ToString()),
                     new Parametro("activo", cProductoServicio.activo.ToString()),
                     new Parametro("idEntidad", cProductoServicio.idEntidad.ToString()),
@@ -140,6 +154,13 @@ namespace MyApi.Controllers.Menu
                     new Parametro("precio", cProductoServicio.precio.ToString()),
                     new Parametro("descripcion", cProductoServicio.descripcion.ToString()),
                     new Parametro("recurrente", cProductoServicio.recurrente.ToString()),
+                    new Parametro("requiereSerie", cProductoServicio.requiereSerie.ToString()),
+                    new Parametro("requiereFechaCaducidad", cProductoServicio.requiereFechaCaducidad.ToString()),
+                    new Parametro("requiereLote", cProductoServicio.requiereLote.ToString()),
+                    new Parametro("idUnidadMedidaCompra", cProductoServicio.idUnidadMedidaCompra.ToString()),
+                    new Parametro("idUnidadMedidaVenta", cProductoServicio.idUnidadMedidaVenta.ToString()),
+                    new Parametro("stockMin", cProductoServicio.stockMin.ToString()),
+                    new Parametro("stockMax", cProductoServicio.stockMax.ToString()),
                     new Parametro("comentarios", cProductoServicio.comentarios.ToString()),
                     new Parametro("activo", cProductoServicio.activo.ToString()),
                     new Parametro("idEntidad", cProductoServicio.idEntidad.ToString()),
@@ -154,15 +175,18 @@ namespace MyApi.Controllers.Menu
                 Code = true;
                 Message = "Succes";
                 Response = MyToolsController.ToJson(Code, Message,dt);
+                return Response;
+
 
             }
             catch (Exception ex)
             {
-                Code = false;
-                Message = "Ex: " + ex.Message;
-                Response = MyToolsController.ToJson(Code, Message);
+
+                //Code = false;
+                //Message = "Ex: " + ex.Message;
+                //Response = MyToolsController.ToJson(Code, Message);
+                return StatusCode(500, ex.Message);
             }
-            return Response;
 
 
         }
@@ -173,6 +197,46 @@ namespace MyApi.Controllers.Menu
         {
             public int Id { get; set; }
             public string NombreTabla { get; set; }
+        }
+
+        [HttpPost]
+        [Route("get-unidadmedida")]
+        public IActionResult GetUnidadMedida(UnidadMedidaRequest rUnidadMedida)
+        {
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            string NombreTablaEnBD = "cat_unidadesMedida";
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+
+            try
+            {
+                db.SetCommand("sp_se_catalogos", true);
+                db.AddParameter("id", rUnidadMedida.id.ToString());
+                db.AddParameter("idEntidad", rUnidadMedida.idEntidad.ToString());
+                db.AddParameter("isAdmin", rUnidadMedida.isAdmin.ToString());
+                db.AddParameter("catalogo", NombreTablaEnBD);
+
+                /*Define return success*/
+                ds = db.ExecuteWithDataSet();
+                ds.Tables[0].TableName = "Data";
+                Code = true;
+                Message = "Succes";
+
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                /*Define return ex*/
+                Code = false;
+                Message = "Exception: " + ex;
+                Response = MyToolsController.ToJson(Code, Message);
+
+            }
+            return Response;
         }
 
         [HttpPost]

@@ -6,6 +6,13 @@
         public int idTipoProductoServicio { get; set; }
         public string folioProductoServicio { get; set; } = "";
         public decimal precio { get; set; }
+        public bool requiereSerie { get; set; }
+        public bool requiereFechaCaducidad { get; set; }
+        public bool requiereLote { get; set; }
+        public int idUnidadMedidaCompra {get; set; }
+        public int idUnidadMedidaVenta { get; set; }    
+        public decimal stockMin { get; set; }
+        public decimal stockMax { get; set; }
         public string descripcion { get; set; } = "";
         public bool recurrente { get; set; }
         public string comentarios { get; set; } = "";
