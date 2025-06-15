@@ -463,6 +463,7 @@ namespace MyApi.Controllers.Sale
                 precioVentaUnitario = saleDetail.precioFinal,
                 serie = saleDetail.serie,
                 lote = saleDetail.lote,
+                fechaExpira = saleDetail.fechaExpira,
                 comentarios = saleDetail.comentarios,
                 idEntidad = saleHeader.idEntidad,
                 idUsuarioModifica = saleHeader.idUsuarioModifica

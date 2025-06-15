@@ -70,7 +70,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@precioVentaUnitario", d.precioVentaUnitario);
                     db.AddParameter("@lote", d.lote);
                     db.AddParameter("@serie", d.serie);
-                    db.AddParameter("@fechaVencimiento", d.fechaVencimiento);
+                    db.AddParameter("@fechaVencimiento", d.fechaExpira);
                     db.AddParameter("@comentarios", d.comentarios);
                     db.AddParameter("@activo", d.activo);
                     db.AddParameter("@idEntidad", d.idEntidad);
@@ -90,7 +90,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@idTipoMovimientoInventario", cInventoryH.idTipoMovimientoInventario);
                     db.AddParameter("@lote", d.lote);
                     db.AddParameter("@serie", d.serie);
-                    db.AddParameter("@fechaVencimiento", d.fechaVencimiento);
+                    db.AddParameter("@fechaVencimiento", d.fechaExpira);
                     db.AddParameter("@costoUnitario", d.costoUnitario);
                     db.AddParameter("@precioVenta", d.precioVentaUnitario);
                     db.AddParameter("@idEntidad", d.idEntidad);
@@ -166,7 +166,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@precioVentaUnitario", d.precioVentaUnitario);
                     db.AddParameter("@lote", d.lote);
                     db.AddParameter("@serie", d.serie);
-                    db.AddParameter("@fechaVencimiento", d.fechaVencimiento);
+                    db.AddParameter("@fechaVencimiento", d.fechaExpira);
                     db.AddParameter("@comentarios", d.comentarios);
                     db.AddParameter("@activo", d.activo);
                     db.AddParameter("@idEntidad", d.idEntidad);
@@ -186,7 +186,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@idTipoMovimientoInventario", cInventoryH.idTipoMovimientoInventario);
                     db.AddParameter("@lote", d.lote);
                     db.AddParameter("@serie", d.serie);
-                    db.AddParameter("@fechaVencimiento", d.fechaVencimiento);
+                    db.AddParameter("@fechaVencimiento", d.fechaExpira);
                     db.AddParameter("@costoUnitario", d.costoUnitario);
                     db.AddParameter("@precioVenta", d.precioVentaUnitario);
                     db.AddParameter("@idEntidad", d.idEntidad);
@@ -265,7 +265,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@precioVentaUnitario", d.precioVentaUnitario);
                     db.AddParameter("@lote", d.lote);
                     db.AddParameter("@serie", d.serie);
-                    db.AddParameter("@fechaVencimiento", d.fechaVencimiento);
+                    db.AddParameter("@fechaVencimiento", d.fechaExpira);
                     db.AddParameter("@comentarios", d.comentarios);
                     db.AddParameter("@activo", d.activo);
                     db.AddParameter("@idEntidad", d.idEntidad);
@@ -285,7 +285,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@idTipoMovimientoInventario", cInventoryH.idTipoMovimientoInventario);
                     db.AddParameter("@lote", d.lote);
                     db.AddParameter("@serie", d.serie);
-                    db.AddParameter("@fechaVencimiento", d.fechaVencimiento);
+                    db.AddParameter("@fechaVencimiento", d.fechaExpira);
                     db.AddParameter("@costoUnitario", d.costoUnitario);
                     db.AddParameter("@precioVenta", d.precioVentaUnitario);
                     db.AddParameter("@idEntidad", d.idEntidad);
