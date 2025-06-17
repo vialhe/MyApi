@@ -435,6 +435,7 @@ namespace MyApi.Controllers.Sale
             db.AddParameter("@folioCorteCaja", saleHeader.folioCorteCaja);
             db.AddParameter("@folioCorteTienda", saleHeader.folioCorteTienda);
             db.AddParameter("@totalDescuento", saleHeader.totalDescuento);
+            db.AddParameter("@montoSinDescuento", saleHeader.montoSinDescuento);
             DataSet ds = db.ExecuteWithDataSet();
             return ds;
         }
