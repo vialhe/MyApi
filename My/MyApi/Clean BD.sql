@@ -23,6 +23,7 @@ Delete From proc_corteTienda
 SELECT * From cat_unidadesMedida WHERE idEntidad = 9999
 SELECT * From sys_folios
 SELECT * From sys_foliosContador
+Select * From cat_estadosEntradaSalida
 GO
 */
 --exec sp_ui_catalogos
@@ -56,3 +57,44 @@ Select * From proc_entradasSalidaPago where folioEntradaSalida = 192
 Select * From cat_estadosEntradaSalida
 
 exec sp_se_corteTienda 9999
+
+exec sp_se_catalogos 0,9999,1,'cat_tiposMovmientosInventario'
+exec sp_se_catalogos 0,1,1,'cat_tiposMovmientosInventario'
+exec sp_se_catalogos 0,9999,1,'cat_unidadesMedida'
+sys_entidades
+exec sp_se_catalogos 0,1,1,'cat_unidadesMedida'
+
+
+
+
+ --BEGIN CATCH
+ --       DECLARE @ErrorMessage NVARCHAR(4000);
+ --       DECLARE @ErrorSeverity INT;
+ --       DECLARE @ErrorState INT;
+
+ --       SET @ErrorMessage = ERROR_MESSAGE();
+ --       SET @ErrorSeverity = ERROR_SEVERITY();
+ --       SET @ErrorState = ERROR_STATE();
+
+ --       RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+ --       RAISERROR ('Ocurrió un error en el SP. Detalles: %s', 16, 1, @ErrorMessage);
+ --   END CATCH
+ go
+
+ Declare @idEntidad int = 9998
+ ;WITH EntidadesHijas AS (
+    SELECT id
+    FROM sys_entidades
+    WHERE id = @idEntidad
+    UNION ALL
+    SELECT e.id
+    FROM sys_entidades e
+    INNER JOIN EntidadesHijas eh ON e.idPadre = eh.id
+)
+SELECT * 
+FROM Cat_UnidadesMedida
+WHERE activo = 1
+AND (
+    idEntidad = 1
+    OR idEntidad IN (SELECT id FROM EntidadesHijas)
+)
