@@ -5,6 +5,7 @@ using MyApi.Models.Inventory;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using MyApi.Models.Sale;
+using static MyApi.Controllers.Menu.MenuController;
 
 namespace MyApi.Controllers.Inventory
 {
@@ -217,7 +218,44 @@ namespace MyApi.Controllers.Inventory
             }
             return Response;
         }
+        [HttpPost]
+        [Route("get-tipoMovInv")]
+        public IActionResult GetTipoMovInv(tipMovInvRequest rtipoMovInv)
+        {
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            string NombreTablaEnBD = "cat_tiposMovmientosInventario";
+            DataSet ds;
+            DataBase2 db = new DataBase2();
 
+            try
+            {
+                db.SetCommand("sp_se_catalogos", true);
+                db.AddParameter("id", rtipoMovInv.id.ToString());
+                db.AddParameter("idEntidad", rtipoMovInv.idEntidad.ToString());
+                db.AddParameter("isAdmin", rtipoMovInv.isAdmin.ToString());
+                db.AddParameter("catalogo", NombreTablaEnBD);
+
+                /*Define return success*/
+                ds = db.ExecuteWithDataSet();
+                ds.Tables[0].TableName = "Data";
+                Code = true;
+                Message = "Succes";
+
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                /*Define return ex*/
+                Code = false;
+                Message = "Exception: " + ex;
+                Response = MyToolsController.ToJson(Code, Message);
+
+            }
+            return Response;
+        }
         public IActionResult InventoryMovementPutSale(InventoryData data)
         {
             // Declarar variables
@@ -314,7 +352,6 @@ namespace MyApi.Controllers.Inventory
             }
             return Response;
         }
-
 
     }
 }

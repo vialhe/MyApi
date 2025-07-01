@@ -63,5 +63,10 @@ namespace MyApi.Models.Inventory
         public List<InventoryD>? CInventoryD { get; set; }
         public DataBase2? cDB { get; set; }
     }
-    
+    public class tipMovInvRequest
+    {
+        public int id { get; set; }
+        public int idEntidad { get; set; }
+        public int isAdmin { get; set; }
+    }
 }
