@@ -47,9 +47,24 @@ Select * From inv_inventario
 Select * From inv_inventarioDet
 Select * From cat_productosServicios where id IN( 1159)--,1153,1161,1166)
 
-Select * From proc_movimientosInventarios where folioMovimientoInventario = 329
-Select * From proc_movimientosInventariosDetalles where folioMovimientoInventario = 329
-Select * From cat_tiposMovmientosInventario
+Select 
+	h.folioMovimientoInventario,
+	cat.descripcion,
+	h.fechaAlta,
+	ps.descripcion,
+	d.cantidad
+From	
+	proc_movimientosInventarios h
+	join proc_movimientosInventariosDetalles d
+		On h.folioMovimientoInventario = d.folioMovimientoInventario
+		and h.identidad = d.identidad
+	join cat_tiposMovmientosInventario cat
+		On cat.id = h.idTipoMovimientoInventario
+	join cat_productosServicios ps
+		On ps.id = d.idProductoServicio
+Order by
+	h.fechaAlta
+
 
 Select * From proc_entradasSalidas where folioEntradaSalida = 192
 Select * From proc_entradasSalidasDetalles where folioEntradaSalida = 192
@@ -61,10 +76,12 @@ exec sp_se_corteTienda 9999
 exec sp_se_catalogos 0,9999,1,'cat_tiposMovmientosInventario'
 exec sp_se_catalogos 0,1,1,'cat_tiposMovmientosInventario'
 exec sp_se_catalogos 0,9999,1,'cat_unidadesMedida'
+exec sp_se_catalogos 0,2,1,'cat_unidadesMedida'
+
 sys_entidades
-exec sp_se_catalogos 0,1,1,'cat_unidadesMedida'
+exec sp_se_catalogos 0,9999,1,'cat_tiposMovmientosInventario'
 
-
+Update cat_unidadesMedida set idEntidad = 1 where idEntidad = 9999
 
 
  --BEGIN CATCH
@@ -81,20 +98,9 @@ exec sp_se_catalogos 0,1,1,'cat_unidadesMedida'
  --   END CATCH
  go
 
- Declare @idEntidad int = 9998
- ;WITH EntidadesHijas AS (
-    SELECT id
-    FROM sys_entidades
-    WHERE id = @idEntidad
-    UNION ALL
-    SELECT e.id
-    FROM sys_entidades e
-    INNER JOIN EntidadesHijas eh ON e.idPadre = eh.id
-)
-SELECT * 
-FROM Cat_UnidadesMedida
-WHERE activo = 1
-AND (
-    idEntidad = 1
-    OR idEntidad IN (SELECT id FROM EntidadesHijas)
-)
+ 
+Select
+ * 
+From
+	sys_entidades
+
