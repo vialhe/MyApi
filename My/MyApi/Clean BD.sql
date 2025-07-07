@@ -43,21 +43,42 @@ GO
 */
 
 
-Select * From inv_inventario
-Select * From inv_inventarioDet
-Select * From cat_productosServicios where id IN( 1159)--,1153,1161,1166)
+Select 
+	ps.id,
+	ps.descripcion,
+	inv.cantidadExistente,
+	invd.lote,
+	invd.serie,
+	invd.fechaExpira
+From
+	cat_productosServicios ps
+	left join inv_inventario inv
+		On ps.id = inv.idProductoServicio
+		And ps.idEntidad = inv.idEntidad
+	join inv_inventarioDet invd
+		On invd.idProductoServicio = inv.idProductoServicio
+		And invd.idEntidad = inv.idEntidad
+
+ --Select * From cat_personas
 
 Select 
 	h.folioMovimientoInventario,
 	cat.descripcion,
 	h.fechaAlta,
 	ps.descripcion,
-	d.cantidad
+	d.cantidad,
+	inv.cantidadExistente
 From	
 	proc_movimientosInventarios h
 	join proc_movimientosInventariosDetalles d
 		On h.folioMovimientoInventario = d.folioMovimientoInventario
 		and h.identidad = d.identidad
+	join inv_inventario inv
+		On inv.idProductoServicio = d.idProductoServicio
+		and inv.idEntidad = d.idEntidad
+	join inv_inventarioDet invd
+		On invd.idProductoServicio = inv.idProductoServicio
+		and invd.idEntidad =  inv.idEntidad
 	join cat_tiposMovmientosInventario cat
 		On cat.id = h.idTipoMovimientoInventario
 	join cat_productosServicios ps
@@ -66,22 +87,22 @@ Order by
 	h.fechaAlta
 
 
-Select * From proc_entradasSalidas where folioEntradaSalida = 192
-Select * From proc_entradasSalidasDetalles where folioEntradaSalida = 192
-Select * From proc_entradasSalidaPago where folioEntradaSalida = 192
-Select * From cat_estadosEntradaSalida
+--Select * From proc_entradasSalidas where folioEntradaSalida = 192
+--Select * From proc_entradasSalidasDetalles where folioEntradaSalida = 192
+--Select * From proc_entradasSalidaPago where folioEntradaSalida = 192
+--Select * From cat_estadosEntradaSalida
 
-exec sp_se_corteTienda 9999
+--exec sp_se_corteTienda 9999
 
-exec sp_se_catalogos 0,9999,1,'cat_tiposMovmientosInventario'
-exec sp_se_catalogos 0,1,1,'cat_tiposMovmientosInventario'
-exec sp_se_catalogos 0,9999,1,'cat_unidadesMedida'
-exec sp_se_catalogos 0,2,1,'cat_unidadesMedida'
+--exec sp_se_catalogos 0,9999,1,'cat_tiposMovmientosInventario'
+--exec sp_se_catalogos 0,1,1,'cat_tiposMovmientosInventario'
+--exec sp_se_catalogos 0,9999,1,'cat_unidadesMedida'
+--exec sp_se_catalogos 0,2,1,'cat_unidadesMedida'
 
-sys_entidades
-exec sp_se_catalogos 0,9999,1,'cat_tiposMovmientosInventario'
+--sys_entidades
+--exec sp_se_catalogos 0,9999,1,'cat_tiposMovmientosInventario'
 
-Update cat_unidadesMedida set idEntidad = 1 where idEntidad = 9999
+--Update cat_unidadesMedida set idEntidad = 1 where idEntidad = 9999
 
 
  --BEGIN CATCH
@@ -99,8 +120,7 @@ Update cat_unidadesMedida set idEntidad = 1 where idEntidad = 9999
  go
 
  
-Select
- * 
-From
-	sys_entidades
-
+--Select
+-- * 
+--From
+--	sys_entidades
