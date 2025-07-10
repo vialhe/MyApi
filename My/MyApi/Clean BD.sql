@@ -124,3 +124,31 @@ Order by
 -- * 
 --From
 --	sys_entidades
+
+--Select * From cat_tiposPago
+
+--Update cat_tiposPago set activo = 0 where idEntidad = 9999
+
+--Select * From proc_movimientosInventariosDetalles where foliomovimientoinventario IN (388,387) 
+
+--
+--	AQUI VAMOS A RETORNAR DATOS PARA EL DASHBOARD
+--
+Select
+	esh.folioEntradaSalida,
+	esh.idTipoEntradaSalida,
+	esd.idProductoServicio,
+	esd.cantidad
+From 
+	proc_entradasSalidas esh
+	join proc_entradasSalidasDetalles esd
+		On esh.folioEntradaSalida = esd.folioEntradaSalida
+		and esh.idEntidad = esd.idEntidad
+	join proc_entradasSalidaPago esp
+		On esh.folioEntradaSalida = esp.folioEntradaSalida
+		and esh.idEntidad = esp.idEntidad
+
+Where
+	idEstadoTicket = 3
+
+	
