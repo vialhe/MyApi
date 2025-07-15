@@ -71,6 +71,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@precioVentaUnitario", d.precioVentaUnitario);
                     db.AddParameter("@lote", d.lote);
                     db.AddParameter("@serie", d.serie);
+                    db.AddParameter("@numeracion", d.numeracion);
                     db.AddParameter("@fechaVencimiento", d.fechaExpira);
                     db.AddParameter("@comentarios", d.comentarios);
                     db.AddParameter("@activo", d.activo);
@@ -307,6 +308,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@precioVentaUnitario", d.precioVentaUnitario);
                     db.AddParameter("@lote", d.lote);
                     db.AddParameter("@serie", d.serie);
+                    db.AddParameter("@numeracion", d.numeracion);
                     db.AddParameter("@fechaVencimiento", d.fechaExpira);
                     db.AddParameter("@comentarios", d.comentarios);
                     db.AddParameter("@activo", d.activo);

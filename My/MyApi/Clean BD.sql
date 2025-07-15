@@ -49,7 +49,8 @@ Select
 	inv.cantidadExistente,
 	invd.lote,
 	invd.serie,
-	invd.fechaExpira
+	invd.fechaExpira,
+	invd.numeracion
 From
 	cat_productosServicios ps
 	left join inv_inventario inv
