@@ -13,6 +13,8 @@
         public int idUnidadMedidaVenta { get; set; }    
         public decimal stockMin { get; set; }
         public decimal stockMax { get; set; }
+        public int idUnidadMedidaBase { get; set; }
+        public bool requiereNumeracion { get; set; }
         public string descripcion { get; set; } = "";
         public bool recurrente { get; set; }
         public string comentarios { get; set; } = "";

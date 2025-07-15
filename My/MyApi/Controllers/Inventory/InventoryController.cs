@@ -91,6 +91,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@idTipoMovimientoInventario", cInventoryH.idTipoMovimientoInventario);
                     db.AddParameter("@lote", d.lote);
                     db.AddParameter("@serie", d.serie);
+                    db.AddParameter("@numeracion", d.numeracion);
                     db.AddParameter("@fechaVencimiento", d.fechaExpira);
                     db.AddParameter("@costoUnitario", d.costoUnitario);
                     db.AddParameter("@precioVenta", d.precioVentaUnitario);
@@ -167,6 +168,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@precioVentaUnitario", d.precioVentaUnitario);
                     db.AddParameter("@lote", d.lote);
                     db.AddParameter("@serie", d.serie);
+                    db.AddParameter("@numeracion", d.numeracion);
                     db.AddParameter("@fechaVencimiento", d.fechaExpira);
                     db.AddParameter("@comentarios", d.comentarios);
                     db.AddParameter("@activo", d.activo);
@@ -187,6 +189,8 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@idTipoMovimientoInventario", cInventoryH.idTipoMovimientoInventario);
                     db.AddParameter("@lote", d.lote);
                     db.AddParameter("@serie", d.serie);
+                    db.AddParameter("@unidadMedidaBase", d.numeracion);
+                    db.AddParameter("@numeracion", d.numeracion);
                     db.AddParameter("@fechaVencimiento", d.fechaExpira);
                     db.AddParameter("@costoUnitario", d.costoUnitario);
                     db.AddParameter("@precioVenta", d.precioVentaUnitario);
@@ -323,6 +327,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@idTipoMovimientoInventario", cInventoryH.idTipoMovimientoInventario);
                     db.AddParameter("@lote", d.lote);
                     db.AddParameter("@serie", d.serie);
+                    db.AddParameter("@numeracion", d.numeracion);
                     db.AddParameter("@fechaVencimiento", d.fechaExpira);
                     db.AddParameter("@costoUnitario", d.costoUnitario);
                     db.AddParameter("@precioVenta", d.precioVentaUnitario);

@@ -28,6 +28,7 @@ namespace MyApi.Models.Inventory
         public decimal? precioVentaUnitario { get; set; }
         public string? lote { get; set; }
         public string? serie { get; set; }
+        public string? numeracion { get; set; }
         public DateTime? fechaExpira { get; set; }
         public string comentarios { get; set; } = "";
         public bool activo { get; set; }
@@ -53,6 +54,7 @@ namespace MyApi.Models.Inventory
         public DateTime? fechaVencimiento { get; set; }
         public decimal? costoUnitario { get; set; }
         public decimal? precioVenta { get; set; }
+        public decimal? numeracion { get; set; }
         public int idEntidad { get; set; }
         public int idUsuarioModifica { get; set; }
     }

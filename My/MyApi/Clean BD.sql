@@ -151,4 +151,23 @@ From
 Where
 	idEstadoTicket = 3
 
-	
+
+	--
+	-- 
+	--
+
+	Select * From cat_unidadesMedida
+	Select * From cat_productosServicios
+	Select * From proc_unidadMedidaConversion
+	Select * From proc_entradasSalidas
+	Select * From proc_entradasSalidasDetalles
+	Select * From proc_movimientosInventariosDetalles
+
+	--alter table  cat_productosServicios add numeracion decimal(18,2)
+
+CREATE TABLE proc_unidadMedidaConversion (
+  id INT IDENTITY PRIMARY KEY,
+  idUMOrigen INT NOT NULL,
+  idUMDestino INT NOT NULL,
+  factor DECIMAL(18,6) NOT NULL
+)
