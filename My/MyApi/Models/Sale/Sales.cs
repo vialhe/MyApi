@@ -27,6 +27,7 @@ namespace MyApi.Models.Sale
         public decimal precioFinal { get; set; }
         public decimal precio { get; set; }
         public string lote { get; set; } = "";
+        public decimal numeracion { get; set; }
         public DateTime? fechaExpira { get; set; }
         public string serie { get; set; } = "";
         public int idUnidadMedida { get; set; }

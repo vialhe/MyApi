@@ -43,7 +43,6 @@ namespace MyApi.Controllers.Sale
             var cSalePay = data.CSalePay;
             var cMovInvH = new InventoryH();
             var cMovInvD = new List<InventoryD>();
-            inventoryData.cDB = db;
             cSaleH.idTipoEntradaSalida = idTipoEntradaSalida;
 
             try
@@ -70,7 +69,9 @@ namespace MyApi.Controllers.Sale
                     ExecuteSalePayment(db,cSaleH,p);
                 }
 
-                invmov.InventoryMovementPutSale(inventoryData);
+                inventoryData.cDB = db;
+                var res = invmov.InventoryMovementPutSale(inventoryData);
+                
                 db.Commit();
 
                 Code = true;
@@ -465,6 +466,7 @@ namespace MyApi.Controllers.Sale
                 serie = saleDetail.serie,
                 lote = saleDetail.lote,
                 fechaExpira = saleDetail.fechaExpira,
+                numeracion = saleDetail.numeracion,
                 comentarios = saleDetail.comentarios,
                 idEntidad = saleHeader.idEntidad,
                 idUsuarioModifica = saleHeader.idUsuarioModifica

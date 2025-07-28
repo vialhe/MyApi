@@ -46,7 +46,7 @@ GO
 Select 
 	ps.id,
 	ps.descripcion,
-	inv.cantidadExistente,
+	invd.cantidadExistente,
 	invd.lote,
 	invd.serie,
 	invd.fechaExpira,
@@ -65,10 +65,27 @@ From
 Select 
 	h.folioMovimientoInventario,
 	cat.descripcion,
+	d.idProductoServicio,
+	CASE
+		WHEN d.numeracion >0 Then CAST(d.numeracion   AS VARCHAR(5))
+		ELSE '' END
+	AS numeracion,
+	CAST(d.serie        AS VARCHAR(50)) as serie,
+	CAST(d.lote         AS VARCHAR(20)) as lote,
+	CASE 
+		WHEN d.fechaVencimiento > '20000101' 
+		  THEN CONVERT(VARCHAR(10), d.fechaVencimiento, 23)
+		ELSE ''End
+	AS fechaVencimiento,
 	h.fechaAlta,
 	ps.descripcion,
 	d.cantidad,
-	inv.cantidadExistente
+	inv.cantidadExistente,
+		SUM(cat.afectacion * d.cantidad) OVER (
+		PARTITION BY d.idProductoServicio, d.idEntidad
+		ORDER BY h.fechaAlta, h.folioMovimientoInventario
+		ROWS UNBOUNDED PRECEDING
+	  ) AS ExistenciaEnMomento
 From	
 	proc_movimientosInventarios h
 	join proc_movimientosInventariosDetalles d
@@ -84,6 +101,20 @@ From
 		On cat.id = h.idTipoMovimientoInventario
 	join cat_productosServicios ps
 		On ps.id = d.idProductoServicio
+Group By
+	h.folioMovimientoInventario,
+	cat.descripcion,
+	h.fechaAlta,
+	ps.descripcion,
+	d.cantidad,
+	inv.cantidadExistente,
+	d.idProductoServicio,
+	d.idEntidad,
+	cat.afectacion,
+	d.serie,
+	d.lote,
+	d.numeracion,
+	d.fechaVencimiento
 Order by
 	h.fechaAlta
 
@@ -162,7 +193,12 @@ Where
 	Select * From proc_unidadMedidaConversion
 	Select * From proc_entradasSalidas
 	Select * From proc_entradasSalidasDetalles
+	Select * From proc_movimientosInventarios
 	Select * From proc_movimientosInventariosDetalles
+	Select * From inv_inventario
+	Select * From inv_inventarioDet
+
+
 
 	--alter table  cat_productosServicios add numeracion decimal(18,2)
 
@@ -172,3 +208,22 @@ CREATE TABLE proc_unidadMedidaConversion (
   idUMDestino INT NOT NULL,
   factor DECIMAL(18,6) NOT NULL
 )
+
+
+EXEC sp_up_inventarioV2 
+@folioMovimientoInventario = -20
+,@idProductoServicio = 1160
+,@idProveedor= 1
+,@cantidad = 1
+,@idUnidadMedida = 1
+,@idTipoMovimientoInventario = 2
+,@lote = ''
+,@serie = ''
+,@numeracion = 24.5
+,@fechaVencimiento = '19000101'
+,@costoUnitario = 1
+,@precioVenta = 1
+,@idEntidad = 9999
+,@idUsuarioModifica = 1
+
+
