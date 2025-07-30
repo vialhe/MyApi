@@ -227,3 +227,13 @@ EXEC sp_up_inventarioV2
 ,@idUsuarioModifica = 1
 
 
+
+/* Agregamos columnas a tabla*/
+	Update[dbo].[proc_entradasSalidasDetalles]
+	set fechaVencimiento = '19000101',
+	lote = '', serie='',numeracion=0
+/***/
+
+lote
+serie
+fechaVencimiento

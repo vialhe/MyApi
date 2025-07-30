@@ -449,6 +449,10 @@ namespace MyApi.Controllers.Sale
             db.AddParameter("@precioFinal", d.precioFinal);
             db.AddParameter("@precio", d.precio);
             db.AddParameter("@idUnidadMedida", d.idUnidadMedida);
+            db.AddParameter("@serie", d.serie);
+            db.AddParameter("@lote", d.lote);
+            db.AddParameter("@fechaVencimiento", d.fechaExpira);
+            db.AddParameter("@numeracion", d.numeracion);
             db.AddParameter("@comentarios", d.comentarios);
             db.AddParameter("@activo", cSaleH.activo);
             db.AddParameter("@idEntidad", cSaleH.idEntidad);
