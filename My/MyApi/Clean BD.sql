@@ -42,7 +42,7 @@ GO
 
 */
 
-
+Select * From (
 Select 
 	ps.id,
 	ps.descripcion,
@@ -59,8 +59,7 @@ From
 	join inv_inventarioDet invd
 		On invd.idProductoServicio = inv.idProductoServicio
 		And invd.idEntidad = inv.idEntidad
-
- --Select * From cat_personas
+) a where a.cantidadExistente> 0
 
 Select 
 	h.folioMovimientoInventario,
