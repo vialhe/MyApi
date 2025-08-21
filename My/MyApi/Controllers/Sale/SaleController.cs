@@ -236,6 +236,57 @@ namespace MyApi.Controllers.Sale
         }
 
         [HttpPost]
+        [Route("get-dashboard")]
+        public IActionResult GetDashboard(RequestGetDashboard data)
+        {
+            if (data == null)
+            {
+                return BadRequest("Los valores no pueden ser null.");
+            }
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+
+            //Referencias
+            var db = new DataBase2();
+            var tools = new MyToolsController();
+            try
+            {
+                db.Open();
+                db.SetCommand("sp_se_dashboard_ventas", true);
+                db.AddParameter("@fechaIni", data.fechaIni);
+                db.AddParameter("@fechaFin", data.fechaFin);
+                db.AddParameter("@idEntidad", data.idEntidad);
+                db.AddParameter("@idEstadoTicket", data.idEstatusTicket);
+                DataSet ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    Code = true;
+                    Message = "Success";
+                    Response = MyToolsController.ToJson(Code, Message, ds);
+                }
+                else
+                {
+                    Code = false;
+                    Message = "No existen cortes abiertos";
+                    Response = MyToolsController.ToJson(Code, Message);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                db.Rollback();
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+        }
+
+        [HttpPost]
         [Route("get-cashoutStore")]
         public IActionResult GetCashoutStore(RequestGetCashRegister data)
         {

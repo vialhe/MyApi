@@ -67,6 +67,14 @@ namespace MyApi.Models.Sale
         public int idEntidad { get; set; }
     }
 
+    public class RequestGetDashboard
+    {
+        public DateTime fechaIni { get; set; }
+        public DateTime fechaFin { get; set; }
+        public DateTime idEstatusTicket { get; set; }
+        public int idEntidad { get; set; }
+    }
+
     public class RequestInicioCorteDeCaja
     {
         public int idUsuario { get; set; }
