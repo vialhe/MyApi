@@ -71,8 +71,9 @@ namespace MyApi.Models.Sale
     {
         public DateTime fechaIni { get; set; }
         public DateTime fechaFin { get; set; }
-        public DateTime idEstatusTicket { get; set; }
         public int idEntidad { get; set; }
+        public int? idEstatusTicket { get; set; }
+
     }
 
     public class RequestInicioCorteDeCaja
