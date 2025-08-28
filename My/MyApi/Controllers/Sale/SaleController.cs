@@ -254,7 +254,189 @@ namespace MyApi.Controllers.Sale
             try
             {
                 db.Open();
+                db.SetCommand("sp_se_dashboard", true);
+                db.AddParameter("@fechaIni", data.fechaIni);
+                db.AddParameter("@fechaFin", data.fechaFin);
+                db.AddParameter("@idEntidad", data.idEntidad);
+                db.AddParameter("@idEstadoTicket", data.idEstatusTicket);
+                DataSet ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+
+                    ds.Tables[0].TableName = "totalSales";
+                    ds.Tables[1].TableName = "totalNeto";
+                    ds.Tables[2].TableName = "valorPromedio";
+                    ds.Tables[3].TableName = "totalTransacciones";
+                    ds.Tables[4].TableName = "metodosPago";
+                    ds.Tables[5].TableName = "historia";
+                    ds.Tables[6].TableName = "Horas";
+                    ds.Tables[7].TableName = "TopEmpleados";
+
+                    ds.Tables[8].TableName = "top1UnidadVendidas";
+                    ds.Tables[9].TableName = "top1Ganancia";
+                    ds.Tables[10].TableName = "top10Vendido";
+                    ds.Tables[11].TableName = "top10NoVendido";
+                    ds.Tables[12].TableName = "VentasCategoria";
+                    ds.Tables[13].TableName = "MargenGanancia";
+
+                    Code = true;
+                    Message = "Success";
+                    Response = MyToolsController.ToJson(Code, Message, ds);
+                }
+                else
+                {
+                    Code = false;
+                    Message = "No se encontraron registros de dashboard ventas";
+                    Response = MyToolsController.ToJson(Code, Message);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                db.Rollback();
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("get-dashboard-ventas")]
+        public IActionResult GetDashboardVentas(RequestGetDashboard data)
+        {
+            if (data == null)
+            {
+                return BadRequest("Los valores no pueden ser null.");
+            }
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+
+            //Referencias
+            var db = new DataBase2();
+            var tools = new MyToolsController();
+            try
+            {
+                db.Open();
                 db.SetCommand("sp_se_dashboard_ventas", true);
+                db.AddParameter("@fechaIni", data.fechaIni);
+                db.AddParameter("@fechaFin", data.fechaFin);
+                db.AddParameter("@idEntidad", data.idEntidad);
+                db.AddParameter("@idEstadoTicket", data.idEstatusTicket);
+                DataSet ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    
+                    ds.Tables[0].TableName = "totalSales";
+                    ds.Tables[1].TableName = "totalNeto";
+                    ds.Tables[2].TableName = "valorPromedio";
+                    ds.Tables[3].TableName = "totalTransacciones";
+                    ds.Tables[4].TableName = "metodosPago";
+                    ds.Tables[5].TableName = "historia";
+                    ds.Tables[6].TableName = "Horas";
+                    Code = true;
+                    Message = "Success";
+                    Response = MyToolsController.ToJson(Code, Message, ds);
+                }
+                else
+                {
+                    Code = false;
+                    Message = "No se encontraron registros de dashboard ventas";
+                    Response = MyToolsController.ToJson(Code, Message);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                db.Rollback();
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("get-dashboard-productos")]
+        public IActionResult GetDashboardProductos(RequestGetDashboard data)
+        {
+            if (data == null)
+            {
+                return BadRequest("Los valores no pueden ser null.");
+            }
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+
+            //Referencias
+            var db = new DataBase2();
+            var tools = new MyToolsController();
+            try
+            {
+                db.Open();
+                db.SetCommand("sp_se_dashboard_productos", true);
+                db.AddParameter("@fechaIni", data.fechaIni);
+                db.AddParameter("@fechaFin", data.fechaFin);
+                db.AddParameter("@idEntidad", data.idEntidad);
+                db.AddParameter("@idEstadoTicket", data.idEstatusTicket);
+                DataSet ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    ds.Tables[0].TableName = "totalSales";
+                    ds.Tables[1].TableName = "totalNeto";
+                    ds.Tables[2].TableName = "valorPromedio";
+
+                    Code = true;
+                    Message = "Success";
+                    Response = MyToolsController.ToJson(Code, Message, ds);
+                }
+                else
+                {
+                    Code = false;
+                    Message = "No se encontraron registros de dashboard prod";
+                    Response = MyToolsController.ToJson(Code, Message);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                db.Rollback();
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("get-dashboard-inventario")]
+        public IActionResult GetDashboardInventario(RequestGetDashboard data)
+        {
+            if (data == null)
+            {
+                return BadRequest("Los valores no pueden ser null.");
+            }
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+
+            //Referencias
+            var db = new DataBase2();
+            var tools = new MyToolsController();
+            try
+            {
+                db.Open();
+                db.SetCommand("sp_se_dashboard_inventario", true);
                 db.AddParameter("@fechaIni", data.fechaIni);
                 db.AddParameter("@fechaFin", data.fechaFin);
                 db.AddParameter("@idEntidad", data.idEntidad);
@@ -271,7 +453,7 @@ namespace MyApi.Controllers.Sale
                 else
                 {
                     Code = false;
-                    Message = "No existen cortes abiertos";
+                    Message = "No se encontraron registros de dashboard inv";
                     Response = MyToolsController.ToJson(Code, Message);
                 }
 
