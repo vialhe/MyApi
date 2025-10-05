@@ -318,6 +318,51 @@ namespace MyApi.Controllers.Profile
         }
 
         [HttpPost]
+        [Route("insert-proveedor")]
+        public IActionResult insertProveedor([FromBody] Proveedor cProveedor)
+        {
+            /*Se declaran Variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataTable dt;
+            DataBase2 db = new DataBase2();
+            cProveedor.id = 0;
+
+            try
+            {
+                db.SetCommand("sp_ui_persona", true);
+                db.AddParameter("@id", cProveedor.id);
+                db.AddParameter("@idTipoPersona", cProveedor.idTipoPersona);
+                db.AddParameter("@nombre", cProveedor.nombre);
+                db.AddParameter("@apellidoPaterno", "");
+                db.AddParameter("@apellidoMaterno", "");
+                db.AddParameter("@idGenero", 1);
+                db.AddParameter("@fechaNacimiento", DateTime.Now.ToString("yyyyMMdd"));
+                db.AddParameter("@correo", cProveedor.correo);
+                db.AddParameter("@comentarios", cProveedor.comentarios);
+                db.AddParameter("@numeroTelefono", cProveedor.numeroTelefono);
+                db.AddParameter("@activo", cProveedor.activo);
+                db.AddParameter("@idEntidad", cProveedor.idEntidad);
+                db.AddParameter("@idUsuarioModifica", cProveedor.idUsuarioModifica);
+
+                dt = db.ExecuteWithDataSet().Tables[0];
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message, dt);
+
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+
+
+        }
+        [HttpPost]
         [Route("update-persona")]
         public IActionResult updatePersona(Persona cPersona)
         {
