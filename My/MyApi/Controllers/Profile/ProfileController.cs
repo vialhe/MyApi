@@ -313,8 +313,6 @@ namespace MyApi.Controllers.Profile
                 Response = MyToolsController.ToJson(Code, Message);
             }
             return Response;
-
-
         }
 
         [HttpPost]
@@ -362,6 +360,7 @@ namespace MyApi.Controllers.Profile
 
 
         }
+        
         [HttpPost]
         [Route("update-persona")]
         public IActionResult updatePersona(Persona cPersona)
@@ -395,6 +394,48 @@ namespace MyApi.Controllers.Profile
                 Message = "Succes";
                 Response = MyToolsController.ToJson(Code, Message, dt);
 
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("update-proveedor")]
+        public IActionResult updateProveedor([FromBody] Proveedor cProveedor)
+        {
+            /*Se declaran Variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataTable dt;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.SetCommand("sp_ui_persona", true);
+                db.AddParameter("@id", cProveedor.id);
+                db.AddParameter("@idTipoPersona", cProveedor.idTipoPersona);
+                db.AddParameter("@nombre", cProveedor.nombre);
+                db.AddParameter("@apellidoPaterno", "");
+                db.AddParameter("@apellidoMaterno", "");
+                db.AddParameter("@idGenero", 1);
+                db.AddParameter("@fechaNacimiento", DateTime.Now.ToString("yyyyMMdd"));
+                db.AddParameter("@correo", cProveedor.correo);
+                db.AddParameter("@comentarios", cProveedor.comentarios);
+                db.AddParameter("@numeroTelefono", cProveedor.numeroTelefono);
+                db.AddParameter("@activo", cProveedor.activo);
+                db.AddParameter("@idEntidad", cProveedor.idEntidad);
+                db.AddParameter("@idUsuarioModifica", cProveedor.idUsuarioModifica);
+
+                dt = db.ExecuteWithDataSet().Tables[0];
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message, dt);
             }
             catch (Exception ex)
             {
