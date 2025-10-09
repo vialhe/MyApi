@@ -329,17 +329,12 @@ namespace MyApi.Controllers.Profile
 
             try
             {
-                db.SetCommand("sp_ui_persona", true);
+                db.SetCommand("sp_ui_proveedor", true);
                 db.AddParameter("@id", cProveedor.id);
-                db.AddParameter("@idTipoPersona", cProveedor.idTipoPersona);
                 db.AddParameter("@nombre", cProveedor.nombre);
-                db.AddParameter("@apellidoPaterno", "");
-                db.AddParameter("@apellidoMaterno", "");
-                db.AddParameter("@idGenero", 1);
-                db.AddParameter("@fechaNacimiento", DateTime.Now.ToString("yyyyMMdd"));
                 db.AddParameter("@correo", cProveedor.correo);
-                db.AddParameter("@comentarios", cProveedor.comentarios);
                 db.AddParameter("@numeroTelefono", cProveedor.numeroTelefono);
+                db.AddParameter("@comentarios", cProveedor.comentarios);
                 db.AddParameter("@activo", cProveedor.activo);
                 db.AddParameter("@idEntidad", cProveedor.idEntidad);
                 db.AddParameter("@idUsuarioModifica", cProveedor.idUsuarioModifica);
@@ -417,17 +412,12 @@ namespace MyApi.Controllers.Profile
 
             try
             {
-                db.SetCommand("sp_ui_persona", true);
+                db.SetCommand("sp_ui_proveedor", true);
                 db.AddParameter("@id", cProveedor.id);
-                db.AddParameter("@idTipoPersona", cProveedor.idTipoPersona);
                 db.AddParameter("@nombre", cProveedor.nombre);
-                db.AddParameter("@apellidoPaterno", "");
-                db.AddParameter("@apellidoMaterno", "");
-                db.AddParameter("@idGenero", 1);
-                db.AddParameter("@fechaNacimiento", DateTime.Now.ToString("yyyyMMdd"));
                 db.AddParameter("@correo", cProveedor.correo);
-                db.AddParameter("@comentarios", cProveedor.comentarios);
                 db.AddParameter("@numeroTelefono", cProveedor.numeroTelefono);
+                db.AddParameter("@comentarios", cProveedor.comentarios);
                 db.AddParameter("@activo", cProveedor.activo);
                 db.AddParameter("@idEntidad", cProveedor.idEntidad);
                 db.AddParameter("@idUsuarioModifica", cProveedor.idUsuarioModifica);
