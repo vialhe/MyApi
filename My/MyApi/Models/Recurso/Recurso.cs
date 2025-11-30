@@ -15,6 +15,6 @@
         public DateTime fechaAlta { get; set; }
         public int idUsuarioAlta { get; set; }
         public string recursoBase64 { get; set; } // Almacena la cadena Base64
-
+        public string urlImagen { get; set; }
     }
 }

@@ -83,6 +83,7 @@ namespace MyApi.Controllers.Recurso
                     new Parametro("descripcion", cRecurso.descripcion.ToString()),
                     new Parametro("recurso", Convert.ToBase64String(data)),
                     new Parametro("comentarios", cRecurso.comentarios.ToString()),
+                    new Parametro("urlImagen", cRecurso.urlImagen.ToString()),
                     new Parametro("activo", cRecurso.activo.ToString()),
                     new Parametro("idEntidad", cRecurso.idEntidad.ToString()),
                     new Parametro("idUsuarioModifica", cRecurso.idUsuarioModifica.ToString())
@@ -136,6 +137,7 @@ namespace MyApi.Controllers.Recurso
                     new Parametro("idRegistro", cRecurso.idRegistro.ToString()),
                     new Parametro("descripcion", cRecurso.descripcion.ToString()),
                     new Parametro("recurso", Convert.ToBase64String(data)),
+                    new Parametro("urlImagen", cRecurso.urlImagen.ToString()),
                     new Parametro("comentarios", cRecurso.comentarios.ToString()),
                     new Parametro("activo", cRecurso.activo.ToString()),
                     new Parametro("idEntidad", cRecurso.idEntidad.ToString()),
