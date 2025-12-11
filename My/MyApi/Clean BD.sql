@@ -1,18 +1,20 @@
 /*
 	 I M P O R T A N T E   :   L I M P I A R   R E G I S T R O S   D E   B D 
 
-Delete from proc_movimientosInventarios
-Delete from proc_movimientosInventariosDetalles
-Delete From inv_inventario
-Delete From inv_inventarioDet
+Delete from proc_movimientosInventarios					where idEntidad = 10001
+Delete from proc_movimientosInventariosDetalles			where idEntidad = 10001
+Delete From inv_inventario								where idEntidad = 10001
+Delete From inv_inventarioDet							where idEntidad = 10001
 
 
-Delete From proc_entradasSalidas
-Delete From proc_entradasSalidasDetalles
-Delete From proc_entradasSalidaPago
+Delete From proc_entradasSalidas          where idEntidad = 10001
+Delete From proc_entradasSalidasDetalles  where idEntidad = 10001
+Delete From proc_entradasSalidaPago		  where idEntidad = 10001
 
-Delete From proc_corteCaja
-Delete From proc_corteTienda
+Delete From proc_corteCaja				where idEntidad = 10001
+Delete From proc_corteTienda			where idEntidad = 10001
+Delete From sys_foliosContador
+
 
 */
 
@@ -21,7 +23,7 @@ Delete From proc_corteTienda
 
 *//*
 SELECT * From cat_unidadesMedida WHERE idEntidad = 9999
-SELECT * From sys_folios
+SELECT * From sys_folios 
 SELECT * From sys_foliosContador
 Select * From cat_estadosEntradaSalida
 GO
@@ -46,6 +48,7 @@ Select * From (
 Select 
 	ps.id,
 	ps.descripcion,
+	ps.idEntidad,
 	invd.cantidadExistente,
 	invd.lote,
 	invd.serie,
@@ -59,7 +62,7 @@ From
 	join inv_inventarioDet invd
 		On invd.idProductoServicio = inv.idProductoServicio
 		And invd.idEntidad = inv.idEntidad
-) a where a.cantidadExistente> 0
+) a where a.cantidadExistente> 0 and a.idEntidad = 10003
 
 Select 
 	h.folioMovimientoInventario,
@@ -100,6 +103,8 @@ From
 		On cat.id = h.idTipoMovimientoInventario
 	join cat_productosServicios ps
 		On ps.id = d.idProductoServicio
+Where 
+	h.idEntidad = 10003
 Group By
 	h.folioMovimientoInventario,
 	cat.descripcion,
@@ -116,6 +121,22 @@ Group By
 	d.fechaVencimiento
 Order by
 	h.fechaAlta
+
+
+exec [dbo].[sp_se_corteTienda] 9999
+Select * From sys_entidades
+Select * From proc_corteTienda
+Select * From proc_corteCaja
+Select * From sys_folios
+Select * From sys_foliosContador
+Select * From proc_movimientosInventarios
+Select * From proc_movimientosInventariosDetalles
+Select * From proc_entradasSalidas
+Select * From proc_entradasSalidasDetalles
+Select * From proc_entradasSalidaPago
+Select * From inv_inventario
+Select * From inv_inventarioDet
+
 
 
 --Select * From proc_entradasSalidas where folioEntradaSalida = 192
@@ -233,6 +254,82 @@ EXEC sp_up_inventarioV2
 	lote = '', serie='',numeracion=0
 /***/
 
-lote
-serie
-fechaVencimiento
+Select * From proc_movimientosInventarios where idEntidad = 10001
+Select * From proc_entradasSalidas where identidad = 10001
+
+
+
+
+
+--al agregar reinciar pantalla para asignar movimiento
+--setear valores a 0 cuando se haga foco sobre los campos de cantidades
+--asegura borrar proveedor compra en compra prov
+
+
+Select * FRom cat_tiposProductosServicios where idEntidad = 10003
+Go
+
+
+CREATE PROC sp_se_kardex_movimientos
+	@idEntidad int
+As
+Begin
+	
+	Select 
+		h.folioMovimientoInventario,
+		cat.descripcion,
+		d.idProductoServicio,
+		CASE
+			WHEN d.numeracion >0 Then CAST(d.numeracion   AS VARCHAR(5))
+			ELSE '' END
+		AS numeracion,
+		CAST(d.serie        AS VARCHAR(50)) as serie,
+		CAST(d.lote         AS VARCHAR(20)) as lote,
+		CASE 
+			WHEN d.fechaVencimiento > '20000101' 
+			  THEN CONVERT(VARCHAR(10), d.fechaVencimiento, 23)
+			ELSE ''End
+		AS fechaVencimiento,
+		h.fechaAlta,
+		ps.descripcion,
+		d.cantidad,
+		inv.cantidadExistente,
+			SUM(cat.afectacion * d.cantidad) OVER (
+			PARTITION BY d.idProductoServicio, d.idEntidad
+			ORDER BY h.fechaAlta, h.folioMovimientoInventario
+			ROWS UNBOUNDED PRECEDING
+		  ) AS ExistenciaEnMomento
+	From	
+		proc_movimientosInventarios h
+		join proc_movimientosInventariosDetalles d
+			On h.folioMovimientoInventario = d.folioMovimientoInventario
+			and h.identidad = d.identidad
+		join inv_inventario inv
+			On inv.idProductoServicio = d.idProductoServicio
+			and inv.idEntidad = d.idEntidad
+		join inv_inventarioDet invd
+			On invd.idProductoServicio = inv.idProductoServicio
+			and invd.idEntidad =  inv.idEntidad
+		join cat_tiposMovmientosInventario cat
+			On cat.id = h.idTipoMovimientoInventario
+		join cat_productosServicios ps
+			On ps.id = d.idProductoServicio
+	Where 
+		h.idEntidad = @idEntidad
+	Group By
+		h.folioMovimientoInventario,
+		cat.descripcion,
+		h.fechaAlta,
+		ps.descripcion,
+		d.cantidad,
+		inv.cantidadExistente,
+		d.idProductoServicio,
+		d.idEntidad,
+		cat.afectacion,
+		d.serie,
+		d.lote,
+		d.numeracion,
+		d.fechaVencimiento
+	Order by
+		h.fechaAlta
+End

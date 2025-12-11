@@ -71,4 +71,12 @@ namespace MyApi.Models.Inventory
         public int idEntidad { get; set; }
         public int isAdmin { get; set; }
     }
+
+    public class KardexRequest
+    {
+        public int idEntidad { get; set; }
+        public int fechaInicio { get; set; }
+        public int fechaFin { get; set; }
+    }
+
 }

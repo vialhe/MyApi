@@ -223,6 +223,7 @@ namespace MyApi.Controllers.Inventory
             }
             return Response;
         }
+        
         [HttpPost]
         [Route("get-tipoMovInv")]
         public IActionResult GetTipoMovInv(tipMovInvRequest rtipoMovInv)
@@ -261,6 +262,44 @@ namespace MyApi.Controllers.Inventory
             }
             return Response;
         }
+
+        [HttpPost]
+        [Route("get-kardex")]
+        public IActionResult GetKardex(KardexRequest request)
+        {
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.SetCommand("sp_se_kardex_movimientos", true);
+                db.AddParameter("idEntidad", request.idEntidad);
+                db.AddParameter("@fechaInicio", request.fechaInicio);
+                db.AddParameter("@fechaFin", request.fechaFin);
+
+                /*Define return success*/
+                ds = db.ExecuteWithDataSet();
+                ds.Tables[0].TableName = "Data";
+                Code = true;
+                Message = "Succes";
+
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                /*Define return ex*/
+                Code = false;
+                Message = "Exception: " + ex;
+                Response = MyToolsController.ToJson(Code, Message);
+
+            }
+            return Response;
+        }
+
         public IActionResult InventoryMovementPutSale(InventoryData data)
         {
             // Declarar variables
