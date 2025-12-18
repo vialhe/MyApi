@@ -1,4 +1,5 @@
 ﻿using MyApi.Models.MyDB;
+using System.Text.Json.Serialization;
 
 namespace MyApi.Models.Inventory
 {
@@ -72,11 +73,17 @@ namespace MyApi.Models.Inventory
         public int isAdmin { get; set; }
     }
 
-    public class KardexRequest
+public class KardexRequest
     {
+        // Esto le dice a C#: "Busca en el JSON la clave 'idEntidad' exacta"
+        [JsonPropertyName("idEntidad")]
         public int idEntidad { get; set; }
-        public int fechaInicio { get; set; }
-        public int fechaFin { get; set; }
+
+        [JsonPropertyName("fechaInicio")]
+        public DateTime fechaInicio { get; set; }
+
+        [JsonPropertyName("fechaFin")]
+        public DateTime fechaFin { get; set; }
     }
 
 }
