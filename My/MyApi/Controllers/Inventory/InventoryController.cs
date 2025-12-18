@@ -265,7 +265,7 @@ namespace MyApi.Controllers.Inventory
 
         [HttpPost]
         [Route("get-kardex")]
-        public IActionResult GetKardex(KardexRequest request)
+        public IActionResult GetKardex([FromBody]KardexRequest request)
         {
             /*Declara variables*/
             JsonResult Response;

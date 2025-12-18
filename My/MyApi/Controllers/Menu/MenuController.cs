@@ -191,7 +191,7 @@ namespace MyApi.Controllers.Menu
                 //Code = false;
                 //Message = "Ex: " + ex.Message;
                 //Response = MyToolsController.ToJson(Code, Message);
-                return StatusCode(500, ex.Message);
+                return MyToolsController.ToJson(false, ex.Message);
             }
 
 
