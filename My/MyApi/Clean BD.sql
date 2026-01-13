@@ -1,19 +1,21 @@
 /*
 	 I M P O R T A N T E   :   L I M P I A R   R E G I S T R O S   D E   B D 
 
-Delete from proc_movimientosInventarios					where idEntidad = 10001
-Delete from proc_movimientosInventariosDetalles			where idEntidad = 10001
-Delete From inv_inventario								where idEntidad = 10001
-Delete From inv_inventarioDet							where idEntidad = 10001
+Delete from proc_movimientosInventarios					where idEntidad = 9999
+Delete from proc_movimientosInventariosDetalles			where idEntidad = 9999
+Delete From inv_inventario								where idEntidad = 9999
+Delete From inv_inventarioDet							where idEntidad = 9999
 
 
-Delete From proc_entradasSalidas          where idEntidad = 10001
-Delete From proc_entradasSalidasDetalles  where idEntidad = 10001
-Delete From proc_entradasSalidaPago		  where idEntidad = 10001
+Delete From proc_entradasSalidas          where idEntidad = 9999
+Delete From proc_entradasSalidasDetalles  where idEntidad = 9999
+Delete From proc_entradasSalidaPago		  where idEntidad = 9999
 
-Delete From proc_corteCaja				where idEntidad = 10001
-Delete From proc_corteTienda			where idEntidad = 10001
-Delete From sys_foliosContador
+Delete From proc_corteCaja				where idEntidad = 9999
+Delete From proc_corteTienda			where idEntidad = 9999
+Delete From sys_foliosContador			where idEntidad = 9999
+Delete From cat_productosServicios		where idEntidad = 9999
+
 
 
 */
@@ -260,12 +262,6 @@ Select * From proc_entradasSalidas where identidad = 10001
 
 
 
-
---al agregar reinciar pantalla para asignar movimiento
---setear valores a 0 cuando se haga foco sobre los campos de cantidades
---asegura borrar proveedor compra en compra prov
-
-
 Select * FRom cat_tiposProductosServicios where idEntidad = 10003
 Go
 
@@ -333,3 +329,9 @@ Begin
 	Order by
 		h.fechaAlta
 End
+
+
+
+Select * From cat_personas where idEntidad = 9999
+
+Update cat_personas set activo = 0 where idTipoPersona = 10 and idEntidad = 9999
