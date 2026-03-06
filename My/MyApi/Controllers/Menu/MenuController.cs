@@ -33,7 +33,15 @@ namespace MyApi.Controllers.Menu
             public int isAdmin { get; set; }
         }
 
-        
+        public class UnidadMedidaConversionRequest
+        {
+            public int idEntidad { get; set; }
+            public int idUMBase { get; set; }
+            public bool incluirRequiereFactorProducto { get; set; } = false;
+
+        }
+
+
 
         [HttpPost]
         [Route("get-productoservicio")]
@@ -213,18 +221,13 @@ namespace MyApi.Controllers.Menu
             JsonResult Response;
             bool Code;
             string Message;
-            string NombreTablaEnBD = "cat_unidadesMedida";
             DataSet ds;
             DataBase2 db = new DataBase2();
 
-
             try
             {
-                db.SetCommand("sp_se_catalogos", true);
-                db.AddParameter("id", rUnidadMedida.id.ToString());
+                db.SetCommand("sp_se_ObtieneUMBaseDef", true);
                 db.AddParameter("idEntidad", rUnidadMedida.idEntidad.ToString());
-                db.AddParameter("isAdmin", rUnidadMedida.isAdmin.ToString());
-                db.AddParameter("catalogo", NombreTablaEnBD);
 
                 /*Define return success*/
                 ds = db.ExecuteWithDataSet();
@@ -245,7 +248,43 @@ namespace MyApi.Controllers.Menu
             return Response;
         }
 
-        
+        [HttpPost]
+        [Route("get-unidadmedidaConversion")]
+        public IActionResult GetUnidadMedidaConversion(UnidadMedidaConversionRequest rUnidadMedida)
+        {
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.SetCommand("sp_se_ObtieneUMDisponiblesPorUMBase", true);
+                db.AddParameter("idEntidad", rUnidadMedida.idEntidad.ToString());
+                db.AddParameter("@idUMBase", rUnidadMedida.idUMBase.ToString());
+                db.AddParameter("@incluirRequiereFactorProducto", rUnidadMedida.incluirRequiereFactorProducto.ToString());
+
+                /*Define return success*/
+                ds = db.ExecuteWithDataSet();
+                ds.Tables[0].TableName = "Data";
+                Code = true;
+                Message = "Succes";
+
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                /*Define return ex*/
+                Code = false;
+                Message = "Exception: " + ex;
+                Response = MyToolsController.ToJson(Code, Message);
+
+            }
+            return Response;
+        }
+
 
         [HttpPost]
         [Route("delete-productoservicio")]

@@ -1,59 +1,139 @@
-/*CREAMOS LA ENTIDAD*/
-Select * From sys_entidades where id = 10006
---exec sp_ui_entidad 0,'Bengo',9998,'',1,1
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- CREAMOS LA ENTIDAD
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Select * From sys_entidades where id = 9999 /*esta entidad ya la conservamos, que es la de pruebas*/
+/*
+exec sp_ui_entidad 
+	@id = 0, -- 0 = nuevo, x = editar esa entidad
+	@descripcion = 'Abarrotes QAS', --nombre de la entidad
+	@idPadre = 9998, --aqui el 9998 es entidad de "tienditas" este será siempre para tienditas, lo puse asi para en un futuro tener como un esquema de arboles y tener padres e hijos.
+	@comentarios = '', --campo de comentarios
+	@activo = 1, --1 = activo, 0 = inactivo
+	@idUsuarioModifica = 1  --usuario alta, 1 = superadmin
+*/
 go
 
-/*CREAMOS TIPO PERSONA*/
-Select * From cat_tiposPersonas where idEntidad = 10006
---exec sp_ui_catalogos 0,'Administrador','',10006,1,1,'cat_tiposPersonas'
+
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- CREAMOS TIPO PERSONA ( siempre van "administrador" y "proveedor" ) 
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Select * From cat_tiposPersonas where idEntidad = 9999
+/*
+	exec sp_ui_catalogos 
+	@id = 0, -- 0 = nuevo, x = editar esa entidad
+	@descripcion = 'Administrador', --descripcion
+	@comentarios = '', --comentarios
+	@idEntidad = 9999, 
+	@activo = 1,
+	@idUsuarioModifica = 1,
+	@catalogo = 'cat_tiposPersonas' --este define a que tabla afectamos, el sp es unico para tablas con misma estrucutra como lo son catalogos
+*/
 
 /*Siempre creamos la persona provedores*/
---exec sp_ui_catalogos 0,'Proveedor','',10006,1,1,'cat_tiposPersonas'
 
+--exec sp_ui_catalogos 0,'Proveedor','',9999,1,1,'cat_tiposPersonas'
 go
 
-/*CREAMOS PERSONA*/
-Select * From cat_personas where idEntidad = 10006
---Exec sp_ui_persona 0,21,'Ana','Delgado','',1,'19940816','1111111','analia_1694@hotmail.com','',1,10006,1
+
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- CREAMOS PERSONA
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Select * From cat_personas where idEntidad = 9999
+/*
+	Exec sp_ui_persona 
+	@id=0,
+	@idTipoPersona = 21, --aqui va el id que se obtiene al isertar en "cat_tiposPersonas" el "Administrador" ( para los "Proveedores" ya tengo desarrollado el CRUD desde el POS)
+	@nombre ='QA',
+	@apellidoPaterno = '',
+	@apellidoMaterno = '',
+	@idGenero = 1,
+	@fechaNacimiento ='19940816',
+	@numeroTelefono = '1111111',
+	@correo = 'qas@hotmail.com',
+	@comentarios'',
+	@activo = 1,
+	@idEntidad = 9999,
+	@idUsuarioModifica =1
+*/
 go
 
-/*CREAMOS PERFIL*/
-Select * From sys_perfiles where idEntidad = 10006
---exec sp_ui_catalogos 0,'Administrador','',10006,1,1,'sys_perfiles'
 
-/*CREAMOS USUARIO*/
-Select * From sys_usuarios where idEntidad = 10006
---exec sp_ui_usuarios 0,15,'analia','','',1106,'Ana Lilia','',1,10006,1
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--CREAMOS PERFIL
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-/*CREAMOS LOS TIPOS DE PRODUCTOS*/
-Select * From cat_tiposProductosServicios where idEntidad = 10006
+Select * From sys_perfiles where idEntidad = 9999
+--exec sp_ui_catalogos 0,'Administrador','',9999,1,1,'sys_perfiles' /*los perfiles tienen la misma estructura de catalogo, por eso se ocupa el mismo SP*/
+GO
+
+
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- CREAMOS USUARIO
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Select * From sys_usuarios where idEntidad = 9999
+/*
+	exec sp_ui_usuarios 
+	@id = 0,
+	@idPerfil = 15, --aqui va el IdPerfil que se obtuvo dlel SP anterior (sys_perfiles)
+	@usuario= 'test', --usuario con el que se va a logear
+	@password = '', --se deja vacio porque elpassword se genera desde un EP que encripta la contraseña
+	@salt = '', ----se deja vacio porque salt se genera desde un EP que encripta la contraseña
+	@idPersona = 1106, -- aqui va el id que se generó a la tabla cat_personas en el sp de arriba
+	@nombre = '' -- realmente este campo no es tan util porque tengo la persona relacionada xd
+	@comentarios = ,'',
+	@activo = 1,
+	@idEntidad = 9999,
+	@idUsuarioModifica = 1
+*/
+GO
+
+
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- AQUI FALTA CREAR LO QUE CORRESPONDE A UNIDADES DE MEDIDA QUE HEMOS ESTADO MEJORANDO
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- QUERY
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- AQUI FALTA CREAR LO QUE CORRESPONDE A UNIDADES DE MEDIDA QUE HEMOS ESTADO MEJORANDO
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+GO
+
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--CREAMOS LOS TIPOS DE PRODUCTOS Genericos(pueden variar segun negocio), se planea en un fuutro crear un CRUD para que esto se haga desde el POS pero no he tenido tiempo*/
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Select * From cat_tiposProductosServicios where idEntidad = 9999
 BEGIN TRAN
-	EXEC sp_ui_catalogos 0,'Botanas y Frituras','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Frutas y Verduras','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Lácteos y Derivados','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Embutidos y Carnes Frías','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Congelados','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Bebidas','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Galletas y Snacks','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Bebidas Alcohólicas','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Dulcería y Chocolatería','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Panadería y Tortillería','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Granos y Harinas','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Pastas y Sopas','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Aceites y Condimentos','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Enlatados y Conservas','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Productos para Bebés','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Higiene Personal','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Limpieza del Hogar','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Papelería','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Mascotas','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Calzado y Ropa','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Ferretería y Pilas','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Productos de Temporada','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Novedades','',10006,1,1,'cat_tiposProductosServicios'
-	EXEC sp_ui_catalogos 0,'Regalos San Valentin','',10006,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Botanas y Frituras','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Frutas y Verduras','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Lácteos y Derivados','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Embutidos y Carnes Frías','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Congelados','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Bebidas','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Galletas y Snacks','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Bebidas Alcohólicas','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Dulcería y Chocolatería','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Panadería y Tortillería','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Granos y Harinas','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Pastas y Sopas','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Aceites y Condimentos','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Enlatados y Conservas','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Productos para Bebés','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Higiene Personal','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Limpieza del Hogar','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Papelería','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Mascotas','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Calzado y Ropa','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Ferretería y Pilas','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Productos de Temporada','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Novedades','',9999,1,1,'cat_tiposProductosServicios'
+	EXEC sp_ui_catalogos 0,'Regalos San Valentin','',9999,1,1,'cat_tiposProductosServicios'
 Rollback
-/*SETEAR CONTRASEÑA
+GO
+
+
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- SETEAR CONTRASEÑA: Este el EP que genera la constraseña para poder logearse al POS, el "id" es el id que genero a la tabla sys_usuarios del sp de arriba*/
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*
 POST: https://mystores-001-site1.jtempurl.com/auth/ChangePassword
 BODY:
 {
@@ -65,10 +145,9 @@ BODY:
 }
 */
 
+Select top 1 * From cat_unidadesMedida
+Select top 1 * From cat_magnitudMedida
+Select top 1 * From proc_unidadMedidaConversion
+Select top 1 * From proc_productoUnidadMedida
+Select top 1 * From proc_ProductoPrecioUnidad
 
---Select * From cat_productosServicios where idEntidad = 10006
-
---Select * From cat_tiposPersonas where idEntidad = 10006
---Select * From cat_personas where idEntidad = 10006
-
---Update cat_personas set idTipoPersona = 16 where id = 1068

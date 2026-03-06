@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using static MyApi.Controllers.Menu.MenuController;
 
 namespace MyApi.Controllers.Auth
 {
@@ -117,10 +118,10 @@ namespace MyApi.Controllers.Auth
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.NameIdentifier, userInfo["id"].ToString()),
-        // Agrega cualquier claim adicional que necesites
-    };
+            {
+                new Claim(ClaimTypes.NameIdentifier, userInfo["id"].ToString()),
+                // Agrega cualquier claim adicional que necesites
+            };
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -181,5 +182,317 @@ namespace MyApi.Controllers.Auth
             return Response;
 
         }
+
+        #region sesion de usuarios
+        [HttpPost]
+        [Route("ExpiraSesionVencidas")]
+        public IActionResult ExpiraSesionVencidas([FromBody] ExpiraSesionRequest req)
+        {
+            JsonResult response;
+            bool code;
+            string message;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                if (req == null || req.idEntidad <= 0)
+                    return MyToolsController.ToJson(false, "El idEntidad es obligatorio.");
+
+                db.Open();
+                db.SetCommand("sp_sys_usuario_session_expirar_vencidas", true);
+                db.AddParameter("idEntidad", req.idEntidad);
+
+                db.Execute();
+                db.Close();
+
+                code = true;
+                message = "Sesiones vencidas procesadas correctamente.";
+                response = MyToolsController.ToJson(code, message);
+            }
+            catch (Exception ex)
+            {
+                try { db.Close(); } catch { }
+                code = false;
+                message = "Ex: " + ex.Message;
+                response = MyToolsController.ToJson(code, message);
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [Route("IniciarSesionUsuario")]
+        public IActionResult IniciarSesionUsuario([FromBody] IniciarSesionUsuarioRequest req)
+        {
+            JsonResult response;
+            bool code;
+            string message;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                if (req == null)
+                    return MyToolsController.ToJson(false, "Request inválido.");
+
+                if (req.idEntidad <= 0)
+                    return MyToolsController.ToJson(false, "El idEntidad es obligatorio.");
+
+                if (req.idUsuario <= 0)
+                    return MyToolsController.ToJson(false, "El idUsuario es obligatorio.");
+
+                if (string.IsNullOrWhiteSpace(req.token))
+                    return MyToolsController.ToJson(false, "El token es obligatorio.");
+
+                if (req.idUsuarioAlta <= 0)
+                    req.idUsuarioAlta = req.idUsuario;
+
+                if (req.minutosSesion <= 0)
+                    req.minutosSesion = 5;
+
+                db.Open();
+                db.SetCommand("sp_sys_usuario_session_iniciar", true);
+                db.AddParameter("idEntidad", req.idEntidad);
+                db.AddParameter("idUsuario", req.idUsuario);
+                db.AddParameter("Token", req.token);
+                db.AddParameter("ip", string.IsNullOrWhiteSpace(req.ip) ? (object)DBNull.Value : req.ip);
+                db.AddParameter("userAgent", string.IsNullOrWhiteSpace(req.userAgent) ? (object)DBNull.Value : req.userAgent);
+                db.AddParameter("comentarios", string.IsNullOrWhiteSpace(req.comentarios) ? (object)DBNull.Value : req.comentarios);
+                db.AddParameter("idUsuarioAlta", req.idUsuarioAlta);
+                db.AddParameter("minutosSesion", req.minutosSesion);
+
+                DataSet ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                if (ds != null && ds.Tables.Count > 0)
+                    ds.Tables[0].TableName = "Data";
+
+                code = true;
+                message = "Sesión iniciada correctamente.";
+                response = MyToolsController.ToJson(code, message, ds);
+            }
+            catch (Exception ex)
+            {
+                try { db.Close(); } catch { }
+                code = false;
+                message = "Ex: " + ex.Message;
+                response = MyToolsController.ToJson(code, message);
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [Route("ValidaSesionUsuario")]
+        public IActionResult ValidaSesionUsuario([FromBody] ValidaSesionUsuarioRequest req)
+        {
+            JsonResult response;
+            bool code;
+            string message;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                if (req == null)
+                    return MyToolsController.ToJson(false, "Request inválido.");
+
+                if (req.idEntidad <= 0)
+                    return MyToolsController.ToJson(false, "El idEntidad es obligatorio.");
+
+                if (string.IsNullOrWhiteSpace(req.token))
+                    return MyToolsController.ToJson(false, "El token es obligatorio.");
+
+                db.Open();
+                db.SetCommand("sp_sys_usuario_session_validar", true);
+                db.AddParameter("idEntidad", req.idEntidad);
+                db.AddParameter("Token", req.token);
+
+                DataSet ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                if (ds != null && ds.Tables.Count > 0)
+                    ds.Tables[0].TableName = "Data";
+
+                bool sesionValida = false;
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    sesionValida = Convert.ToInt32(ds.Tables[0].Rows[0]["ok"]) == 1;
+                }
+
+                code = sesionValida;
+                message = sesionValida ? "Sesión válida." : "Sesión inválida o expirada.";
+                response = MyToolsController.ToJson(code, message, ds);
+            }
+            catch (Exception ex)
+            {
+                try { db.Close(); } catch { }
+                code = false;
+                message = "Ex: " + ex.Message;
+                response = MyToolsController.ToJson(code, message);
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [Route("HeartbeatSesionUsuario")]
+        public IActionResult HeartbeatSesionUsuario([FromBody] HeartbeatSesionUsuarioRequest req)
+        {
+            JsonResult response;
+            bool code;
+            string message;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                if (req == null)
+                    return MyToolsController.ToJson(false, "Request inválido.");
+
+                if (req.idEntidad <= 0)
+                    return MyToolsController.ToJson(false, "El idEntidad es obligatorio.");
+
+                if (string.IsNullOrWhiteSpace(req.token))
+                    return MyToolsController.ToJson(false, "El token es obligatorio.");
+
+                if (req.minutosSesion <= 0)
+                    req.minutosSesion = 5;
+
+                db.Open();
+                db.SetCommand("sp_sys_usuario_session_heartbeat", true);
+                db.AddParameter("idEntidad", req.idEntidad);
+                db.AddParameter("Token", req.token);
+                db.AddParameter("minutosSesion", req.minutosSesion);
+
+                DataSet ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                if (ds != null && ds.Tables.Count > 0)
+                    ds.Tables[0].TableName = "Data";
+
+                bool heartbeatOk = false;
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    heartbeatOk = Convert.ToInt32(ds.Tables[0].Rows[0]["ok"]) == 1;
+                }
+
+                code = heartbeatOk;
+                message = heartbeatOk ? "Heartbeat aplicado." : "Sesión inválida o expirada.";
+                response = MyToolsController.ToJson(code, message, ds);
+            }
+            catch (Exception ex)
+            {
+                try { db.Close(); } catch { }
+                code = false;
+                message = "Ex: " + ex.Message;
+                response = MyToolsController.ToJson(code, message);
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [Route("CerrarSesionUsuario")]
+        public IActionResult CerrarSesionUsuario([FromBody] CerrarSesionUsuarioRequest req)
+        {
+            JsonResult response;
+            bool code;
+            string message;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                if (req == null)
+                    return MyToolsController.ToJson(false, "Request inválido.");
+
+                if (req.idEntidad <= 0)
+                    return MyToolsController.ToJson(false, "El idEntidad es obligatorio.");
+
+                if (string.IsNullOrWhiteSpace(req.token))
+                    return MyToolsController.ToJson(false, "El token es obligatorio.");
+
+                db.Open();
+                db.SetCommand("sp_sys_usuario_session_cerrar", true);
+                db.AddParameter("idEntidad", req.idEntidad);
+                db.AddParameter("Token", req.token);
+                db.AddParameter("idUsuarioModifica", req.idUsuarioModifica.HasValue ? (object)req.idUsuarioModifica.Value : DBNull.Value);
+                db.AddParameter("comentarios", string.IsNullOrWhiteSpace(req.comentarios) ? (object)DBNull.Value : req.comentarios);
+
+                DataSet ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                if (ds != null && ds.Tables.Count > 0)
+                    ds.Tables[0].TableName = "Data";
+
+                bool logoutOk = false;
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    logoutOk = Convert.ToInt32(ds.Tables[0].Rows[0]["ok"]) == 1;
+                }
+
+                code = logoutOk;
+                message = logoutOk ? "Sesión cerrada correctamente." : "No se encontró una sesión activa para cerrar.";
+                response = MyToolsController.ToJson(code, message, ds);
+            }
+            catch (Exception ex)
+            {
+                try { db.Close(); } catch { }
+                code = false;
+                message = "Ex: " + ex.Message;
+                response = MyToolsController.ToJson(code, message);
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [Route("ObtieneSesionActivaUsuario")]
+        public IActionResult ObtieneSesionActivaUsuario([FromBody] ObtenerSesionActivaUsuarioRequest req)
+        {
+            JsonResult response;
+            bool code;
+            string message;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                if (req == null)
+                    return MyToolsController.ToJson(false, "Request inválido.");
+
+                if (req.idEntidad <= 0)
+                    return MyToolsController.ToJson(false, "El idEntidad es obligatorio.");
+
+                if (req.idUsuario <= 0)
+                    return MyToolsController.ToJson(false, "El idUsuario es obligatorio.");
+
+                db.Open();
+                db.SetCommand("sp_sys_usuario_session_obtener_activa", true);
+                db.AddParameter("idEntidad", req.idEntidad);
+                db.AddParameter("idUsuario", req.idUsuario);
+
+                DataSet ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                if (ds != null && ds.Tables.Count > 0)
+                    ds.Tables[0].TableName = "Data";
+
+                bool existeSesion = ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0;
+
+                code = true;
+                message = existeSesion ? "Sesión activa encontrada." : "El usuario no tiene sesión activa.";
+                response = MyToolsController.ToJson(code, message, ds);
+            }
+            catch (Exception ex)
+            {
+                try { db.Close(); } catch { }
+                code = false;
+                message = "Ex: " + ex.Message;
+                response = MyToolsController.ToJson(code, message);
+            }
+
+            return response;
+        }
+        #endregion
     }
 }
