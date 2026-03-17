@@ -10,6 +10,8 @@ using MyApi.Controllers.MyTools;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Data.SqlClient;
 using static MyApi.Controllers.MyTools.MyToolsController;
+using MyApi.Controllers.Recurso;
+using MyApi.Models.Recurso;
 
 namespace MyApi.Controllers.Menu
 {
@@ -88,8 +90,8 @@ namespace MyApi.Controllers.Menu
         }
 
         [HttpPost]
-        [Route("insert-productoservicio")]
-        public IActionResult ProductoServicioPut(ProductoServicio cProductoServicio)
+        [Route("insert-productoservicioURLImg")]
+        public IActionResult ProductoServicioPutURLImg(ProductoServicio cProductoServicio)
         {
             /*Se declaran Variables*/
             JsonResult Response;
@@ -97,6 +99,9 @@ namespace MyApi.Controllers.Menu
             string Message;
             DataTable dt;
             cProductoServicio.id = 0;
+
+            RecursoController recursoController = new RecursoController();
+
 
             try
             {
@@ -120,7 +125,85 @@ namespace MyApi.Controllers.Menu
                     new Parametro("comentarios", cProductoServicio.comentarios.ToString()),
                     new Parametro("activo", cProductoServicio.activo.ToString()),
                     new Parametro("idEntidad", cProductoServicio.idEntidad.ToString()),
-                    new Parametro("idUsuarioModifica", cProductoServicio.idUsuarioModifica.ToString()),
+                    new Parametro("idUsuarioModifica", cProductoServicio.idUsuarioAlta.ToString()),
+                    new Parametro("calificacion", cProductoServicio.calificacion.ToString()),
+                    new Parametro("popular", cProductoServicio.popular.ToString()),
+                    new Parametro("idTipoPrecio", cProductoServicio.idTipoPrecio.ToString()),
+                    new Parametro("costo", cProductoServicio.costo.ToString()),
+
+                };
+                
+                dt = DataBase.Listar("sp_ui_productosServicios", parametros);
+                if (cProductoServicio.URLimagen.Length>0)
+                {
+                    DataRow dr = dt.Rows[0];
+                    Models.Recurso.Recurso recurso = new Models.Recurso.Recurso();
+                    recurso.id = 0;
+                    recurso.idTabla = 1;
+                    recurso.idRegistro = (int)dr["id"];
+                    recurso.urlImagen = cProductoServicio.URLimagen?.ToString() ?? "";
+                    recurso.recursoBase64 = "";
+                    recurso.comentarios = cProductoServicio.descripcion ?? "";
+                    recurso.activo = cProductoServicio.activo;
+                    recurso.idEntidad = cProductoServicio.idEntidad;
+                    recurso.idUsuarioModifica = cProductoServicio.idUsuarioAlta;
+                    recursoController.RecursoPut(recurso);
+
+                }
+
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code,Message,dt);
+
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+
+            
+        }
+
+        [HttpPost]
+        [Route("insert-productoservicio")]
+        public IActionResult ProductoServicioPut(ProductoServicio cProductoServicio)
+        {
+            /*Se declaran Variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataTable dt;
+            cProductoServicio.id = 0;
+
+            RecursoController recursoController = new RecursoController();
+
+
+            try
+            {
+                /*Inicia proceso*/
+                List<Parametro> parametros = new List<Parametro>{
+                    new Parametro("id", cProductoServicio.id.ToString()),
+                    new Parametro("idTipoProductoServicio", cProductoServicio.idTipoProductoServicio.ToString()),
+                    new Parametro("folioProductoServicio", cProductoServicio.folioProductoServicio.ToString()),
+                    new Parametro("precio", cProductoServicio.precio.ToString()),
+                    new Parametro("descripcion", cProductoServicio.descripcion.ToString()),
+                    new Parametro("recurrente", cProductoServicio.recurrente.ToString()),
+                    new Parametro("requiereSerie", cProductoServicio.requiereSerie.ToString()),
+                    new Parametro("requiereFechaCaducidad", cProductoServicio.requiereFechaCaducidad.ToString()),
+                    new Parametro("requiereLote", cProductoServicio.requiereLote.ToString()),
+                    new Parametro("requiereNumeracion", cProductoServicio.requiereNumeracion.ToString()),
+                    new Parametro("idUnidadMedidaCompra", cProductoServicio.idUnidadMedidaCompra.ToString()),
+                    new Parametro("idUnidadMedidaVenta", cProductoServicio.idUnidadMedidaVenta.ToString()),
+                    new Parametro("idUnidadMedidaBase", cProductoServicio.idUnidadMedidaBase.ToString()),
+                    new Parametro("stockMin", cProductoServicio.stockMin.ToString()),
+                    new Parametro("stockMax", cProductoServicio.stockMax.ToString()),
+                    new Parametro("comentarios", cProductoServicio.comentarios.ToString()),
+                    new Parametro("activo", cProductoServicio.activo.ToString()),
+                    new Parametro("idEntidad", cProductoServicio.idEntidad.ToString()),
+                    new Parametro("idUsuarioModifica", cProductoServicio.idUsuarioAlta.ToString()),
                     new Parametro("calificacion", cProductoServicio.calificacion.ToString()),
                     new Parametro("popular", cProductoServicio.popular.ToString()),
                     new Parametro("idTipoPrecio", cProductoServicio.idTipoPrecio.ToString()),
