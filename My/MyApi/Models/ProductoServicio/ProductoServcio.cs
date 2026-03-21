@@ -28,6 +28,7 @@
         public bool popular { get; set; }
         public int idTipoPrecio { get; set; }
         public decimal costo { get; set; }
+        public string URLimagen { get; set; } = "";
 
     }
 }

@@ -43,6 +43,22 @@
         public int idUsuarioModifica { get; set; }
     }
 
+    public class Cliente
+    {
+        public int? id { get; set; }
+        public int idTipoPersona { get; set; }
+        public string nombre { get; set; } = "";
+        public string apellidoP { get; set; } = "";
+        public string apellidoM { get; set; } = "";
+        public string correo { get; set; } = "";
+        public string numeroTelefono { get; set; } = "";
+        public string comentarios { get; set; } = "";
+        public bool activo { get; set; }
+        public int idEntidad { get; set; }
+        public int idUsuarioModifica { get; set; }
+    }
+
+
     public class Domicilio
     {
         public int id { get; set; }
