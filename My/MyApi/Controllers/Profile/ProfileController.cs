@@ -399,6 +399,48 @@ namespace MyApi.Controllers.Profile
 
         }
 
+        [HttpPost]
+        [Route("update-cliente")]
+        public IActionResult updateCliente([FromBody] Cliente cCliente)
+        {
+            /*Se declaran Variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataTable dt;
+            DataBase2 db = new DataBase2();
+            //cCliente.id = 0;
+
+            try
+            {
+                db.SetCommand("sp_ui_cliente", true);
+                db.AddParameter("@id", cCliente.id);
+                db.AddParameter("@nombre", cCliente.nombre);
+                db.AddParameter("@apellidoP", cCliente.apellidoP);
+                db.AddParameter("@apellidoM", cCliente.apellidoM);
+                db.AddParameter("@correo", cCliente.correo);
+                db.AddParameter("@numeroTelefono", cCliente.numeroTelefono);
+                db.AddParameter("@comentarios", cCliente.comentarios);
+                db.AddParameter("@activo", cCliente.activo);
+                db.AddParameter("@idEntidad", cCliente.idEntidad);
+                db.AddParameter("@idUsuarioModifica", cCliente.idUsuarioModifica);
+
+                dt = db.ExecuteWithDataSet().Tables[0];
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message, dt);
+
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+
+
+        }
 
         [HttpPost]
         [Route("update-persona")]
