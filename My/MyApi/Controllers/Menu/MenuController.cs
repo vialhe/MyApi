@@ -35,6 +35,12 @@ namespace MyApi.Controllers.Menu
             public int isAdmin { get; set; }
         }
 
+        public class cRequestGen
+        {
+            public int id { get; set; }
+            public int idEntidad { get; set; }
+        }
+
         public class UnidadMedidaConversionRequest
         {
             public int idEntidad { get; set; }
@@ -489,5 +495,76 @@ namespace MyApi.Controllers.Menu
             return Response;
         }
 
+        [HttpPost]
+        [Route("get-sucursal")]
+        public IActionResult GetSucursalByIdentidad(cRequestGen request)
+        {
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.SetCommand("sp_se_sucursalesByIdentidad", true);
+                db.AddParameter("idSucursal", request.id.ToString());
+                db.AddParameter("idEntidad", request.idEntidad.ToString());
+
+                /*Define return success*/
+                ds = db.ExecuteWithDataSet();
+                ds.Tables[0].TableName = "Data";
+                Code = true;
+                Message = "Succes";
+
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                /*Define return ex*/
+                Code = false;
+                Message = "Exception: " + ex;
+                Response = MyToolsController.ToJson(Code, Message);
+
+            }
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("get-tipoNegocioSucursal")]
+        public IActionResult GetTipoNegocioSucursalByIdentidad(cRequestGen request)
+        {
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.SetCommand("sp_se_tipoNegocioSucursalByIdentidad", true);
+                db.AddParameter("id", request.id.ToString());
+                db.AddParameter("idEntidad", request.idEntidad.ToString());
+
+                /*Define return success*/
+                ds = db.ExecuteWithDataSet();
+                ds.Tables[0].TableName = "Data";
+                Code = true;
+                Message = "Succes";
+
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                /*Define return ex*/
+                Code = false;
+                Message = "Exception: " + ex;
+                Response = MyToolsController.ToJson(Code, Message);
+
+            }
+            return Response;
+        }
     }
 }

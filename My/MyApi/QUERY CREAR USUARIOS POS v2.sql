@@ -34,6 +34,8 @@ BEGIN TRY
 		EXEC sp_ui_catalogos 0,'Proveedor','',@idEntidad,1,@idUsuarioSistema,'cat_tiposPersonas';
 	IF NOT EXISTS (SELECT 1 FROM cat_tiposPersonas WHERE idEntidad=@idEntidad AND descripcion='Cliente' )
 		EXEC sp_ui_catalogos 0,'Cliente','',@idEntidad,1,@idUsuarioSistema,'cat_tiposPersonas';
+	IF NOT EXISTS (SELECT 1 FROM cat_tiposPersonas WHERE idEntidad=@idEntidad AND descripcion='Empleada' )
+		EXEC sp_ui_catalogos 0,'Empleada','',@idEntidad,1,@idUsuarioSistema,'cat_tiposPersonas';
 
 	DECLARE @idTipoPersonaAdmin INT =
 		(SELECT TOP 1 id FROM cat_tiposPersonas WHERE idEntidad=@idEntidad AND descripcion='Administrador' Order By id);
@@ -71,6 +73,8 @@ BEGIN TRY
 		EXEC sp_ui_catalogos 0,'Administrador','',@idEntidad,1,@idUsuarioSistema,'sys_perfiles';
 	IF NOT EXISTS (SELECT 1 FROM sys_perfiles WHERE idEntidad=@idEntidad AND descripcion='Cliente')
 		EXEC sp_ui_catalogos 0,'Cliente','',@idEntidad,1,@idUsuarioSistema,'sys_perfiles';
+	IF NOT EXISTS (SELECT 1 FROM sys_perfiles WHERE idEntidad=@idEntidad AND descripcion='Empleado')
+		EXEC sp_ui_catalogos 0,'Empleado','',10007,1,1,'sys_perfiles';
 
 	DECLARE @idPerfilAdmin INT =
 		(SELECT TOP 1 id FROM sys_perfiles WHERE idEntidad=@idEntidad AND descripcion='Administrador' order by id);
