@@ -496,6 +496,41 @@ namespace MyApi.Controllers.Menu
         }
 
         [HttpPost]
+        [Route("get-empresaConSucursalesActivas")]
+        public IActionResult GetSucursalSucursalesActivas(cRequestGen request)
+        {
+            /*Declara variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.SetCommand("sp_se_empresaSucActivas", true);
+                db.AddParameter("idEntidad", request.idEntidad.ToString());
+
+                /*Define return success*/
+                ds = db.ExecuteWithDataSet();
+                ds.Tables[0].TableName = "Data";
+                Code = true;
+                Message = "Succes";
+
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                /*Define return ex*/
+                Code = false;
+                Message = "Exception: " + ex;
+                Response = MyToolsController.ToJson(Code, Message);
+
+            }
+            return Response;
+        }
+
+        [HttpPost]
         [Route("get-sucursal")]
         public IActionResult GetSucursalByIdentidad(cRequestGen request)
         {
