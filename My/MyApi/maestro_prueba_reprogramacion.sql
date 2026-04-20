@@ -1,4 +1,4 @@
-SET NOCOUNT ON;
+SET NOCOUNT ON; 
 
 DECLARE @idEntidad int = 10007;
 DECLARE @idUsuario int = 1;
@@ -42,14 +42,14 @@ END
 
 BEGIN TRY
     BEGIN TRAN;
-
+	--COMENTAMOS HORARIO PORQUE YA TENEMOS UNO PARA ESTE EMPLEADO.
     /* 1) Horario del empleado */
     EXEC dbo.sp_ui_empleadoHorario
         @folioEmpleadoHorario = 0,
         @folioEmpleado = @folioEmpleado,
-        @diaSemana = 7,
-        @horaEntrada = '2026-04-12 09:00:00',
-        @horaSalida = '2026-04-12 18:00:00',
+        @diaSemana = 4,
+        @horaEntrada = '2026-04-15 09:00:00',
+        @horaSalida = '2026-04-15 18:00:00',
         @comentarios = '',
         @activo = 1,
         @idEntidad = @idEntidad,
@@ -59,9 +59,9 @@ BEGIN TRY
     EXEC dbo.sp_ui_empleadoBloqueoHorario
         @folioEmpleadoBloqueoHorario = 0,
         @folioEmpleado = @folioEmpleado,
-        @fecha = '2026-04-12',
-        @horaInicio = '2026-04-12 14:00:00',
-        @horaFin = '2026-04-12 15:00:00',
+        @fecha = '2026-04-15',
+        @horaInicio = '2026-04-15 14:00:00',
+        @horaFin = '2026-04-15 15:00:00',
         @idTipoBloqueoHorario = @idTipoBloqueoHorarioComida,
         @motivo = 'Comida',
         @comentarios = 'Bloqueo comida reprogramación',
@@ -75,9 +75,9 @@ BEGIN TRY
         @folioAgenda = 0,
         @folioCliente = @folioCliente,
         @idSucursal = @idSucursal,
-        @fechaCita = '2026-04-12 10:00:00',
-        @horaInicioProgramada = '2026-04-12 10:00:00',
-        @horaFinProgramada = '2026-04-12 11:00:00',
+        @fechaCita = '2026-04-15 10:00:00',
+        @horaInicioProgramada = '2026-04-15 10:00:00',
+        @horaFinProgramada = '2026-04-15 11:00:00',
         @idOrigenAgenda = @idOrigenAgenda,
         @requiereConfirmacion = 1,
         @observacionesInternas = 'Prueba reprogramación',
@@ -98,8 +98,8 @@ BEGIN TRY
         @descuento = 0,
         @cantidad = 1,
         @ordenServicio = 1,
-        @horaInicioProgramada = '2026-04-12 10:00:00',
-        @horaFinProgramada = '2026-04-12 11:00:00',
+        @horaInicioProgramada = '2026-04-15 10:00:00',
+        @horaFinProgramada = '2026-04-15 11:00:00',
         @comentarios = 'Servicio principal',
         @activo = 1,
         @idEntidad = @idEntidad,
@@ -132,7 +132,7 @@ BEGIN TRY
     /* 7) Consultar disponibilidad antes de reprogramar */
     EXEC dbo.sp_se_horariosDisponiblesServicio
         @idProductoServicio = @idProductoServicio,
-        @fecha = '2026-04-12',
+        @fecha = '2026-04-15',
         @idEntidad = @idEntidad,
         @folioEmpleado = @folioEmpleado,
         @intervaloMin = 60;
@@ -140,8 +140,8 @@ BEGIN TRY
     /* 8) Reprogramar a 12:00 a 13:00 */
     EXEC dbo.sp_ui_agendaReprogramacion
         @folioAgenda = @folioAgendaGenerado,
-        @fechaHoraNuevaInicio = '2026-04-12 12:00:00',
-        @fechaHoraNuevaFin = '2026-04-12 13:00:00',
+        @fechaHoraNuevaInicio = '2026-04-15 12:00:00',
+        @fechaHoraNuevaFin = '2026-04-15 13:00:00',
         @motivo = 'Cliente pidió mover horario',
         @comentarios = 'Reprogramación de prueba',
         @idEntidad = @idEntidad,

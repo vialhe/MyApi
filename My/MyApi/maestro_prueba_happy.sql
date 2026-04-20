@@ -1,4 +1,4 @@
-SET NOCOUNT ON;
+SET NOCOUNT ON; 
 
 DECLARE @idEntidad int = 10007;
 DECLARE @idUsuario int = 1;
@@ -76,9 +76,9 @@ BEGIN TRY
     EXEC dbo.sp_ui_empleadoHorario
         @folioEmpleadoHorario = 0,
         @folioEmpleado = @folioEmpleado,
-        @diaSemana = 6,
-        @horaEntrada = '2026-04-11 09:00:00',
-        @horaSalida = '2026-04-11 18:00:00',
+        @diaSemana = 3,
+        @horaEntrada = '2026-04-14 09:00:00',
+        @horaSalida = '2026-04-14 18:00:00',
         @comentarios = 'Horario jueves prueba',
         @activo = 1,
         @idEntidad = @idEntidad,
@@ -88,9 +88,9 @@ BEGIN TRY
     EXEC dbo.sp_ui_empleadoBloqueoHorario
         @folioEmpleadoBloqueoHorario = 0,
         @folioEmpleado = @folioEmpleado,
-        @fecha = '2026-04-11',
-        @horaInicio = '2026-04-11 14:00:00',
-        @horaFin = '2026-04-11 15:00:00',
+        @fecha = '2026-04-14',
+        @horaInicio = '2026-04-14 14:00:00',
+        @horaFin = '2026-04-14 15:00:00',
         @idTipoBloqueoHorario = @idTipoBloqueoHorarioComida,
         @motivo = 'Comida',
         @comentarios = 'Bloqueo de comida prueba',
@@ -101,7 +101,7 @@ BEGIN TRY
     /* 3) Disponibilidad */
     EXEC dbo.sp_se_horariosDisponiblesServicio
         @idProductoServicio = @idProductoServicio,
-        @fecha = '2026-04-11',
+        @fecha = '2026-04-14',
         @idEntidad = @idEntidad,
         @folioEmpleado = @folioEmpleado,
         @intervaloMin = 60;
@@ -112,9 +112,9 @@ BEGIN TRY
         @folioAgenda = 0,
         @folioCliente = @folioCliente,
         @idSucursal = @idSucursal,
-        @fechaCita = '2026-04-11 10:00:00',
-        @horaInicioProgramada = '2026-04-11 10:00:00',
-        @horaFinProgramada = '2026-04-11 11:00:00',
+        @fechaCita = '2026-04-14 10:00:00',
+        @horaInicioProgramada = '2026-04-14 10:00:00',
+        @horaFinProgramada = '2026-04-14 11:00:00',
         @idOrigenAgenda = @idOrigenAgenda,
         @requiereConfirmacion = 1,
         @observacionesInternas = 'Caso feliz de prueba',
@@ -135,8 +135,8 @@ BEGIN TRY
         @descuento = 0,
         @cantidad = 1,
         @ordenServicio = 1,
-        @horaInicioProgramada = '2026-04-11 10:00:00',
-        @horaFinProgramada = '2026-04-11 11:00:00',
+        @horaInicioProgramada = '2026-04-14 10:00:00',
+        @horaFinProgramada = '2026-04-14 11:00:00',
         @comentarios = 'Servicio principal',
         @activo = 1,
         @idEntidad = @idEntidad,

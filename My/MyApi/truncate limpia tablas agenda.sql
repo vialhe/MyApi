@@ -47,15 +47,18 @@ Select * From cat_origenAgenda
 --truncate table proc_agendaDetalleServicioEmpleado
 --truncate table proc_agendaReprogramacion
 
+sp_se_catalogos
+cat_origenAgenda
+
 EXEC dbo.sp_se_horariosDisponiblesServicio
     @idProductoServicio = 2650,
-    @fecha = '2026-04-11',
+    @fecha = '2026-04-18',
     @idEntidad = 10007,
     @folioEmpleado = 1132,
-    @intervaloMin = 60;
+    @intervaloMin = 30;
 
 --update proc_empleadoHorario set diaSemana = 6 ,comentarios = ''
---Select  DATEPART(WEEKDAY, '');  
+--Select  DATEPART(WEEKDAY, '20260419');  
 Select* From proc_empleadoHorario
 Select* From proc_empleadoBloqueoHorario
 Select* From proc_agenda
@@ -77,15 +80,15 @@ Delete proc_agendaPagoDetalle
 Delete proc_agendaBitacora
 Delete proc_agendaReprogramacion
 
-Truncate table proc_empleadoHorario
-Truncate table proc_empleadoBloqueoHorario
-Truncate table proc_agendaDetalleServicioEmpleado
-Truncate table proc_agendaPagoDetalle
-Truncate table proc_agendaBitacora
-Truncate table proc_agendaReprogramacion
-Truncate table proc_agendaPago
-Truncate table proc_agendaDetalleServicio
-Truncate table proc_agenda
+--Truncate table proc_empleadoHorario
+--Truncate table proc_empleadoBloqueoHorario
+--Truncate table proc_agendaDetalleServicioEmpleado
+--Truncate table proc_agendaPagoDetalle
+--Truncate table proc_agendaBitacora
+--Truncate table proc_agendaReprogramacion
+--Truncate table proc_agendaPago
+--Truncate table proc_agendaDetalleServicio
+--Truncate table proc_agenda
 
 DBCC CHECKIDENT ('proc_empleadoHorario', RESEED, 0);
 DBCC CHECKIDENT ('proc_empleadoBloqueoHorario', RESEED, 0);
@@ -98,5 +101,42 @@ DBCC CHECKIDENT ('proc_agendaDetalleServicio', RESEED, 0);
 DBCC CHECKIDENT ('proc_agenda', RESEED, 0);
 
 
-Insert sys_folios (descripcion,comentarios,activo,idEntidad,fechaAlta,idUsuarioAlta)
-Select 'Folio Agenda', '',1,1,GETDATE(),1
+--Insert sys_folios (descripcion,comentarios,activo,idEntidad,fechaAlta,idUsuarioAlta)
+--Select 'Folio Agenda', '',1,1,GETDATE(),1
+
+
+DECLARE @idEntidad int = 10007;
+DECLARE @folioEmpleado int = 1132;
+DECLARE @fechaIni date = '2026-04-14';
+DECLARE @fechaFin date = '2026-04-20';
+
+SELECT
+    a.folioAgenda,
+    ds.folioAgendaDetalleServicio,
+    dse.folioAgendaDetalleServicioEmpleado,
+    dse.folioEmpleado,
+    a.fechaCita,
+    a.horaInicioProgramada AS horaInicioAgenda,
+    a.horaFinProgramada AS horaFinAgenda,
+    ds.horaInicioProgramada AS horaInicioDetalle,
+    ds.horaFinProgramada AS horaFinDetalle,
+    ds.cancelado,
+    a.activo AS agendaActiva,
+    ds.activo AS detalleActivo,
+    dse.activo AS detalleEmpleadoActivo
+FROM dbo.proc_agendaDetalleServicioEmpleado dse
+INNER JOIN dbo.proc_agendaDetalleServicio ds
+    ON ds.folioAgendaDetalleServicio = dse.folioAgendaDetalleServicio
+   AND ds.idEntidad = dse.idEntidad
+INNER JOIN dbo.proc_agenda a
+    ON a.folioAgenda = ds.folioAgenda
+   AND a.idEntidad = ds.idEntidad
+WHERE dse.folioEmpleado = @folioEmpleado
+  AND dse.idEntidad = @idEntidad
+  AND CONVERT(date, a.fechaCita) between @fechaIni and @fechaFin
+ORDER BY ISNULL(ds.horaInicioProgramada, a.horaInicioProgramada);
+
+
+
+--Select * From proc_empleadoHorario
+--Select * From proc_empleadoBloqueoHorario

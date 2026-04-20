@@ -6998,6 +6998,89 @@ BEGIN
 END
 GO
 
+/* =========================================================
+   11) CONSULTA HORARIOS Y BLOQUEOS 
+   ========================================================= */
+   CREATE OR ALTER PROCEDURE dbo.sp_se_empleadoHorario
+(
+    @folioEmpleado int,
+    @idEntidad int
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF ISNULL(@folioEmpleado,0) <= 0
+    BEGIN
+        RAISERROR('El empleado es obligatorio.',16,1);
+        RETURN;
+    END
+
+    SELECT
+        eh.folioEmpleadoHorario,
+        eh.folioEmpleado,
+        eh.diaSemana,
+        eh.horaEntrada,
+        eh.horaSalida,
+        eh.comentarios,
+        eh.activo,
+        eh.idEntidad,
+        eh.fechaModificacion,
+        eh.idUsuarioModifica,
+        eh.fechaAlta,
+        eh.idUsuarioAlta
+    FROM dbo.proc_empleadoHorario eh
+    WHERE eh.folioEmpleado = @folioEmpleado
+      AND eh.idEntidad = @idEntidad
+    ORDER BY eh.diaSemana, eh.horaEntrada;
+END
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_se_empleadoBloqueoHorario
+(
+    @folioEmpleado int,
+    @idEntidad int,
+    @fechaInicio datetime = NULL,
+    @fechaFin datetime = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF ISNULL(@folioEmpleado,0) <= 0
+    BEGIN
+        RAISERROR('El empleado es obligatorio.',16,1);
+        RETURN;
+    END
+
+    SELECT
+        ebh.folioEmpleadoBloqueoHorario,
+        ebh.folioEmpleado,
+        ebh.fecha,
+        ebh.horaInicio,
+        ebh.horaFin,
+        ebh.idTipoBloqueoHorario,
+        tbh.descripcion AS tipoBloqueoHorario,
+        ebh.motivo,
+        ebh.comentarios,
+        ebh.activo,
+        ebh.idEntidad,
+        ebh.fechaModificacion,
+        ebh.idUsuarioModifica,
+        ebh.fechaAlta,
+        ebh.idUsuarioAlta
+    FROM dbo.proc_empleadoBloqueoHorario ebh
+    INNER JOIN dbo.cat_tipoBloqueoHorario tbh
+        ON tbh.idTipoBloqueoHorario = ebh.idTipoBloqueoHorario
+       AND tbh.idEntidad = ebh.idEntidad
+    WHERE ebh.folioEmpleado = @folioEmpleado
+      AND ebh.idEntidad = @idEntidad
+      AND (@fechaInicio IS NULL OR CONVERT(date, ebh.fecha) >= CONVERT(date, @fechaInicio))
+      AND (@fechaFin IS NULL OR CONVERT(date, ebh.fecha) <= CONVERT(date, @fechaFin))
+    ORDER BY ebh.fecha, ebh.horaInicio;
+END
+GO
+
 ---- 
 Select * From cat_productosServicios where identidad = 10007
 Select * From cat_precios
@@ -7027,3 +7110,4 @@ Select * From proc_agendaPagoDetalle
 Select * From proc_agendaBitacora
 Select * From proc_agendaReprogramacion
 -- 
+
