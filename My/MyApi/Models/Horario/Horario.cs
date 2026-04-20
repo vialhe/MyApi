@@ -4,6 +4,29 @@ namespace MyApi.Models.Horario
 {
     #region Request Models
 
+    public class DisponibilidadHorarioGetRequest
+    {
+        public int folioEmpleado { get; set; }
+        public int idEntidad { get; set; }
+        public DateTime fecha { get; set; }
+        public DateTime horaInicio { get; set; } 
+        public DateTime horaFin { get; set; }
+        public int? folioAgendaDetalleServicioExcluir { get; set; } = null;
+    }
+
+    public class DisponibilidadHorarioDetallesGetRequest
+    {
+        public int folioEmpleado { get; set; }
+        public int idEntidad { get; set; }
+        public DateTime fecha { get; set; }
+        public int intervaloMin { get; set; } = 30;
+        public int? folioAgendaDetalleServicioExcluir { get; set; } = null;
+        public bool incluirSlotsDisponibles { get; set; } = true;
+        public bool soloDisponibles { get; set; } = false;
+        public DateTime? horaInicio { get; set; } = null;
+        public DateTime? horaFin { get; set; } = null;
+    }
+
     public class EmpleadoHorarioGetRequest
     {
         public int folioEmpleado { get; set; }
@@ -59,6 +82,8 @@ namespace MyApi.Models.Horario
         public int id { get; set; }
         public string nombreTabla { get; set; } = "proc_empleadoBloqueoHorario";
     }
+
+
 
     #endregion
 

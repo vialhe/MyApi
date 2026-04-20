@@ -12,63 +12,7 @@ namespace MyApi.Controllers.Agenda
     [Route("[controller]")]
     public class HorarioController : ControllerBase
     {
-        
-        public class EmpleadoHorarioGetRequest
-        {
-            public int folioEmpleado { get; set; }
-            public int idEntidad { get; set; }
-        }
-
-        public class EmpleadoHorarioRequest
-        {
-            public int folioEmpleadoHorario { get; set; }
-            public int folioEmpleado { get; set; }
-            public int diaSemana { get; set; }
-            public string horaEntrada { get; set; } = "";
-            public string horaSalida { get; set; } = "";
-            public string comentarios { get; set; } = "";
-            public int activo { get; set; } = 1;
-            public int idEntidad { get; set; }
-            public int idUsuarioAlta { get; set; }
-            public int idUsuarioModifica { get; set; }
-        }
-
-        public class EmpleadoHorarioDeleteRequest
-        {
-            public int id { get; set; }
-            public string nombreTabla { get; set; } = "proc_empleadoHorario";
-        }
-
-        public class EmpleadoBloqueoGetRequest
-        {
-            public int folioEmpleado { get; set; }
-            public string fechaInicio { get; set; } = "";
-            public string fechaFin { get; set; } = "";
-            public int idEntidad { get; set; }
-        }
-
-        public class EmpleadoBloqueoRequest
-        {
-            public int folioEmpleadoBloqueoHorario { get; set; }
-            public int folioEmpleado { get; set; }
-            public string fecha { get; set; } = "";
-            public string horaInicio { get; set; } = "";
-            public string horaFin { get; set; } = "";
-            public int idTipoBloqueoHorario { get; set; }
-            public string motivo { get; set; } = "";
-            public string comentarios { get; set; } = "";
-            public int activo { get; set; } = 1;
-            public int idEntidad { get; set; }
-            public int idUsuarioAlta { get; set; }
-            public int idUsuarioModifica { get; set; }
-        }
-
-        public class EmpleadoBloqueoDeleteRequest
-        {
-            public int id { get; set; }
-            public string nombreTabla { get; set; } = "proc_empleadoBloqueoHorario";
-        }
-
+       
 
         #region Horarios
 
@@ -106,6 +50,99 @@ namespace MyApi.Controllers.Agenda
 
             return Response;
         }
+
+        [HttpPost]
+        [Route("get-empleado-disponibilidad")]
+        public IActionResult GetEmpleadoDisponibilidad([FromBody] DisponibilidadHorarioGetRequest request)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.Open();
+                db.SetCommand("sp_se_disponibilidadEmpleado", true);
+                db.AddParameter("folioEmpleado", request.folioEmpleado);
+                db.AddParameter("fecha", request.fecha);
+                db.AddParameter("horaInicio", request.horaInicio);
+                db.AddParameter("horaFin", request.horaFin);
+                db.AddParameter("idEntidad", request.idEntidad);
+                db.AddParameter("folioAgendaDetalleServicioExcluir", request.folioAgendaDetalleServicioExcluir);
+
+                ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                ds.Tables[0].TableName = "Data";
+                Code = true;
+                Message = "Success";
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("get-empleado-disponibilidad-detalle")]
+        public IActionResult GetEmpleadoDisponibilidadDetalle([FromBody] DisponibilidadHorarioDetallesGetRequest request)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.Open();
+                db.SetCommand("sp_se_disponibilidadEmpleadoDetalle", true);
+                db.AddParameter("folioEmpleado", request.folioEmpleado);
+                db.AddParameter("fecha", request.fecha);
+                db.AddParameter("horaInicio", request.horaInicio);
+                db.AddParameter("horaFin", request.horaFin);
+                db.AddParameter("idEntidad", request.idEntidad);
+                db.AddParameter("folioAgendaDetalleServicioExcluir", request.folioAgendaDetalleServicioExcluir);
+                db.AddParameter("intervaloMin", request.intervaloMin);
+                db.AddParameter("incluirSlotsDisponibles", request.incluirSlotsDisponibles);
+                db.AddParameter("soloDisponibles", request.soloDisponibles);
+
+                ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                if (ds.Tables.Count == 4)
+                {
+                    ds.Tables[0].TableName = "Horario";
+                    ds.Tables[1].TableName = "BloqueHorario";
+                    ds.Tables[2].TableName = "Agenda";
+                    ds.Tables[3].TableName = "Disponibilidad";
+                }
+                else {
+                    ds.Tables[0].TableName = "Data";
+                }
+                
+    
+                Code = true;
+                Message = "Success";
+                Response = MyToolsController.ToJson(Code, Message, ds);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
 
         [HttpPost]
         [Route("insert-empleado-horario")]

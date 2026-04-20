@@ -92,45 +92,6 @@ namespace MyApi.Controllers.Agenda
 
         #endregion
 
-        #region Catalogos Especificos Agenda
-
-        [HttpPost]
-        [Route("get-agenda-empleados")]
-        public IActionResult GetAgendaEmpleados([FromBody] EmpleadoAgendaRequest request)
-        {
-            JsonResult Response;
-            bool Code;
-            string Message;
-            DataSet ds;
-            DataBase2 db = new DataBase2();
-
-            try
-            {
-                db.Open();
-                db.SetCommand("sp_se_agendaEmpleados", true);
-                db.AddParameter("folioEmpleado", request.folioEmpleado.ToString());
-                db.AddParameter("idSucursal", request.idSucursal.ToString());
-                db.AddParameter("idEntidad", request.idEntidad.ToString());
-                db.AddParameter("activo", request.activo.ToString());
-
-                ds = db.ExecuteWithDataSet();
-                db.Close();
-
-                ds.Tables[0].TableName = "Data";
-                Code = true;
-                Message = "Success";
-                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
-            }
-            catch (Exception ex)
-            {
-                Code = false;
-                Message = "Exception: " + ex.Message;
-                Response = MyToolsController.ToJson(Code, Message);
-            }
-
-            return Response;
-        }
-
         [HttpPost]
         [Route("get-agenda-servicios")]
         public IActionResult GetAgendaServicios([FromBody] ServicioAgendaRequest request)
@@ -166,6 +127,6 @@ namespace MyApi.Controllers.Agenda
             return Response;
         }
 
-        #endregion
+
     }
 }
