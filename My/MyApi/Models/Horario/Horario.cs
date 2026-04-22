@@ -47,14 +47,14 @@ namespace MyApi.Models.Horario
         public string comentarios { get; set; } = "";
         public int activo { get; set; } = 1;
         public int idEntidad { get; set; }
-        public int idUsuarioAlta { get; set; }
         public int idUsuarioModifica { get; set; }
     }
 
     public class EmpleadoHorarioDeleteRequest
     {
-        public int id { get; set; }
-        public string nombreTabla { get; set; } = "proc_empleadoHorario";
+        public int folioEmpleadoHorario { get; set; }
+        public int idSucursal { get; set; }
+        public int idEntidad { get; set; }
     }
 
     public class EmpleadoBloqueoGetRequest
@@ -79,14 +79,14 @@ namespace MyApi.Models.Horario
         public string comentarios { get; set; } = "";
         public int activo { get; set; } = 1;
         public int idEntidad { get; set; }
-        public int idUsuarioAlta { get; set; }
         public int idUsuarioModifica { get; set; }
     }
 
     public class EmpleadoBloqueoDeleteRequest
     {
-        public int id { get; set; }
-        public string nombreTabla { get; set; } = "proc_empleadoBloqueoHorario";
+        public int folioEmpleadoBloqueo { get; set; }
+        public int idSucursal { get; set; }
+        public int idEntidad { get; set; }
     }
 
 

@@ -171,7 +171,7 @@ namespace MyApi.Controllers.Agenda
                     new Parametro("comentarios", request.comentarios ?? ""),
                     new Parametro("activo", request.activo.ToString()),
                     new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioAlta", request.idUsuarioAlta.ToString())
+                    new Parametro("idUsuarioAlta", request.idUsuarioModifica.ToString())
                 };
 
                 dt = DataBase.Listar("sp_ui_empleadoHorario", parametros);
@@ -212,7 +212,7 @@ namespace MyApi.Controllers.Agenda
                     new Parametro("comentarios", request.comentarios ?? ""),
                     new Parametro("activo", request.activo.ToString()),
                     new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioModifica", request.idUsuarioModifica.ToString())
+                    new Parametro("idUsuarioAlta", request.idUsuarioModifica.ToString())
                 };
 
                 dt = DataBase.Listar("sp_ui_empleadoHorario", parametros);
@@ -235,23 +235,29 @@ namespace MyApi.Controllers.Agenda
         [Route("delete-empleado-horario")]
         public IActionResult DeleteEmpleadoHorario([FromBody] EmpleadoHorarioDeleteRequest request)
         {
-            if (request.id <= 0)
-                return BadRequest(MyToolsController.ToJson(false, "El ID proporcionado no es válido."));
+            JsonResult Response;
 
-            if (string.IsNullOrWhiteSpace(request.nombreTabla))
-                request.nombreTabla = "proc_empleadoHorario";
+            if (request.folioEmpleadoHorario <= 0)
+                return BadRequest(MyToolsController.ToJson(false, "El Folio Horario proporcionado no es válido."));
+            if (request.idSucursal <= 0)
+                return BadRequest(MyToolsController.ToJson(false, "El ID Sucursal proporcionado no es válido."));
+            if (request.idEntidad <= 0)
+                return BadRequest(MyToolsController.ToJson(false, "El ID Entidad proporcionado no es válido."));
+
 
             try
             {
                 List<Parametro> parametros = new List<Parametro>
                 {
-                    new Parametro("id", request.id.ToString()),
-                    new Parametro("nombreTabla", request.nombreTabla)
+                    new Parametro("folioEmpleadoHorario", request.folioEmpleadoHorario.ToString()),
+                    new Parametro("idSucursal", request.idSucursal.ToString()),
+                    new Parametro("idEntidad", request.idEntidad.ToString())
                 };
 
-                DataBase.Ejecutar("sp_del_fromNameTable", parametros);
+                DataBase.Ejecutar("sp_del_empleadoHorario", parametros);
 
-                return Ok(MyToolsController.ToJson(true, "Horario eliminado exitosamente."));
+                Response = MyToolsController.ToJson(true, "Horario eliminado exitosamente.");
+                return Response;
             }
             catch (SqlException sqlEx)
             {
@@ -331,7 +337,7 @@ namespace MyApi.Controllers.Agenda
                     new Parametro("comentarios", request.comentarios ?? ""),
                     new Parametro("activo", request.activo.ToString()),
                     new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioAlta", request.idUsuarioAlta.ToString())
+                    new Parametro("idUsuarioAlta", request.idUsuarioModifica.ToString())
                 };
 
                 dt = DataBase.Listar("sp_ui_empleadoBloqueoHorario", parametros);
@@ -374,7 +380,7 @@ namespace MyApi.Controllers.Agenda
                     new Parametro("comentarios", request.comentarios ?? ""),
                     new Parametro("activo", request.activo.ToString()),
                     new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioModifica", request.idUsuarioModifica.ToString())
+                    new Parametro("idUsuarioAlta", request.idUsuarioModifica.ToString())
                 };
 
                 dt = DataBase.Listar("sp_ui_empleadoBloqueoHorario", parametros);
@@ -397,23 +403,29 @@ namespace MyApi.Controllers.Agenda
         [Route("delete-empleado-bloqueo")]
         public IActionResult DeleteEmpleadoBloqueo([FromBody] EmpleadoBloqueoDeleteRequest request)
         {
-            if (request.id <= 0)
-                return BadRequest(MyToolsController.ToJson(false, "El ID proporcionado no es válido."));
+            JsonResult Response;
 
-            if (string.IsNullOrWhiteSpace(request.nombreTabla))
-                request.nombreTabla = "proc_empleadoBloqueoHorario";
+            if (request.folioEmpleadoBloqueo <= 0)
+                return BadRequest(MyToolsController.ToJson(false, "El Folio Horario proporcionado no es válido."));
+            if (request.idSucursal <= 0)
+                return BadRequest(MyToolsController.ToJson(false, "El ID Sucursal proporcionado no es válido."));
+            if (request.idEntidad <= 0)
+                return BadRequest(MyToolsController.ToJson(false, "El ID Entidad proporcionado no es válido."));
+
 
             try
             {
                 List<Parametro> parametros = new List<Parametro>
                 {
-                    new Parametro("id", request.id.ToString()),
-                    new Parametro("nombreTabla", request.nombreTabla)
+                    new Parametro("folioEmpleadoBloqueoHorario", request.folioEmpleadoBloqueo.ToString()),
+                    new Parametro("idSucursal", request.idSucursal.ToString()),
+                    new Parametro("idEntidad", request.idEntidad.ToString())
                 };
 
-                DataBase.Ejecutar("sp_del_fromNameTable", parametros);
+                DataBase.Ejecutar("sp_del_empleadoBloqueoHorario", parametros);
 
-                return Ok(MyToolsController.ToJson(true, "Bloqueo eliminado exitosamente."));
+                Response =  MyToolsController.ToJson(true, "Bloqueo eliminado exitosamente.");
+                return Response;
             }
             catch (SqlException sqlEx)
             {
