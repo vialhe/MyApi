@@ -31,6 +31,7 @@ namespace MyApi.Controllers.Agenda
                 db.Open();
                 db.SetCommand("sp_se_empleadoHorario", true);
                 db.AddParameter("folioEmpleado", request.folioEmpleado);
+                db.AddParameter("idSucursal", request.idSucursal);
                 db.AddParameter("idEntidad", request.idEntidad);
 
                 ds = db.ExecuteWithDataSet();
@@ -66,6 +67,7 @@ namespace MyApi.Controllers.Agenda
                 db.Open();
                 db.SetCommand("sp_se_disponibilidadEmpleado", true);
                 db.AddParameter("folioEmpleado", request.folioEmpleado);
+                db.AddParameter("idSucursal", request.idSucursal);
                 db.AddParameter("fecha", request.fecha);
                 db.AddParameter("horaInicio", request.horaInicio);
                 db.AddParameter("horaFin", request.horaFin);
@@ -105,6 +107,7 @@ namespace MyApi.Controllers.Agenda
                 db.Open();
                 db.SetCommand("sp_se_disponibilidadEmpleadoDetalle", true);
                 db.AddParameter("folioEmpleado", request.folioEmpleado);
+                db.AddParameter("idSucursal", request.idSucursal);
                 db.AddParameter("fecha", request.fecha);
                 db.AddParameter("horaInicio", request.horaInicio);
                 db.AddParameter("horaFin", request.horaFin);
@@ -161,6 +164,7 @@ namespace MyApi.Controllers.Agenda
                 {
                     new Parametro("folioEmpleadoHorario", request.folioEmpleadoHorario.ToString()),
                     new Parametro("folioEmpleado", request.folioEmpleado.ToString()),
+                    new Parametro("idSucursal", request.idSucursal.ToString()),
                     new Parametro("diaSemana", request.diaSemana.ToString()),
                     new Parametro("horaEntrada", request.horaEntrada),
                     new Parametro("horaSalida", request.horaSalida),
@@ -201,6 +205,7 @@ namespace MyApi.Controllers.Agenda
                 {
                     new Parametro("folioEmpleadoHorario", request.folioEmpleadoHorario.ToString()),
                     new Parametro("folioEmpleado", request.folioEmpleado.ToString()),
+                    new Parametro("idSucursal", request.idSucursal.ToString()),
                     new Parametro("diaSemana", request.diaSemana.ToString()),
                     new Parametro("horaEntrada", request.horaEntrada),
                     new Parametro("horaSalida", request.horaSalida),
@@ -277,6 +282,7 @@ namespace MyApi.Controllers.Agenda
                 db.Open();
                 db.SetCommand("sp_se_empleadoBloqueoHorario", true);
                 db.AddParameter("folioEmpleado", request.folioEmpleado);
+                db.AddParameter("idSucursal", request.idSucursal);
                 db.AddParameter("fechaInicio", request.fechaInicio ?? "");
                 db.AddParameter("fechaFin", request.fechaFin ?? "");
                 db.AddParameter("idEntidad", request.idEntidad);
@@ -316,6 +322,7 @@ namespace MyApi.Controllers.Agenda
                 {
                     new Parametro("folioEmpleadoBloqueoHorario", request.folioEmpleadoBloqueoHorario.ToString()),
                     new Parametro("folioEmpleado", request.folioEmpleado.ToString()),
+                    new Parametro("idSucursal", request.idSucursal.ToString()),
                     new Parametro("fecha", request.fecha),
                     new Parametro("horaInicio", request.horaInicio),
                     new Parametro("horaFin", request.horaFin),
@@ -358,6 +365,7 @@ namespace MyApi.Controllers.Agenda
                 {
                     new Parametro("folioEmpleadoBloqueoHorario", request.folioEmpleadoBloqueoHorario.ToString()),
                     new Parametro("folioEmpleado", request.folioEmpleado.ToString()),
+                    new Parametro("idSucursal", request.idSucursal.ToString()),
                     new Parametro("fecha", request.fecha),
                     new Parametro("horaInicio", request.horaInicio),
                     new Parametro("horaFin", request.horaFin),

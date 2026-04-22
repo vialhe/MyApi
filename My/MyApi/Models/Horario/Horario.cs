@@ -8,6 +8,7 @@ namespace MyApi.Models.Horario
     {
         public int folioEmpleado { get; set; }
         public int idEntidad { get; set; }
+        public int idSucursal { get; set; }
         public DateTime fecha { get; set; }
         public DateTime horaInicio { get; set; } 
         public DateTime horaFin { get; set; }
@@ -17,6 +18,7 @@ namespace MyApi.Models.Horario
     public class DisponibilidadHorarioDetallesGetRequest
     {
         public int folioEmpleado { get; set; }
+        public int idSucursal { get; set; }
         public int idEntidad { get; set; }
         public DateTime fecha { get; set; }
         public int intervaloMin { get; set; } = 30;
@@ -31,12 +33,14 @@ namespace MyApi.Models.Horario
     {
         public int folioEmpleado { get; set; }
         public int idEntidad { get; set; }
+        public int idSucursal { get; set; }
     }
 
     public class EmpleadoHorarioRequest
     {
         public int folioEmpleadoHorario { get; set; }
         public int folioEmpleado { get; set; }
+        public int idSucursal { get; set; }
         public int diaSemana { get; set; }
         public string horaEntrada { get; set; } = "";
         public string horaSalida { get; set; } = "";
@@ -56,6 +60,7 @@ namespace MyApi.Models.Horario
     public class EmpleadoBloqueoGetRequest
     {
         public int folioEmpleado { get; set; }
+        public int idSucursal { get; set; }
         public string fechaInicio { get; set; } = "";
         public string fechaFin { get; set; } = "";
         public int idEntidad { get; set; }
@@ -65,6 +70,7 @@ namespace MyApi.Models.Horario
     {
         public int folioEmpleadoBloqueoHorario { get; set; }
         public int folioEmpleado { get; set; }
+        public int idSucursal { get; set; }
         public string fecha { get; set; } = "";
         public string horaInicio { get; set; } = "";
         public string horaFin { get; set; } = "";
