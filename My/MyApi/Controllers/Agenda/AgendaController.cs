@@ -19,106 +19,116 @@ namespace MyApi.Controllers.Agenda
         [Route("insert-agenda")]
         public IActionResult InsertAgenda([FromBody] AgendaCreateRequest request)
         {
-            JsonResult Response;
-            bool Code;
-            string Message;
-
-            DataTable dtAgenda;
-            DataTable dtDetalle;
+            JsonResult response;
+            DataTable dtAgenda = new DataTable();
+            DataTable dtDetalle = new DataTable();
             int folioAgendaGenerado = 0;
+
+            var db = new DataBase2();
 
             try
             {
-                if (request.detalles == null || request.detalles.Count == 0)
+                if (request == null || request.detalles == null || request.detalles.Count == 0)
                     return MyToolsController.ToJson(false, "La agenda debe contener al menos un detalle.");
 
-                List<Parametro> parametrosAgenda = new List<Parametro>
-                {
-                    new Parametro("folioAgenda", "0"),
-                    new Parametro("folioCliente", request.folioCliente.ToString()),
-                    new Parametro("idSucursal", request.idSucursal.ToString()),
-                    new Parametro("fechaCita", request.fechaCita),
-                    new Parametro("horaInicioProgramada", request.horaInicioProgramada),
-                    new Parametro("horaFinProgramada", request.horaFinProgramada),
-                    new Parametro("idOrigenAgenda", request.idOrigenAgenda.ToString()),
-                    new Parametro("requiereConfirmacion", request.requiereConfirmacion.ToString()),
-                    new Parametro("observacionesInternas", request.observacionesInternas ?? ""),
-                    new Parametro("comentarios", request.comentarios ?? ""),
-                    new Parametro("activo", request.activo.ToString()),
-                    new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioAlta", request.idUsuarioAlta.ToString())
-                };
+                db.BeginTransaction();
 
-                dtAgenda = DataBase.Listar("sp_ui_agenda", parametrosAgenda);
+                // =========================
+                // 1) INSERTA AGENDA
+                // =========================
+                db.SetCommand("sp_ui_agenda", true);
+                db.AddParameter("@folioAgenda", 0);
+                db.AddParameter("@folioCliente", request.folioCliente);
+                db.AddParameter("@idSucursal", request.idSucursal);
+                db.AddParameter("@fechaCita", request.fechaCita);
+                db.AddParameter("@horaInicioProgramada", request.horaInicioProgramada);
+                db.AddParameter("@horaFinProgramada", request.horaFinProgramada);
+                db.AddParameter("@idOrigenAgenda", request.idOrigenAgenda);
+                db.AddParameter("@requiereConfirmacion", request.requiereConfirmacion);
+                db.AddParameter("@observacionesInternas", request.observacionesInternas ?? "");
+                db.AddParameter("@comentarios", request.comentarios ?? "");
+                db.AddParameter("@activo", request.activo);
+                db.AddParameter("@idEntidad", request.idEntidad);
+                db.AddParameter("@idUsuarioAlta", request.idUsuarioAlta);
 
-                if (dtAgenda.Rows.Count <= 0)
-                    return MyToolsController.ToJson(false, "No fue posible generar la agenda.");
+                // Usa aquí el método de DataBase2 que te retorna DataTable
+                dtAgenda = db.ExecuteWithDataSet().Tables[0];
+
+                if (dtAgenda == null || dtAgenda.Rows.Count <= 0)
+                    throw new Exception("No fue posible generar la agenda.");
 
                 folioAgendaGenerado = Convert.ToInt32(dtAgenda.Rows[0]["folioAgenda"]);
 
+                // =========================
+                // 2) INSERTA DETALLES
+                // =========================
                 foreach (var detalle in request.detalles)
                 {
-                    List<Parametro> parametrosDetalle = new List<Parametro>
-                    {
-                        new Parametro("folioAgendaDetalleServicio", "0"),
-                        new Parametro("folioAgenda", folioAgendaGenerado.ToString()),
-                        new Parametro("idProductoServicio", detalle.idProductoServicio.ToString()),
-                        new Parametro("precioFinal", detalle.precioFinal.ToString()),
-                        new Parametro("descuento", detalle.descuento.ToString()),
-                        new Parametro("cantidad", detalle.cantidad.ToString()),
-                        new Parametro("ordenServicio", detalle.ordenServicio.ToString()),
-                        new Parametro("horaInicioProgramada", detalle.horaInicioProgramada),
-                        new Parametro("horaFinProgramada", detalle.horaFinProgramada),
-                        new Parametro("comentarios", detalle.comentarios ?? ""),
-                        new Parametro("activo", detalle.activo.ToString()),
-                        new Parametro("idEntidad", request.idEntidad.ToString()),
-                        new Parametro("idUsuarioAlta", request.idUsuarioAlta.ToString())
-                    };
+                    db.SetCommand("sp_ui_agendaDetalleServicio", true);
+                    db.AddParameter("@folioAgendaDetalleServicio", 0);
+                    db.AddParameter("@folioAgenda", folioAgendaGenerado);
+                    db.AddParameter("@idProductoServicio", detalle.idProductoServicio);
+                    db.AddParameter("@precioFinal", detalle.precioFinal);
+                    db.AddParameter("@descuento", detalle.descuento);
+                    db.AddParameter("@cantidad", detalle.cantidad);
+                    db.AddParameter("@ordenServicio", detalle.ordenServicio);
+                    db.AddParameter("@horaInicioProgramada", detalle.horaInicioProgramada);
+                    db.AddParameter("@horaFinProgramada", detalle.horaFinProgramada);
+                    db.AddParameter("@comentarios", detalle.comentarios ?? "");
+                    db.AddParameter("@activo", detalle.activo);
+                    db.AddParameter("@idEntidad", request.idEntidad);
+                    db.AddParameter("@idUsuarioAlta", request.idUsuarioAlta);
 
-                    dtDetalle = DataBase.Listar("sp_ui_agendaDetalleServicio", parametrosDetalle);
+                    dtDetalle = db.ExecuteWithDataSet().Tables[0];
 
-                    if (dtDetalle.Rows.Count <= 0)
-                        return MyToolsController.ToJson(false, "No fue posible generar un detalle de la agenda.");
+                    if (dtDetalle == null || dtDetalle.Rows.Count <= 0)
+                        throw new Exception("No fue posible generar un detalle de la agenda.");
 
                     int folioAgendaDetalleServicio = Convert.ToInt32(dtDetalle.Rows[0]["folioAgendaDetalleServicio"]);
 
+                    // =========================
+                    // 3) INSERTA EMPLEADOS
+                    // =========================
                     if (detalle.empleados != null && detalle.empleados.Count > 0)
                     {
                         foreach (var empleado in detalle.empleados)
                         {
-                            List<Parametro> parametrosEmpleado = new List<Parametro>
-                            {
-                                new Parametro("folioAgendaDetalleServicioEmpleado", "0"),
-                                new Parametro("folioAgendaDetalleServicio", folioAgendaDetalleServicio.ToString()),
-                                new Parametro("folioEmpleado", empleado.folioEmpleado.ToString()),
-                                new Parametro("idRolParticipacionServicio", empleado.idRolParticipacionServicio.ToString()),
-                                new Parametro("porcentajeParticipacion", empleado.porcentajeParticipacion.ToString()),
-                                new Parametro("comisionCalculada", empleado.comisionCalculada.ToString()),
-                                new Parametro("horaInicioReal", empleado.horaInicioReal ?? ""),
-                                new Parametro("horaFinReal", empleado.horaFinReal ?? ""),
-                                new Parametro("comentarios", empleado.comentarios ?? ""),
-                                new Parametro("activo", empleado.activo.ToString()),
-                                new Parametro("idEntidad", request.idEntidad.ToString()),
-                                new Parametro("idUsuarioAlta", request.idUsuarioAlta.ToString())
-                            };
+                            db.SetCommand("sp_ui_agendaDetalleServicioEmpleado", true);
+                            db.AddParameter("@folioAgendaDetalleServicioEmpleado", 0);
+                            db.AddParameter("@folioAgendaDetalleServicio", folioAgendaDetalleServicio);
+                            db.AddParameter("@folioEmpleado", empleado.folioEmpleado);
+                            db.AddParameter("@idRolParticipacionServicio", empleado.idRolParticipacionServicio);
+                            db.AddParameter("@porcentajeParticipacion", empleado.porcentajeParticipacion);
+                            db.AddParameter("@comisionCalculada", empleado.comisionCalculada);
+                            db.AddParameter("@horaInicioReal", empleado.horaInicioReal ?? "");
+                            db.AddParameter("@horaFinReal", empleado.horaFinReal ?? (object)DBNull.Value);
+                            db.AddParameter("@comentarios", string.IsNullOrWhiteSpace(empleado.comentarios) ? (object)DBNull.Value : empleado.comentarios);
+                            db.AddParameter("@activo", empleado.activo);
+                            db.AddParameter("@idEntidad", request.idEntidad);
+                            db.AddParameter("@idUsuarioAlta", request.idUsuarioAlta);
 
-                            DataBase.Listar("sp_ui_agendaDetalleServicioEmpleado", parametrosEmpleado);
+                            db.Execute();
                         }
                     }
                 }
 
-                Code = true;
-                Message = "Success";
-                Response = MyToolsController.ToJson(Code, Message, dtAgenda);
+                db.Commit();
+                response = MyToolsController.ToJson(true, "Success", dtAgenda);
             }
             catch (Exception ex)
             {
-                Code = false;
-                Message = "Ex: " + ex.Message;
-                Response = MyToolsController.ToJson(Code, Message);
+                try
+                {
+                    db.Rollback();
+                }
+                catch
+                {
+                }
+
+                response = MyToolsController.ToJson(false, "Ex: " + ex.Message);
             }
 
-            return Response;
+            return response;
         }
 
         [HttpPost]
