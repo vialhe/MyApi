@@ -12,8 +12,6 @@ namespace MyApi.Controllers.Agenda
     [Route("[controller]")]
     public class HorarioController : ControllerBase
     {
-       
-
         #region Horarios
 
         [HttpPost]
@@ -24,18 +22,51 @@ namespace MyApi.Controllers.Agenda
             bool Code;
             string Message;
             DataSet ds;
-            DataBase2 db = new DataBase2();
 
             try
             {
-                db.Open();
-                db.SetCommand("sp_se_empleadoHorario", true);
-                db.AddParameter("folioEmpleado", request.folioEmpleado);
-                db.AddParameter("idSucursal", request.idSucursal);
-                db.AddParameter("idEntidad", request.idEntidad);
+                ds = ExecuteDataSet("sp_se_empleadoHorario", db =>
+                {
+                    db.AddParameter("folioEmpleado", request.folioEmpleado);
+                    db.AddParameter("idSucursal", request.idSucursal);
+                    db.AddParameter("idEntidad", request.idEntidad);
+                });
 
-                ds = db.ExecuteWithDataSet();
-                db.Close();
+                ds.Tables[0].TableName = "Data";
+                Code = true;
+                Message = "Success";
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("get-disponibilidad-servicio")]
+        public IActionResult GetDisponibilidadServicio([FromBody] DisponibilidadServicioGetRequest request)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+
+            try
+            {
+                ds = ExecuteDataSet("sp_se_horariosDisponiblesServicio", db =>
+                {
+                    db.AddParameter("idProductoServicio", request.idProductoServicio);
+                    db.AddParameter("fecha", request.fecha);
+                    db.AddParameter("folioEmpleado", request.folioEmpleado);
+                    db.AddParameter("idSucursal", request.idSucursal);
+                    db.AddParameter("intervaloMin", request.intervaloMin);
+                    db.AddParameter("idEntidad", request.idEntidad);
+                });
 
                 ds.Tables[0].TableName = "Data";
                 Code = true;
@@ -60,22 +91,19 @@ namespace MyApi.Controllers.Agenda
             bool Code;
             string Message;
             DataSet ds;
-            DataBase2 db = new DataBase2();
 
             try
             {
-                db.Open();
-                db.SetCommand("sp_se_disponibilidadEmpleado", true);
-                db.AddParameter("folioEmpleado", request.folioEmpleado);
-                db.AddParameter("idSucursal", request.idSucursal);
-                db.AddParameter("fecha", request.fecha);
-                db.AddParameter("horaInicio", request.horaInicio);
-                db.AddParameter("horaFin", request.horaFin);
-                db.AddParameter("idEntidad", request.idEntidad);
-                db.AddParameter("folioAgendaDetalleServicioExcluir", request.folioAgendaDetalleServicioExcluir);
-
-                ds = db.ExecuteWithDataSet();
-                db.Close();
+                ds = ExecuteDataSet("sp_se_disponibilidadEmpleado", db =>
+                {
+                    db.AddParameter("folioEmpleado", request.folioEmpleado);
+                    db.AddParameter("idSucursal", request.idSucursal);
+                    db.AddParameter("fecha", request.fecha);
+                    db.AddParameter("horaInicio", request.horaInicio);
+                    db.AddParameter("horaFin", request.horaFin);
+                    db.AddParameter("idEntidad", request.idEntidad);
+                    db.AddParameter("folioAgendaDetalleServicioExcluir", request.folioAgendaDetalleServicioExcluir);
+                });
 
                 ds.Tables[0].TableName = "Data";
                 Code = true;
@@ -100,25 +128,22 @@ namespace MyApi.Controllers.Agenda
             bool Code;
             string Message;
             DataSet ds;
-            DataBase2 db = new DataBase2();
 
             try
             {
-                db.Open();
-                db.SetCommand("sp_se_disponibilidadEmpleadoDetalle", true);
-                db.AddParameter("folioEmpleado", request.folioEmpleado);
-                db.AddParameter("idSucursal", request.idSucursal);
-                db.AddParameter("fecha", request.fecha);
-                db.AddParameter("horaInicio", request.horaInicio);
-                db.AddParameter("horaFin", request.horaFin);
-                db.AddParameter("idEntidad", request.idEntidad);
-                db.AddParameter("folioAgendaDetalleServicioExcluir", request.folioAgendaDetalleServicioExcluir);
-                db.AddParameter("intervaloMin", request.intervaloMin);
-                db.AddParameter("incluirSlotsDisponibles", request.incluirSlotsDisponibles);
-                db.AddParameter("soloDisponibles", request.soloDisponibles);
-
-                ds = db.ExecuteWithDataSet();
-                db.Close();
+                ds = ExecuteDataSet("sp_se_disponibilidadEmpleadoDetalle", db =>
+                {
+                    db.AddParameter("folioEmpleado", request.folioEmpleado);
+                    db.AddParameter("idSucursal", request.idSucursal);
+                    db.AddParameter("fecha", request.fecha);
+                    db.AddParameter("horaInicio", request.horaInicio);
+                    db.AddParameter("horaFin", request.horaFin);
+                    db.AddParameter("idEntidad", request.idEntidad);
+                    db.AddParameter("folioAgendaDetalleServicioExcluir", request.folioAgendaDetalleServicioExcluir);
+                    db.AddParameter("intervaloMin", request.intervaloMin);
+                    db.AddParameter("incluirSlotsDisponibles", request.incluirSlotsDisponibles);
+                    db.AddParameter("soloDisponibles", request.soloDisponibles);
+                });
 
                 if (ds.Tables.Count == 4)
                 {
@@ -127,11 +152,11 @@ namespace MyApi.Controllers.Agenda
                     ds.Tables[2].TableName = "Agenda";
                     ds.Tables[3].TableName = "Disponibilidad";
                 }
-                else {
+                else
+                {
                     ds.Tables[0].TableName = "Data";
                 }
-                
-    
+
                 Code = true;
                 Message = "Success";
                 Response = MyToolsController.ToJson(Code, Message, ds);
@@ -146,7 +171,6 @@ namespace MyApi.Controllers.Agenda
             return Response;
         }
 
-
         [HttpPost]
         [Route("insert-empleado-horario")]
         public IActionResult InsertEmpleadoHorario([FromBody] EmpleadoHorarioRequest request)
@@ -160,21 +184,19 @@ namespace MyApi.Controllers.Agenda
 
             try
             {
-                List<Parametro> parametros = new List<Parametro>
+                dt = ExecuteDataTable("sp_ui_empleadoHorario", db =>
                 {
-                    new Parametro("folioEmpleadoHorario", request.folioEmpleadoHorario.ToString()),
-                    new Parametro("folioEmpleado", request.folioEmpleado.ToString()),
-                    new Parametro("idSucursal", request.idSucursal.ToString()),
-                    new Parametro("diaSemana", request.diaSemana.ToString()),
-                    new Parametro("horaEntrada", request.horaEntrada),
-                    new Parametro("horaSalida", request.horaSalida),
-                    new Parametro("comentarios", request.comentarios ?? ""),
-                    new Parametro("activo", request.activo.ToString()),
-                    new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioAlta", request.idUsuarioModifica.ToString())
-                };
-
-                dt = DataBase.Listar("sp_ui_empleadoHorario", parametros);
+                    db.AddParameter("folioEmpleadoHorario", request.folioEmpleadoHorario);
+                    db.AddParameter("folioEmpleado", request.folioEmpleado);
+                    db.AddParameter("idSucursal", request.idSucursal);
+                    db.AddParameter("diaSemana", request.diaSemana);
+                    db.AddParameter("horaEntrada", request.horaEntrada);
+                    db.AddParameter("horaSalida", request.horaSalida);
+                    db.AddParameter("comentarios", request.comentarios ?? "");
+                    db.AddParameter("activo", request.activo);
+                    db.AddParameter("idEntidad", request.idEntidad);
+                    db.AddParameter("idUsuarioAlta", request.idUsuarioModifica);
+                });
 
                 Code = true;
                 Message = "Success";
@@ -201,21 +223,19 @@ namespace MyApi.Controllers.Agenda
 
             try
             {
-                List<Parametro> parametros = new List<Parametro>
+                dt = ExecuteDataTable("sp_ui_empleadoHorario", db =>
                 {
-                    new Parametro("folioEmpleadoHorario", request.folioEmpleadoHorario.ToString()),
-                    new Parametro("folioEmpleado", request.folioEmpleado.ToString()),
-                    new Parametro("idSucursal", request.idSucursal.ToString()),
-                    new Parametro("diaSemana", request.diaSemana.ToString()),
-                    new Parametro("horaEntrada", request.horaEntrada),
-                    new Parametro("horaSalida", request.horaSalida),
-                    new Parametro("comentarios", request.comentarios ?? ""),
-                    new Parametro("activo", request.activo.ToString()),
-                    new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioAlta", request.idUsuarioModifica.ToString())
-                };
-
-                dt = DataBase.Listar("sp_ui_empleadoHorario", parametros);
+                    db.AddParameter("folioEmpleadoHorario", request.folioEmpleadoHorario);
+                    db.AddParameter("folioEmpleado", request.folioEmpleado);
+                    db.AddParameter("idSucursal", request.idSucursal);
+                    db.AddParameter("diaSemana", request.diaSemana);
+                    db.AddParameter("horaEntrada", request.horaEntrada);
+                    db.AddParameter("horaSalida", request.horaSalida);
+                    db.AddParameter("comentarios", request.comentarios ?? "");
+                    db.AddParameter("activo", request.activo);
+                    db.AddParameter("idEntidad", request.idEntidad);
+                    db.AddParameter("idUsuarioAlta", request.idUsuarioModifica);
+                });
 
                 Code = true;
                 Message = "Success";
@@ -244,17 +264,14 @@ namespace MyApi.Controllers.Agenda
             if (request.idEntidad <= 0)
                 return BadRequest(MyToolsController.ToJson(false, "El ID Entidad proporcionado no es válido."));
 
-
             try
             {
-                List<Parametro> parametros = new List<Parametro>
+                ExecuteNonQuery("sp_del_empleadoHorario", db =>
                 {
-                    new Parametro("folioEmpleadoHorario", request.folioEmpleadoHorario.ToString()),
-                    new Parametro("idSucursal", request.idSucursal.ToString()),
-                    new Parametro("idEntidad", request.idEntidad.ToString())
-                };
-
-                DataBase.Ejecutar("sp_del_empleadoHorario", parametros);
+                    db.AddParameter("folioEmpleadoHorario", request.folioEmpleadoHorario);
+                    db.AddParameter("idSucursal", request.idSucursal);
+                    db.AddParameter("idEntidad", request.idEntidad);
+                });
 
                 Response = MyToolsController.ToJson(true, "Horario eliminado exitosamente.");
                 return Response;
@@ -281,20 +298,17 @@ namespace MyApi.Controllers.Agenda
             bool Code;
             string Message;
             DataSet ds;
-            DataBase2 db = new DataBase2();
 
             try
             {
-                db.Open();
-                db.SetCommand("sp_se_empleadoBloqueoHorario", true);
-                db.AddParameter("folioEmpleado", request.folioEmpleado);
-                db.AddParameter("idSucursal", request.idSucursal);
-                db.AddParameter("fechaInicio", request.fechaInicio ?? "");
-                db.AddParameter("fechaFin", request.fechaFin ?? "");
-                db.AddParameter("idEntidad", request.idEntidad);
-
-                ds = db.ExecuteWithDataSet();
-                db.Close();
+                ds = ExecuteDataSet("sp_se_empleadoBloqueoHorario", db =>
+                {
+                    db.AddParameter("folioEmpleado", request.folioEmpleado);
+                    db.AddParameter("idSucursal", request.idSucursal);
+                    db.AddParameter("fechaInicio", request.fechaInicio ?? "");
+                    db.AddParameter("fechaFin", request.fechaFin ?? "");
+                    db.AddParameter("idEntidad", request.idEntidad);
+                });
 
                 ds.Tables[0].TableName = "Data";
                 Code = true;
@@ -324,23 +338,21 @@ namespace MyApi.Controllers.Agenda
 
             try
             {
-                List<Parametro> parametros = new List<Parametro>
+                dt = ExecuteDataTable("sp_ui_empleadoBloqueoHorario", db =>
                 {
-                    new Parametro("folioEmpleadoBloqueoHorario", request.folioEmpleadoBloqueoHorario.ToString()),
-                    new Parametro("folioEmpleado", request.folioEmpleado.ToString()),
-                    new Parametro("idSucursal", request.idSucursal.ToString()),
-                    new Parametro("fecha", request.fecha),
-                    new Parametro("horaInicio", request.horaInicio),
-                    new Parametro("horaFin", request.horaFin),
-                    new Parametro("idTipoBloqueoHorario", request.idTipoBloqueoHorario.ToString()),
-                    new Parametro("motivo", request.motivo ?? ""),
-                    new Parametro("comentarios", request.comentarios ?? ""),
-                    new Parametro("activo", request.activo.ToString()),
-                    new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioAlta", request.idUsuarioModifica.ToString())
-                };
-
-                dt = DataBase.Listar("sp_ui_empleadoBloqueoHorario", parametros);
+                    db.AddParameter("folioEmpleadoBloqueoHorario", request.folioEmpleadoBloqueoHorario);
+                    db.AddParameter("folioEmpleado", request.folioEmpleado);
+                    db.AddParameter("idSucursal", request.idSucursal);
+                    db.AddParameter("fecha", request.fecha);
+                    db.AddParameter("horaInicio", request.horaInicio);
+                    db.AddParameter("horaFin", request.horaFin);
+                    db.AddParameter("idTipoBloqueoHorario", request.idTipoBloqueoHorario);
+                    db.AddParameter("motivo", request.motivo ?? "");
+                    db.AddParameter("comentarios", request.comentarios ?? "");
+                    db.AddParameter("activo", request.activo);
+                    db.AddParameter("idEntidad", request.idEntidad);
+                    db.AddParameter("idUsuarioAlta", request.idUsuarioModifica);
+                });
 
                 Code = true;
                 Message = "Success";
@@ -367,23 +379,21 @@ namespace MyApi.Controllers.Agenda
 
             try
             {
-                List<Parametro> parametros = new List<Parametro>
+                dt = ExecuteDataTable("sp_ui_empleadoBloqueoHorario", db =>
                 {
-                    new Parametro("folioEmpleadoBloqueoHorario", request.folioEmpleadoBloqueoHorario.ToString()),
-                    new Parametro("folioEmpleado", request.folioEmpleado.ToString()),
-                    new Parametro("idSucursal", request.idSucursal.ToString()),
-                    new Parametro("fecha", request.fecha),
-                    new Parametro("horaInicio", request.horaInicio),
-                    new Parametro("horaFin", request.horaFin),
-                    new Parametro("idTipoBloqueoHorario", request.idTipoBloqueoHorario.ToString()),
-                    new Parametro("motivo", request.motivo ?? ""),
-                    new Parametro("comentarios", request.comentarios ?? ""),
-                    new Parametro("activo", request.activo.ToString()),
-                    new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioAlta", request.idUsuarioModifica.ToString())
-                };
-
-                dt = DataBase.Listar("sp_ui_empleadoBloqueoHorario", parametros);
+                    db.AddParameter("folioEmpleadoBloqueoHorario", request.folioEmpleadoBloqueoHorario);
+                    db.AddParameter("folioEmpleado", request.folioEmpleado);
+                    db.AddParameter("idSucursal", request.idSucursal);
+                    db.AddParameter("fecha", request.fecha);
+                    db.AddParameter("horaInicio", request.horaInicio);
+                    db.AddParameter("horaFin", request.horaFin);
+                    db.AddParameter("idTipoBloqueoHorario", request.idTipoBloqueoHorario);
+                    db.AddParameter("motivo", request.motivo ?? "");
+                    db.AddParameter("comentarios", request.comentarios ?? "");
+                    db.AddParameter("activo", request.activo);
+                    db.AddParameter("idEntidad", request.idEntidad);
+                    db.AddParameter("idUsuarioAlta", request.idUsuarioModifica);
+                });
 
                 Code = true;
                 Message = "Success";
@@ -412,19 +422,16 @@ namespace MyApi.Controllers.Agenda
             if (request.idEntidad <= 0)
                 return BadRequest(MyToolsController.ToJson(false, "El ID Entidad proporcionado no es válido."));
 
-
             try
             {
-                List<Parametro> parametros = new List<Parametro>
+                ExecuteNonQuery("sp_del_empleadoBloqueoHorario", db =>
                 {
-                    new Parametro("folioEmpleadoBloqueoHorario", request.folioEmpleadoBloqueo.ToString()),
-                    new Parametro("idSucursal", request.idSucursal.ToString()),
-                    new Parametro("idEntidad", request.idEntidad.ToString())
-                };
+                    db.AddParameter("folioEmpleadoBloqueoHorario", request.folioEmpleadoBloqueo);
+                    db.AddParameter("idSucursal", request.idSucursal);
+                    db.AddParameter("idEntidad", request.idEntidad);
+                });
 
-                DataBase.Ejecutar("sp_del_empleadoBloqueoHorario", parametros);
-
-                Response =  MyToolsController.ToJson(true, "Bloqueo eliminado exitosamente.");
+                Response = MyToolsController.ToJson(true, "Bloqueo eliminado exitosamente.");
                 return Response;
             }
             catch (SqlException sqlEx)
@@ -434,6 +441,55 @@ namespace MyApi.Controllers.Agenda
             catch (Exception ex)
             {
                 return StatusCode(500, MyToolsController.ToJson(false, "Ocurrió un error: " + ex.Message));
+            }
+        }
+
+        #endregion
+
+        #region Helpers
+
+        private DataSet ExecuteDataSet(string storedProcedure, Action<DataBase2> setParameters)
+        {
+            var db = new DataBase2();
+
+            try
+            {
+                db.Open();
+                db.SetCommand(storedProcedure, true);
+                setParameters(db);
+
+                return db.ExecuteWithDataSet();
+            }
+            finally
+            {
+                db.Close();
+            }
+        }
+
+        private DataTable ExecuteDataTable(string storedProcedure, Action<DataBase2> setParameters)
+        {
+            DataSet ds = ExecuteDataSet(storedProcedure, setParameters);
+
+            if (ds == null || ds.Tables.Count == 0)
+                return new DataTable();
+
+            return ds.Tables[0];
+        }
+
+        private void ExecuteNonQuery(string storedProcedure, Action<DataBase2> setParameters)
+        {
+            var db = new DataBase2();
+
+            try
+            {
+                db.Open();
+                db.SetCommand(storedProcedure, true);
+                setParameters(db);
+                db.Execute();
+            }
+            finally
+            {
+                db.Close();
             }
         }
 

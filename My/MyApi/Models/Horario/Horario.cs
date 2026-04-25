@@ -36,6 +36,16 @@ namespace MyApi.Models.Horario
         public int idSucursal { get; set; }
     }
 
+    public class DisponibilidadServicioGetRequest
+    {
+        public int idProductoServicio { get; set; } = 0;
+        public DateTime fecha { get; set; } 
+        public DateTime intervaloMin { get; set; } 
+        public int folioEmpleado { get; set; }
+        public int idEntidad { get; set; }
+        public int idSucursal { get; set; }
+    }
+
     public class EmpleadoHorarioRequest
     {
         public int folioEmpleadoHorario { get; set; }
