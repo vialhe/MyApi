@@ -1,3 +1,5 @@
+sp_ui_cancelarAgenda
+Select * From cat_estatusAgendaDetalleServicio
 Select * From cat_personas where id = 1132 and idEntidad = 10007
 Select * From cat_tiposPersonas WHERE idEntidad = 10007 and id = 30
 Select * From cat_tipoBloqueoHorario
@@ -9,7 +11,7 @@ Select * From proc_agendaDetalleServicio
 Select * From proc_agendaBitacora
 Select * From cat_origenAgenda 
 
-
+exec sp_ui_agenda
 --Update cat_productosServicios set duracionBaseMin = 90,mostrarEnAgenda = 1, esServicio = 1 where id = 2650 
 --Select * From sys_entidades
 
@@ -52,24 +54,25 @@ cat_origenAgenda
 
 EXEC dbo.sp_se_horariosDisponiblesServicio
     @idProductoServicio = 2650,
-    @fecha = '2026-04-18',
+    @fecha = '2026-04-25',
     @idEntidad = 10007,
-    @folioEmpleado = 1132,
-    @intervaloMin = 30;
-
+    @folioEmpleado = 0,
+    @intervaloMin = 30,
+	@idSucursal = 1
+	sp_se_horariosDisponiblesServicio
 --update proc_empleadoHorario set diaSemana = 6 ,comentarios = ''
 --Select  DATEPART(WEEKDAY, '20260419');  
-Select* From proc_empleadoHorario
-Select* From proc_empleadoBloqueoHorario
-Select* From proc_agenda
-Select* From proc_agendaDetalleServicio
-Select* From proc_agendaDetalleServicioEmpleado
-Select* From proc_agendaPago
-Select* From proc_agendaPagoDetalle
-Select* From proc_agendaBitacora
-Select* From proc_agendaReprogramacion
-EXEC dbo.sp_se_agendaDetalleCompleto    @folioAgenda = 2,    @idEntidad = 10007
-
+Select top 1 * From proc_empleadoHorario
+Select top 1 * From proc_empleadoBloqueoHorario
+Select top 1 * From proc_agenda
+Select top 1 * From proc_agendaDetalleServicio
+Select top 1 * From proc_agendaDetalleServicioEmpleado
+Select top 1 * From proc_agendaPago
+Select top 1 * From proc_agendaPagoDetalle
+Select top 1 * From proc_agendaBitacora
+Select top 1 * From proc_agendaReprogramacion
+EXEC dbo.sp_se_agendaDetalleCompleto    @folioAgenda = 11,    @idEntidad = 10007
+sp_ui_cancelarAgenda
 Delete proc_empleadoHorario
 Delete proc_empleadoBloqueoHorario
 Delete proc_agenda
@@ -108,7 +111,7 @@ DBCC CHECKIDENT ('proc_agenda', RESEED, 0);
 DECLARE @idEntidad int = 10007;
 DECLARE @folioEmpleado int = 1132;
 DECLARE @fechaIni date = '2026-04-14';
-DECLARE @fechaFin date = '2026-04-20';
+DECLARE @fechaFin date = '2026-04-30';
 
 SELECT
     a.folioAgenda,
@@ -140,3 +143,47 @@ ORDER BY ISNULL(ds.horaInicioProgramada, a.horaInicioProgramada);
 
 --Select * From proc_empleadoHorario
 --Select * From proc_empleadoBloqueoHorario
+Select * From sys_folios
+Select * From sys_foliosContador where idFolio = 8
+sp_ui_agendaReprogramacion
+
+go
+DECLARE @folioAgenda int = 10;
+DECLARE @idEntidad int = 10007;
+DECLARE @fechaHoraNuevaInicio datetime = '2026-04-26 12:00:00';
+
+DECLARE @fechaHoraAnteriorInicio datetime;
+DECLARE @idSucursal int;
+
+SELECT
+    @fechaHoraAnteriorInicio = a.horaInicioProgramada,
+    @idSucursal = a.idSucursal
+FROM proc_agenda a
+WHERE a.folioAgenda = @folioAgenda
+  AND a.idEntidad = @idEntidad;
+
+;WITH Detalles AS
+(
+    SELECT
+        ds.folioAgendaDetalleServicio,
+        ds.horaInicioProgramada AS horaInicioAnterior,
+        ds.horaFinProgramada AS horaFinAnterior,
+        DATEADD(MINUTE, DATEDIFF(MINUTE, @fechaHoraAnteriorInicio, ds.horaInicioProgramada), @fechaHoraNuevaInicio) AS horaInicioNueva,
+        DATEADD(MINUTE, DATEDIFF(MINUTE, @fechaHoraAnteriorInicio, ds.horaFinProgramada), @fechaHoraNuevaInicio) AS horaFinNueva
+    FROM proc_agendaDetalleServicio ds
+    WHERE ds.folioAgenda = @folioAgenda
+      AND ds.idEntidad = @idEntidad
+      AND ISNULL(ds.activo,1) = 1
+      AND ISNULL(ds.cancelado,0) = 0
+)
+SELECT
+    d.folioAgendaDetalleServicio,
+    dse.folioEmpleado,
+    d.horaInicioNueva,
+    d.horaFinNueva,
+    ((DATEDIFF(DAY, '19000101', CAST(d.horaInicioNueva AS date)) % 7) + 1) AS diaSemanaCalculado
+FROM Detalles d
+INNER JOIN proc_agendaDetalleServicioEmpleado dse
+    ON dse.folioAgendaDetalleServicio = d.folioAgendaDetalleServicio
+   AND dse.idEntidad = @idEntidad
+   AND ISNULL(dse.activo,1) = 1;
