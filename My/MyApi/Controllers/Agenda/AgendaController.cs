@@ -142,15 +142,13 @@ namespace MyApi.Controllers.Agenda
 
             try
             {
-                List<Parametro> parametros = new List<Parametro>
+                dt = ExecuteDataTable("sp_ui_confirmarAgenda", db =>
                 {
-                    new Parametro("folioAgenda", request.folioAgenda.ToString()),
-                    new Parametro("comentarios", request.comentarios ?? ""),
-                    new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioAlta", request.idUsuarioAlta.ToString())
-                };
-
-                dt = DataBase.Listar("sp_ui_confirmarAgenda", parametros);
+                    db.AddParameter("@folioAgenda", request.folioAgenda);
+                    db.AddParameter("@comentarios", request.comentarios ?? "");
+                    db.AddParameter("@idEntidad", request.idEntidad);
+                    db.AddParameter("@idUsuarioAlta", request.idUsuarioAlta);
+                });
 
                 Code = true;
                 Message = "Success";
@@ -177,21 +175,19 @@ namespace MyApi.Controllers.Agenda
 
             try
             {
-                List<Parametro> parametros = new List<Parametro>
+                dt = ExecuteDataTable("sp_ui_agendaPago", db =>
                 {
-                    new Parametro("folioAgenda", request.folioAgenda.ToString()),
-                    new Parametro("idTipoMovimientoPagoAgenda", request.idTipoMovimientoPagoAgenda.ToString()),
-                    new Parametro("idTipoPago", request.idTipoPago.ToString()),
-                    new Parametro("montoPago", request.montoPago.ToString()),
-                    new Parametro("numeroAutorizacion", request.numeroAutorizacion ?? ""),
-                    new Parametro("referenciaOperacion", request.referenciaOperacion ?? ""),
-                    new Parametro("referenciaExterna", request.referenciaExterna ?? ""),
-                    new Parametro("comentarios", request.comentarios ?? ""),
-                    new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioAlta", request.idUsuarioAlta.ToString())
-                };
-
-                dt = DataBase.Listar("sp_ui_agendaPago", parametros);
+                    db.AddParameter("@folioAgenda", request.folioAgenda);
+                    db.AddParameter("@idTipoMovimientoPagoAgenda", request.idTipoMovimientoPagoAgenda);
+                    db.AddParameter("@idTipoPago", request.idTipoPago);
+                    db.AddParameter("@montoPago", request.montoPago);
+                    db.AddParameter("@numeroAutorizacion", request.numeroAutorizacion ?? "");
+                    db.AddParameter("@referenciaOperacion", request.referenciaOperacion ?? "");
+                    db.AddParameter("@referenciaExterna", request.referenciaExterna ?? "");
+                    db.AddParameter("@comentarios", request.comentarios ?? "");
+                    db.AddParameter("@idEntidad", request.idEntidad);
+                    db.AddParameter("@idUsuarioAlta", request.idUsuarioAlta);
+                });
 
                 Code = true;
                 Message = "Success";
@@ -230,17 +226,15 @@ namespace MyApi.Controllers.Agenda
 
             try
             {
-                List<Parametro> parametros = new List<Parametro>
+                dt = ExecuteDataTable("sp_ui_agendaCambioEstatusDetalleServicio", db =>
                 {
-                    new Parametro("folioAgendaDetalleServicio", request.folioAgendaDetalleServicio.ToString()),
-                    new Parametro("idEstatusAgendaDetalleServicioNuevo", request.idEstatusAgendaDetalleServicioNuevo.ToString()),
-                    new Parametro("descripcionMovimiento", request.descripcionMovimiento ?? ""),
-                    new Parametro("comentarios", request.comentarios ?? ""),
-                    new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioAlta", request.idUsuarioAlta.ToString())
-                };
-
-                dt = DataBase.Listar("sp_ui_agendaCambioEstatusDetalleServicio", parametros);
+                    db.AddParameter("@folioAgendaDetalleServicio", request.folioAgendaDetalleServicio);
+                    db.AddParameter("@idEstatusAgendaDetalleServicioNuevo", request.idEstatusAgendaDetalleServicioNuevo);
+                    db.AddParameter("@descripcionMovimiento", request.descripcionMovimiento ?? "");
+                    db.AddParameter("@comentarios", request.comentarios ?? "");
+                    db.AddParameter("@idEntidad", request.idEntidad);
+                    db.AddParameter("@idUsuarioAlta", request.idUsuarioAlta);
+                });
 
                 Code = true;
                 Message = "Success";
@@ -267,17 +261,15 @@ namespace MyApi.Controllers.Agenda
 
             try
             {
-                List<Parametro> parametros = new List<Parametro>
+                dt = ExecuteDataTable("sp_ui_agendaCambioEstatus", db =>
                 {
-                    new Parametro("folioAgenda", request.folioAgenda.ToString()),
-                    new Parametro("idEstatusAgendaNuevo", request.idEstatusAgendaNuevo.ToString()),
-                    new Parametro("descripcionMovimiento", request.descripcionMovimiento ?? ""),
-                    new Parametro("comentarios", request.comentarios ?? ""),
-                    new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioAlta", request.idUsuarioAlta.ToString())
-                };
-
-                dt = DataBase.Listar("sp_ui_agendaCambioEstatus", parametros);
+                    db.AddParameter("@folioAgenda", request.folioAgenda);
+                    db.AddParameter("@idEstatusAgendaNuevo", request.idEstatusAgendaNuevo);
+                    db.AddParameter("@descripcionMovimiento", request.descripcionMovimiento ?? "");
+                    db.AddParameter("@comentarios", request.comentarios ?? "");
+                    db.AddParameter("@idEntidad", request.idEntidad);
+                    db.AddParameter("@idUsuarioAlta", request.idUsuarioAlta);
+                });
 
                 Code = true;
                 Message = "Success";
@@ -304,18 +296,16 @@ namespace MyApi.Controllers.Agenda
 
             try
             {
-                List<Parametro> parametros = new List<Parametro>
+                dt = ExecuteDataTable("sp_ui_agendaReprogramacion", db =>
                 {
-                    new Parametro("folioAgenda", request.folioAgenda.ToString()),
-                    new Parametro("fechaHoraNuevaInicio", request.fechaHoraNuevaInicio),
-                    new Parametro("fechaHoraNuevaFin", request.fechaHoraNuevaFin),
-                    new Parametro("motivo", request.motivo ?? ""),
-                    new Parametro("comentarios", request.comentarios ?? ""),
-                    new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioAlta", request.idUsuarioAlta.ToString())
-                };
-
-                dt = DataBase.Listar("sp_ui_agendaReprogramacion", parametros);
+                    db.AddParameter("@folioAgenda", request.folioAgenda);
+                    db.AddParameter("@fechaHoraNuevaInicio", request.fechaHoraNuevaInicio);
+                    db.AddParameter("@fechaHoraNuevaFin", request.fechaHoraNuevaFin);
+                    db.AddParameter("@motivo", request.motivo ?? "");
+                    db.AddParameter("@comentarios", request.comentarios ?? "");
+                    db.AddParameter("@idEntidad", request.idEntidad);
+                    db.AddParameter("@idUsuarioAlta", request.idUsuarioAlta);
+                });
 
                 Code = true;
                 Message = "Success";
@@ -342,16 +332,14 @@ namespace MyApi.Controllers.Agenda
 
             try
             {
-                List<Parametro> parametros = new List<Parametro>
+                dt = ExecuteDataTable("sp_ui_cancelarAgenda", db =>
                 {
-                    new Parametro("folioAgenda", request.folioAgenda.ToString()),
-                    new Parametro("motivoCancelacion", request.motivoCancelacion ?? ""),
-                    new Parametro("cancelarDetalles", request.cancelarDetalles.ToString()),
-                    new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioAlta", request.idUsuarioAlta.ToString())
-                };
-
-                dt = DataBase.Listar("sp_ui_cancelarAgenda", parametros);
+                    db.AddParameter("@folioAgenda", request.folioAgenda);
+                    db.AddParameter("@motivoCancelacion", request.motivoCancelacion ?? "");
+                    db.AddParameter("@cancelarDetalles", request.cancelarDetalles);
+                    db.AddParameter("@idEntidad", request.idEntidad);
+                    db.AddParameter("@idUsuarioAlta", request.idUsuarioAlta);
+                });
 
                 Code = true;
                 Message = "Success";
@@ -378,15 +366,13 @@ namespace MyApi.Controllers.Agenda
 
             try
             {
-                List<Parametro> parametros = new List<Parametro>
+                dt = ExecuteDataTable("sp_ui_cancelarDetalleServicio", db =>
                 {
-                    new Parametro("folioAgendaDetalleServicio", request.folioAgendaDetalleServicio.ToString()),
-                    new Parametro("motivoCancelacion", request.motivoCancelacion ?? ""),
-                    new Parametro("idEntidad", request.idEntidad.ToString()),
-                    new Parametro("idUsuarioAlta", request.idUsuarioAlta.ToString())
-                };
-
-                dt = DataBase.Listar("sp_ui_cancelarDetalleServicio", parametros);
+                    db.AddParameter("@folioAgendaDetalleServicio", request.folioAgendaDetalleServicio);
+                    db.AddParameter("@motivoCancelacion", request.motivoCancelacion ?? "");
+                    db.AddParameter("@idEntidad", request.idEntidad);
+                    db.AddParameter("@idUsuarioAlta", request.idUsuarioAlta);
+                });
 
                 Code = true;
                 Message = "Success";
@@ -402,6 +388,20 @@ namespace MyApi.Controllers.Agenda
             return Response;
         }
 
+        private DataTable ExecuteDataTable(string storedProcedure, Action<DataBase2> setParameters)
+        {
+            var db = new DataBase2();
+
+            db.SetCommand(storedProcedure, true);
+            setParameters(db);
+
+            DataSet ds = db.ExecuteWithDataSet();
+
+            if (ds == null || ds.Tables.Count == 0)
+                return new DataTable();
+
+            return ds.Tables[0];
+        }
         #endregion
     }
 }
