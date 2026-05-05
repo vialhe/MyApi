@@ -446,6 +446,196 @@ namespace MyApi.Controllers.Agenda
 
         #endregion
 
+        #region Empleado Sucursal
+
+        [HttpPost]
+        [Route("get-empleados")]
+        public IActionResult GetEmpleados([FromBody] EmpleadosGetRequest request)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+
+            if (request == null)
+                return BadRequest(MyToolsController.ToJson(false, "La petición no es válida."));
+
+            if (request.idEntidad <= 0)
+                return BadRequest(MyToolsController.ToJson(false, "La entidad es obligatoria."));
+
+            try
+            {
+                ds = ExecuteDataSet("sp_se_empleados", db =>
+                {
+                    db.AddParameter("idEntidad", request.idEntidad);
+                    db.AddParameter("soloActivos", request.soloActivos);
+                    db.AddParameter("busqueda", request.busqueda ?? "");
+                });
+
+                if (ds.Tables.Count > 0)
+                    ds.Tables[0].TableName = "Data";
+
+                Code = true;
+                Message = "Success";
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables.Count > 0 ? ds.Tables[0] : new DataTable());
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("get-empleado-sucursal")]
+        public IActionResult GetEmpleadoSucursal([FromBody] EmpleadoSucursalGetRequest request)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+
+            if (request == null)
+                return BadRequest(MyToolsController.ToJson(false, "La petición no es válida."));
+
+            if (request.folioEmpleado <= 0)
+                return BadRequest(MyToolsController.ToJson(false, "El empleado es obligatorio."));
+
+            if (request.idEntidad <= 0)
+                return BadRequest(MyToolsController.ToJson(false, "La entidad es obligatoria."));
+
+            try
+            {
+                ds = ExecuteDataSet("sp_se_empleadoSucursal", db =>
+                {
+                    db.AddParameter("folioEmpleado", request.folioEmpleado);
+                    db.AddParameter("idEntidad", request.idEntidad);
+                    db.AddParameter("soloActivos", request.soloActivos);
+                });
+
+                if (ds.Tables.Count > 0)
+                    ds.Tables[0].TableName = "Data";
+
+                Code = true;
+                Message = "Success";
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables.Count > 0 ? ds.Tables[0] : new DataTable());
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("get-empleados-by-sucursal")]
+        public IActionResult GetEmpleadosBySucursal([FromBody] EmpleadosPorSucursalGetRequest request)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+
+            if (request == null)
+                return BadRequest(MyToolsController.ToJson(false, "La petición no es válida."));
+
+            if (request.idSucursal < 0)
+                return BadRequest(MyToolsController.ToJson(false, "La sucursal no puede ser negativa."));
+
+            if (request.idEntidad <= 0)
+                return BadRequest(MyToolsController.ToJson(false, "La entidad es obligatoria."));
+
+            try
+            {
+                ds = ExecuteDataSet("sp_se_empleadosPorSucursal", db =>
+                {
+                    db.AddParameter("idSucursal", request.idSucursal);
+                    db.AddParameter("idEntidad", request.idEntidad);
+                    db.AddParameter("soloActivos", request.soloActivos);
+                });
+
+                if (ds.Tables.Count > 0)
+                    ds.Tables[0].TableName = "Data";
+
+                Code = true;
+                Message = "Success";
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables.Count > 0 ? ds.Tables[0] : new DataTable());
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("save-empleado-sucursal")]
+        public IActionResult SaveEmpleadoSucursal([FromBody] EmpleadoSucursalSaveRequest request)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+
+            if (request == null)
+                return BadRequest(MyToolsController.ToJson(false, "La petición no es válida."));
+
+            if (request.folioEmpleado <= 0)
+                return BadRequest(MyToolsController.ToJson(false, "El empleado es obligatorio."));
+
+            if (request.idEntidad <= 0)
+                return BadRequest(MyToolsController.ToJson(false, "La entidad es obligatoria."));
+
+            if (request.idUsuario <= 0)
+                return BadRequest(MyToolsController.ToJson(false, "El usuario es obligatorio."));
+
+            if (string.IsNullOrWhiteSpace(request.sucursalesJson))
+                return BadRequest(MyToolsController.ToJson(false, "Debe enviar las sucursales del empleado."));
+
+            try
+            {
+                ds = ExecuteDataSet("sp_ui_empleadoSucursal", db =>
+                {
+                    db.AddParameter("folioEmpleado", request.folioEmpleado);
+                    db.AddParameter("idEntidad", request.idEntidad);
+                    db.AddParameter("idUsuario", request.idUsuario);
+                    db.AddParameter("sucursalesJson", request.sucursalesJson);
+                });
+
+                if (ds.Tables.Count > 0)
+                    ds.Tables[0].TableName = "Data";
+
+                Code = true;
+                Message = "Success";
+                Response = MyToolsController.ToJson(Code, Message, ds);
+            }
+            catch (SqlException sqlEx)
+            {
+                Code = false;
+                Message = "Error en la base de datos: " + sqlEx.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        #endregion
+
         #region Helpers
 
         private DataSet ExecuteDataSet(string storedProcedure, Action<DataBase2> setParameters)

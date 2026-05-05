@@ -99,7 +99,33 @@ namespace MyApi.Models.Horario
         public int idEntidad { get; set; }
     }
 
+    public class EmpleadoSucursalGetRequest
+    {
+        public int folioEmpleado { get; set; }
+        public int idEntidad { get; set; }
+        public bool soloActivos { get; set; } = true;
+    }
 
+    public class EmpleadosPorSucursalGetRequest
+    {
+        public int idSucursal { get; set; }
+        public int idEntidad { get; set; }
+        public bool soloActivos { get; set; } = true;
+    }
+
+    public class EmpleadoSucursalSaveRequest
+    {
+        public int folioEmpleado { get; set; }
+        public int idEntidad { get; set; }
+        public int idUsuario { get; set; }
+        public string sucursalesJson { get; set; } = string.Empty;
+    }
+    public class EmpleadosGetRequest
+    {
+        public int idEntidad { get; set; }
+        public bool soloActivos { get; set; } = true;
+        public string busqueda { get; set; } = string.Empty;
+    }
 
     #endregion
 
