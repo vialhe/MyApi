@@ -30,6 +30,8 @@ namespace MyApi.Controllers.Agenda
                     db.AddParameter("folioEmpleado", request.folioEmpleado);
                     db.AddParameter("idSucursal", request.idSucursal);
                     db.AddParameter("idEntidad", request.idEntidad);
+                    db.AddParameter("fechaInicio", request.fechaInicio);
+                    db.AddParameter("fechaFin", request.fechaFin);
                 });
 
                 ds.Tables[0].TableName = "Data";

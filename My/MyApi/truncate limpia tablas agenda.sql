@@ -82,6 +82,7 @@ Delete proc_agendaPago
 Delete proc_agendaPagoDetalle
 Delete proc_agendaBitacora
 Delete proc_agendaReprogramacion
+Delete proc_empleadoSucursal
 
 --Truncate table proc_empleadoHorario
 --Truncate table proc_empleadoBloqueoHorario
@@ -102,6 +103,7 @@ DBCC CHECKIDENT ('proc_agendaReprogramacion', RESEED, 0);
 DBCC CHECKIDENT ('proc_agendaPago', RESEED, 0);
 DBCC CHECKIDENT ('proc_agendaDetalleServicio', RESEED, 0);
 DBCC CHECKIDENT ('proc_agenda', RESEED, 0);
+DBCC CHECKIDENT ('proc_empleadoSucursal', RESEED, 0);
 
 
 --Insert sys_folios (descripcion,comentarios,activo,idEntidad,fechaAlta,idUsuarioAlta)
@@ -187,3 +189,9 @@ INNER JOIN proc_agendaDetalleServicioEmpleado dse
     ON dse.folioAgendaDetalleServicio = d.folioAgendaDetalleServicio
    AND dse.idEntidad = @idEntidad
    AND ISNULL(dse.activo,1) = 1;
+
+   Go
+   Select * From proc_empleadoSucursal
+   Select * From proc_empleadoHorario order by folioEmpleado, horaEntrada, diaSemana
+
+   
