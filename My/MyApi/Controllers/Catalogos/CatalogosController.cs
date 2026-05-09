@@ -127,6 +127,40 @@ namespace MyApi.Controllers.Agenda
             return Response;
         }
 
+        [HttpPost]
+        [Route("get-clientes")]
+        public IActionResult GetClientes([FromBody] ClienteRequest request)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.Open();
+                db.SetCommand("sp_se_clientesByIdEntidad", true);
+                db.AddParameter("idCliente", request.idCliente.ToString());
+                db.AddParameter("idEntidad", request.idEntidad.ToString());
+
+                ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                ds.Tables[0].TableName = "Data";
+                Code = true;
+                Message = "Success";
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
 
     }
 }

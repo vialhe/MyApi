@@ -27,6 +27,12 @@ namespace MyApi.Models.Catalogos
         public int activo { get; set; } = 1;
     }
 
+    public class ClienteRequest
+    {
+        public int idCliente { get; set; }
+        public int idEntidad { get; set; }
+    }
+
     #endregion
 
 }
