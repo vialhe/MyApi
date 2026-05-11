@@ -72,9 +72,10 @@ Select top 1 * From proc_agendaPagoDetalle
 Select top 1 * From proc_agendaBitacora
 Select top 1 * From proc_agendaReprogramacion
 EXEC dbo.sp_se_agendaDetalleCompleto    @folioAgenda = 11,    @idEntidad = 10007
-sp_ui_cancelarAgenda
+--sp_ui_cancelarAgenda
 Delete proc_empleadoHorario
 Delete proc_empleadoBloqueoHorario
+
 Delete proc_agenda
 Delete proc_agendaDetalleServicio
 Delete proc_agendaDetalleServicioEmpleado
@@ -82,6 +83,7 @@ Delete proc_agendaPago
 Delete proc_agendaPagoDetalle
 Delete proc_agendaBitacora
 Delete proc_agendaReprogramacion
+
 Delete proc_empleadoSucursal
 
 --Truncate table proc_empleadoHorario
@@ -96,6 +98,7 @@ Delete proc_empleadoSucursal
 
 DBCC CHECKIDENT ('proc_empleadoHorario', RESEED, 0);
 DBCC CHECKIDENT ('proc_empleadoBloqueoHorario', RESEED, 0);
+
 DBCC CHECKIDENT ('proc_agendaDetalleServicioEmpleado', RESEED, 0);
 DBCC CHECKIDENT ('proc_agendaPagoDetalle', RESEED, 0);
 DBCC CHECKIDENT ('proc_agendaBitacora', RESEED, 0);
@@ -103,6 +106,7 @@ DBCC CHECKIDENT ('proc_agendaReprogramacion', RESEED, 0);
 DBCC CHECKIDENT ('proc_agendaPago', RESEED, 0);
 DBCC CHECKIDENT ('proc_agendaDetalleServicio', RESEED, 0);
 DBCC CHECKIDENT ('proc_agenda', RESEED, 0);
+
 DBCC CHECKIDENT ('proc_empleadoSucursal', RESEED, 0);
 
 
@@ -193,5 +197,6 @@ INNER JOIN proc_agendaDetalleServicioEmpleado dse
    Go
    Select * From proc_empleadoSucursal
    Select * From proc_empleadoHorario order by folioEmpleado, horaEntrada, diaSemana
+   Select * From proc_empleadoBloqueoHorario order by folioEmpleado
 
    

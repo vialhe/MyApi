@@ -322,6 +322,43 @@ namespace MyApi.Controllers.Agenda
         }
 
         [HttpPost]
+        [Route("reprogram-detalle-agenda")]
+        public IActionResult ReprogramDetalleAgenda([FromBody] DetalleAgendaReprogramRequest request)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataTable dt;
+
+            try
+            {
+                dt = ExecuteDataTable("sp_ui_agendaDetalleServicioReprogramacion", db =>
+                {
+                    db.AddParameter("@folioAgendaDetalleServicio", request.folioAgendaDetalleServicio);
+                    db.AddParameter("@fechaHoraNuevaInicio", request.fechaHoraNuevaInicio);
+                    db.AddParameter("@fechaHoraNuevaFin", request.fechaHoraNuevaFin);
+                    db.AddParameter("@folioEmpleadoNuevo", request.folioEmpleadoNuevo.HasValue ? request.folioEmpleadoNuevo.Value : DBNull.Value);
+                    db.AddParameter("@motivo", string.IsNullOrWhiteSpace(request.motivo) ? DBNull.Value : request.motivo);
+                    db.AddParameter("@comentarios", string.IsNullOrWhiteSpace(request.comentarios) ? DBNull.Value : request.comentarios);
+                    db.AddParameter("@idEntidad", request.idEntidad);
+                    db.AddParameter("@idUsuarioAlta", request.idUsuarioAlta);
+                });
+
+                Code = true;
+                Message = "Success";
+                Response = MyToolsController.ToJson(Code, Message, dt);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        [HttpPost]
         [Route("cancel-agenda")]
         public IActionResult CancelAgenda([FromBody] AgendaCancelRequest request)
         {

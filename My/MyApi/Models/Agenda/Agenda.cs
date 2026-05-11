@@ -125,6 +125,18 @@ namespace MyApi.Models.Agenda
         public int idUsuarioAlta { get; set; }
     }
 
+    public class DetalleAgendaReprogramRequest
+    {
+        public int folioAgendaDetalleServicio { get; set; }
+        public string fechaHoraNuevaInicio { get; set; } = "";
+        public string fechaHoraNuevaFin { get; set; } = "";
+        public int? folioEmpleadoNuevo { get; set; } = null; 
+        public string motivo { get; set; } = "";
+        public string comentarios { get; set; } = "";
+        public int idEntidad { get; set; }
+        public int idUsuarioAlta { get; set; }
+    }
+
     public class AgendaCancelRequest
     {
         public int folioAgenda { get; set; }
