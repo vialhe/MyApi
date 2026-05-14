@@ -399,6 +399,41 @@ namespace MyApi.Controllers.Profile
 
         }
 
+        [Route("delete-persona")]
+        public IActionResult deletePersona([FromBody] DelCliente cCliente)
+        {
+            /*Se declaran Variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataTable dt;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.SetCommand("sp_del_desactivaPersonas", true);
+                db.AddParameter("@id", cCliente.id);
+                db.AddParameter("@idUsuarioModificacion", cCliente.idUsuarioModificacion);
+                db.AddParameter("@idEntidad", cCliente.idEntidad);
+
+                dt = db.ExecuteWithDataSet().Tables[0];
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message, dt);
+
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+
+
+        }
+
+
         [HttpPost]
         [Route("update-cliente")]
         public IActionResult updateCliente([FromBody] Cliente cCliente)

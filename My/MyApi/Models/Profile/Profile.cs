@@ -58,6 +58,13 @@
         public int idUsuarioModifica { get; set; }
     }
 
+    public class DelCliente
+    {
+        public int id { get; set; }
+        public int idEntidad { get; set; }
+        public int idUsuarioModificacion { get; set; }
+    }
+
 
     public class Domicilio
     {
