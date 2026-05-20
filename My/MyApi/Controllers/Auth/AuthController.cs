@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using static MyApi.Controllers.Menu.MenuController;
+using MyApi.Models.Profile;
 
 namespace MyApi.Controllers.Auth
 {
@@ -181,6 +182,46 @@ namespace MyApi.Controllers.Auth
             /* Retorna  */
             return Response;
 
+        }
+
+        [HttpPost]
+        [Route("validaUsuarioExistente")]
+        public IActionResult ValidaUsuarioExistente([FromBody] ValidaUsuarioExistente username)
+        {
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                if (username == null || string.IsNullOrWhiteSpace(username.usuario))
+                    return MyToolsController.ToJson(false, "El nombre de usuario es obligatorio.");
+
+                string usuario = username.usuario.Trim();
+
+                db.Open();
+                db.SetCommand("sp_se_validaUsuarioExistente", true);
+                db.AddParameter("@usuario", usuario);
+
+                var ds = db.ExecuteWithDataSet();
+
+                if (ds == null || ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
+                    return MyToolsController.ToJson(false, "No se pudo validar el usuario.");
+
+                bool esValido = Convert.ToBoolean(ds.Tables[0].Rows[0]["EsValido"]);
+
+                string message = esValido
+                    ? "Success"
+                    : "Usuario ya existente, intente con otro.";
+
+                return MyToolsController.ToJson(esValido, message);
+            }
+            catch (Exception ex)
+            {
+                return MyToolsController.ToJson(false, $"Error al validar usuario: {ex.Message}");
+            }
+            finally
+            {
+                db.Close();
+            }
         }
 
         #region sesion de usuarios

@@ -162,5 +162,39 @@ namespace MyApi.Controllers.Agenda
             return Response;
         }
 
+        [HttpPost]
+        [Route("get-empleados")]
+        public IActionResult GetClientes([FromBody] EmpleadoRequest request)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.Open();
+                db.SetCommand("sp_se_empleadosByIdEntidad", true);
+                db.AddParameter("idEmpleado", request.idEmpleado.ToString());
+                db.AddParameter("idEntidad", request.idEntidad.ToString());
+
+                ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                ds.Tables[0].TableName = "Data";
+                Code = true;
+                Message = "Success";
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
     }
 }

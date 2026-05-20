@@ -3,13 +3,15 @@
    Incluye: TiposPersona, Persona Admin, Perfil Admin, Usuario Admin,
             Magnitudes + Unidades de Medida + Conversiones
    ========================================================= */
+--exec sp_ui_entidad 0 , 'Pruebas',9998,'',1,1
 
-DECLARE @idEntidad INT = 10007;
+DECLARE @idEntidad INT = 10008;
+DECLARE @idEntidadCopy INT = 10007;
 DECLARE @idUsuarioSistema INT = 1;
 
-DECLARE @usuarioAdmin VARCHAR(50) = 'Administrador';
-DECLARE @correoAdmin  VARCHAR(150)= 'admin@hotmail.com';
-DECLARE @telefonoAdmin VARCHAR(30)= '1111111';
+DECLARE @usuarioAdmin VARCHAR(50) = 'QA';
+DECLARE @correoAdmin  VARCHAR(150)= '';
+DECLARE @telefonoAdmin VARCHAR(30)= '';
 DECLARE @fechaNacimiento DATE = '1998-12-21';
 DECLARE @nombreAdmin  VARCHAR(100)= 'QA';
 
@@ -34,8 +36,8 @@ BEGIN TRY
 		EXEC sp_ui_catalogos 0,'Proveedor','',@idEntidad,1,@idUsuarioSistema,'cat_tiposPersonas';
 	IF NOT EXISTS (SELECT 1 FROM cat_tiposPersonas WHERE idEntidad=@idEntidad AND descripcion='Cliente' )
 		EXEC sp_ui_catalogos 0,'Cliente','',@idEntidad,1,@idUsuarioSistema,'cat_tiposPersonas';
-	IF NOT EXISTS (SELECT 1 FROM cat_tiposPersonas WHERE idEntidad=@idEntidad AND descripcion='Empleada' )
-		EXEC sp_ui_catalogos 0,'Empleada','',@idEntidad,1,@idUsuarioSistema,'cat_tiposPersonas';
+	IF NOT EXISTS (SELECT 1 FROM cat_tiposPersonas WHERE idEntidad=@idEntidad AND descripcion='Empleado' )
+		EXEC sp_ui_catalogos 0,'Empleado','',@idEntidad,1,@idUsuarioSistema,'cat_tiposPersonas';
 
 	DECLARE @idTipoPersonaAdmin INT =
 		(SELECT TOP 1 id FROM cat_tiposPersonas WHERE idEntidad=@idEntidad AND descripcion='Administrador' Order By id);
@@ -74,7 +76,7 @@ BEGIN TRY
 	IF NOT EXISTS (SELECT 1 FROM sys_perfiles WHERE idEntidad=@idEntidad AND descripcion='Cliente')
 		EXEC sp_ui_catalogos 0,'Cliente','',@idEntidad,1,@idUsuarioSistema,'sys_perfiles';
 	IF NOT EXISTS (SELECT 1 FROM sys_perfiles WHERE idEntidad=@idEntidad AND descripcion='Empleado')
-		EXEC sp_ui_catalogos 0,'Empleado','',10007,1,1,'sys_perfiles';
+		EXEC sp_ui_catalogos 0,'Empleado','',@idEntidad,1,1,'sys_perfiles';
 
 	DECLARE @idPerfilAdmin INT =
 		(SELECT TOP 1 id FROM sys_perfiles WHERE idEntidad=@idEntidad AND descripcion='Administrador' order by id);
@@ -446,8 +448,194 @@ BEGIN TRY
 		EXEC sp_ui_catalogos 0,'Productos de Temporada','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Lo Nuevo','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Servicios','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
+		EXEC sp_ui_catalogos 0,'Farmacia','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
+		EXEC sp_ui_catalogos 0,'Desechables','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
+		EXEC sp_ui_catalogos 0,'Bebidas alcohólicas','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
+		EXEC sp_ui_catalogos 0,'Cigarros','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Otros','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 	END;
+	/* =========================================================
+	   7) COPIA DE CATALOGOS PARA AGENDAS
+	   ========================================================= */
+	
+	Insert into cat_estatusAgenda(
+		descripcion,
+		clave, 
+		orden,
+		esFinal,
+		comentarios,
+		activo, 
+		idEntidad,
+		fechaAlta,
+		idusuarioAlta
+	)
+	Select 
+		descripcion
+		,clave
+		,orden
+		,esFinal
+		,comentarios
+		,activo
+		,@idEntidad as idEntidad
+		,getdate() as fechaAlta
+		,idUsuarioAlta
+	From cat_estatusAgenda						Where idEntidad = @idEntidadCopy
+
+	Insert into cat_estatusAgendaDetalleServicio(
+		descripcion	,
+		clave	,
+		orden	,
+		esFinal	,
+		comentarios	,
+		activo	,
+		idEntidad	,
+		fechaAlta 	,
+		idUsuarioAlta
+	)
+	Select 
+		descripcion
+		,clave
+		,orden
+		,esFinal
+		,comentarios
+		,activo
+		,@idEntidad as idEntidad
+		,getdate() as fechaAlta
+		,idUsuarioAlta
+	From cat_estatusAgendaDetalleServicio		Where idEntidad = @idEntidadCopy
+	
+	Insert into cat_estatusPagoAgenda(
+		descripcion
+		,clave
+		,comentarios
+		,activo
+		,idEntidad
+		,fechaAlta
+		,idUsuarioAlta
+		)
+	Select 
+		descripcion
+		,clave
+		,comentarios
+		,activo
+		,@idEntidad As idEntidad
+		,GetDate() As fechaAlta
+		,idUsuarioAlta
+	From cat_estatusPagoAgenda					Where idEntidad = @idEntidadCopy
+
+	Insert into cat_origenAgenda(
+		descripcion
+		,clave
+		,comentarios
+		,activo
+		,idEntidad
+		,fechaAlta
+		,idUsuarioAlta
+	)
+	Select 
+		descripcion
+		,clave
+		,comentarios
+		,activo
+		,@idEntidad As idEntidad
+		,GetDate() As fechaAlta
+		,idUsuarioAlta
+	From cat_origenAgenda						Where idEntidad = @idEntidadCopy
+
+	Insert into cat_tipoMovimientoAgenda(
+		descripcion
+		,clave
+		,comentarios
+		,activo
+		,idEntidad
+		,fechaAlta
+		,idUsuarioAlta
+	)
+	Select 
+		descripcion
+		,clave
+		,comentarios
+		,activo
+		,@idEntidad As idEntidad
+		,GetDate() As fechaAlta
+		,idUsuarioAlta
+	From cat_tipoMovimientoAgenda				Where idEntidad = @idEntidadCopy
+
+	Insert into cat_tipoMovimientoPagoAgenda(
+		descripcion
+		,clave
+		,comentarios
+		,activo
+		,idEntidad
+		,fechaAlta
+		,idUsuarioAlta
+	)
+	Select 
+		descripcion
+		,clave
+		,comentarios
+		,activo
+		,@idEntidad As idEntidad
+		,GetDate() As fechaAlta
+		,idUsuarioAlta
+	From cat_tipoMovimientoPagoAgenda			Where idEntidad = @idEntidadCopy
+
+	Insert into cat_tipoBloqueoHorario(
+		descripcion
+		,clave
+		,comentarios
+		,activo
+		,idEntidad
+		,fechaAlta
+		,idUsuarioAlta
+	)
+	Select 
+		descripcion
+		,clave
+		,comentarios
+		,activo
+		,@idEntidad As idEntidad
+		,GetDate() As fechaAlta
+		,idUsuarioAlta
+	From cat_tipoBloqueoHorario				Where idEntidad = @idEntidadCopy
+
+	
+	Insert into cat_tipoNegocioSucursal(
+		descripcion
+		,comentarios
+		,activo
+		,idEntidad
+		, fechaAlta
+		,idUsuarioAlta
+	)
+	Select 
+		descripcion
+		,comentarios
+		,activo
+		,@idEntidad as idEntidad
+		, getdate() as fechaAlta
+		,idUsuarioAlta
+	From cat_tipoNegocioSucursal where idEntidad = @idEntidadCopy
+
+	
+	Insert into cat_rolParticipacionServicio (
+		descripcion
+		,clave
+		,comentarios
+		,activo
+		,idEntidad
+		,fechaAlta
+		,idUsuarioAlta
+	)
+	Select 
+		descripcion
+		,clave
+		,comentarios
+		,activo
+		,@idEntidad As idEntidad
+		,Getdate() as fechaAlta
+		,idUsuarioAlta
+	From cat_rolParticipacionServicio where idEntidad = @idEntidadCopy
 
 	COMMIT;
 
@@ -474,3 +662,26 @@ END CATCH;
 
 
 --SELECT * FROM sys_usuarios WHERE idEntidad = 9999
+
+
+
+--exec sp_ui_persona
+--	@id = 0
+--	,@idTipoPersona = 35
+--	,@nombre = 'Victor Alfonso'
+--	,@apellidoPaterno = 'Hdz'
+--	,@apellidoMaterno = 'Glz'
+--	,@idGenero = 1
+--	,@fechaNacimiento = '19981221'
+--	,@numeroTelefono =''
+--	,@correo= ''
+--	,@comentarios = ''
+--	,@activo = 1
+--	,@idEntidad = 10008
+--	,@idUsuarioModifica = 1
+
+--Select * From cat_productosServicios where identidad = 10008 
+
+--Update cat_productosServicios set duracionBaseMin = 180 , esServicio = 1, mostrarEnAgenda = 1 where identidad = 10008 and id = 3171
+--update cat_productosServicios set duracionBaseMin = 30  , esServicio = 1, mostrarEnAgenda = 1 where identidad = 10008 and id = 3172
+--update cat_productosServicios set duracionBaseMin = 150 , esServicio = 1, mostrarEnAgenda = 1  where identidad = 10008 and id = 3173

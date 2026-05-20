@@ -623,3 +623,8 @@ Select * From proc_agendaDetalleServicio
 Select * From proc_agendaBitacora	
 Select * From proc_agendaReprogramacion
 Select * From proc_agendaDetalleServicioReprogramacion
+
+Select * From cat_productosServicios where id = 3123
+Update cat_productosServicios set esServicio = 1, duracionBaseMin = 15, mostrarEnAgenda = 1 where id = 3123
+
+Alter table cat_productosServicios add esComodin bit

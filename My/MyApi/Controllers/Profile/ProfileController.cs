@@ -399,6 +399,52 @@ namespace MyApi.Controllers.Profile
 
         }
 
+        [HttpPost]
+        [Route("insert-empleado")]
+        public IActionResult insertEmpleado([FromBody] Empleado cEmpleado)
+        {
+            /*Se declaran Variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataTable dt;
+            DataBase2 db = new DataBase2();
+            cEmpleado.id = 0;
+
+            try
+            {
+                db.SetCommand("sp_ui_empleado", true);
+                db.AddParameter("@id", cEmpleado.id);
+                db.AddParameter("@usuario", cEmpleado.usuario);
+                db.AddParameter("@nombre", cEmpleado.nombre);
+                db.AddParameter("@apellidoP", cEmpleado.apellidoP);
+                db.AddParameter("@apellidoM", cEmpleado.apellidoM);
+                db.AddParameter("@correo", cEmpleado.correo);
+                db.AddParameter("@numeroTelefono", cEmpleado.numeroTelefono);
+                db.AddParameter("@fechaNacimiento", cEmpleado.fechaNacimiento);
+                db.AddParameter("@comentarios", cEmpleado.comentarios);
+                db.AddParameter("@activo", cEmpleado.activo);
+                db.AddParameter("@idEntidad", cEmpleado.idEntidad);
+                db.AddParameter("@idUsuarioModifica", cEmpleado.idUsuarioModifica);
+
+                dt = db.ExecuteWithDataSet().Tables[0];
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message, dt);
+
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+
+
+        }
+
+
         [Route("delete-persona")]
         public IActionResult deletePersona([FromBody] DelCliente cCliente)
         {
@@ -433,6 +479,49 @@ namespace MyApi.Controllers.Profile
 
         }
 
+
+        [HttpPost]
+        [Route("update-empleado")]
+        public IActionResult updateCliente([FromBody] Empleado cEmpleado)
+        {
+            /*Se declaran Variables*/
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataTable dt;
+            DataBase2 db = new DataBase2();
+            //cCliente.id = 0;
+
+            try
+            {
+                db.SetCommand("sp_ui_empleado", true);
+                db.AddParameter("@id", cEmpleado.id);
+                db.AddParameter("@nombre", cEmpleado.nombre);
+                db.AddParameter("@usuario", cEmpleado.usuario);
+                db.AddParameter("@apellidoP", cEmpleado.apellidoP);
+                db.AddParameter("@apellidoM", cEmpleado.apellidoM);
+                db.AddParameter("@correo", cEmpleado.correo);
+                db.AddParameter("@numeroTelefono", cEmpleado.numeroTelefono);
+                db.AddParameter("@comentarios", cEmpleado.comentarios);
+                db.AddParameter("@fechaNacimiento", cEmpleado.fechaNacimiento);
+                db.AddParameter("@activo", cEmpleado.activo);
+                db.AddParameter("@idEntidad", cEmpleado.idEntidad);
+                db.AddParameter("@idUsuarioModifica", cEmpleado.idUsuarioModifica);
+
+                dt = db.ExecuteWithDataSet().Tables[0];
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message, dt);
+
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            return Response;
+        }
 
         [HttpPost]
         [Route("update-cliente")]
@@ -476,6 +565,7 @@ namespace MyApi.Controllers.Profile
 
 
         }
+
 
         [HttpPost]
         [Route("update-persona")]
@@ -721,8 +811,192 @@ namespace MyApi.Controllers.Profile
             return Response;
         }
         #endregion
+        #region Sucursales
+
+        [HttpPost]
+        [Route("insert-sucursal")]
+        public IActionResult insertSucursal([FromBody] Sucursal cSucursal)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataBase2 db = new DataBase2();
+
+            cSucursal.idSucursal = 0;
+
+            try
+            {
+                db.SetCommand("sp_ui_sucursales", true);
+                db.AddParameter("@idSucursal", cSucursal.idSucursal);
+                db.AddParameter("@nombre", cSucursal.nombre);
+                db.AddParameter("@direccion", cSucursal.direccion);
+                db.AddParameter("@cp", cSucursal.cp);
+                db.AddParameter("@comentarios", cSucursal.comentarios);
+                db.AddParameter("@idEntidad", cSucursal.idEntidad);
+                db.AddParameter("@idUsuarioModifica", cSucursal.idUsuarioModifica);
+                db.AddParameter("@idTipoNegocioSucursal", cSucursal.idTipoNegocioSucursal);
+                db.AddParameter("@activo", cSucursal.activo);
+                db.AddParameter("@clave", cSucursal.clave);
+                db.AddParameter("@logo", cSucursal.logo);
+
+                db.ExecuteWithDataSet();
+
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("update-sucursal")]
+        public IActionResult updateSucursal([FromBody] Sucursal cSucursal)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.SetCommand("sp_ui_sucursales", true);
+                db.AddParameter("@idSucursal", cSucursal.idSucursal);
+                db.AddParameter("@nombre", cSucursal.nombre);
+                db.AddParameter("@direccion", cSucursal.direccion);
+                db.AddParameter("@cp", cSucursal.cp);
+                db.AddParameter("@comentarios", cSucursal.comentarios);
+                db.AddParameter("@idEntidad", cSucursal.idEntidad);
+                db.AddParameter("@idUsuarioModifica", cSucursal.idUsuarioModifica);
+                db.AddParameter("@idTipoNegocioSucursal", cSucursal.idTipoNegocioSucursal);
+                db.AddParameter("@activo", cSucursal.activo);
+                db.AddParameter("@clave", cSucursal.clave);
+                db.AddParameter("@logo", cSucursal.logo);
+
+                db.ExecuteWithDataSet();
+
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("get-tipoNegocioSucursal")]
+        public IActionResult getTpoSucursales([FromBody] GetTipoSucursalRequest rSucursal)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.SetCommand("sp_se_tipoNegocioSucursal", true);
+                db.AddParameter("@id", rSucursal.id);
+                db.AddParameter("@idEntidad", rSucursal.idEntidad);
+
+                ds = db.ExecuteWithDataSet();
+                ds.Tables[0].TableName = "Data";
+
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
 
 
+        [HttpPost]
+        [Route("get-sucursales")]
+        public IActionResult getSucursales([FromBody] GetSucursalRequest rSucursal)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.SetCommand("sp_se_sucursales", true);
+                db.AddParameter("@idSucursal", rSucursal.idSucursal);
+                db.AddParameter("@idEntidad", rSucursal.idEntidad);
+
+                ds = db.ExecuteWithDataSet();
+                ds.Tables[0].TableName = "Data";
+
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("delete-sucursal")]
+        public IActionResult deleteSucursal([FromBody] DelSucursalRequest rSucursal)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                db.SetCommand("sp_del_sucursales", true);
+                db.AddParameter("@idSucursal", rSucursal.idSucursal);
+                db.AddParameter("@idEntidad", rSucursal.idEntidad);
+                db.AddParameter("@idUsuarioModifica", rSucursal.idUsuarioModifica);
+
+                db.ExecuteWithDataSet();
+
+                Code = true;
+                Message = "Succes";
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        #endregion
+
+        //aqui van los EP de sucursales
 
         #region CP
         [HttpPost]

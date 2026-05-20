@@ -33,6 +33,12 @@ namespace MyApi.Models.Catalogos
         public int idEntidad { get; set; }
     }
 
+    public class EmpleadoRequest
+    {
+        public int idEmpleado { get; set; }
+        public int idEntidad { get; set; }
+    }
+
     #endregion
 
 }

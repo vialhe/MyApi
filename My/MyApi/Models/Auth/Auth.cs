@@ -17,6 +17,12 @@ namespace MyApi.Class.Auth
 
     }
 
+    public class ValidaUsuarioExistente
+    {
+        public string usuario { get; set; } 
+
+    }
+
     public class ExpiraSesionRequest
     {
         public int idEntidad { get; set; }

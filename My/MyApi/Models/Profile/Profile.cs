@@ -58,6 +58,22 @@
         public int idUsuarioModifica { get; set; }
     }
 
+    public class Empleado
+    {
+        public int? id { get; set; }
+        public string nombre { get; set; } = "";
+        public string usuario { get; set; } = "";
+        public string apellidoP { get; set; } = "";
+        public string apellidoM { get; set; } = "";
+        public string correo { get; set; } = "";
+        public string numeroTelefono { get; set; } = "";
+        public DateTime fechaNacimiento { get; set; }
+        public string comentarios { get; set; } = "";
+        public bool activo { get; set; }
+        public int idEntidad { get; set; }
+        public int idUsuarioModifica { get; set; }
+    }
+
     public class DelCliente
     {
         public int id { get; set; }
@@ -95,4 +111,40 @@
         public int idEntidad { get; set; }
         public int idUsuarioModifica { get; set; }
     }
+
+    #region sucurales
+    public class Sucursal
+    {
+        public int idSucursal { get; set; }
+        public string nombre { get; set; } = "";
+        public string direccion { get; set; } = "";
+        public string cp { get; set; } = "";
+        public string comentarios { get; set; } = "";
+        public int idEntidad { get; set; }
+        public int idUsuarioModifica { get; set; }
+        public int idTipoNegocioSucursal { get; set; }
+        public bool activo { get; set; } = true;
+        public string clave { get; set; } = "";
+        public string logo { get; set; } = "";
+    }
+
+    public class GetSucursalRequest
+    {
+        public int idSucursal { get; set; } = 0;
+        public int idEntidad { get; set; }
+    }
+
+    public class GetTipoSucursalRequest
+    {
+        public int id { get; set; } = 0;
+        public int idEntidad { get; set; }
+    }
+
+    public class DelSucursalRequest
+    {
+        public int idSucursal { get; set; }
+        public int idEntidad { get; set; }
+        public int idUsuarioModifica { get; set; }
+    }
+    #endregion
 }
