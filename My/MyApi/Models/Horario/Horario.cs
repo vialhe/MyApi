@@ -29,6 +29,18 @@ namespace MyApi.Models.Horario
         public DateTime? horaFin { get; set; } = null;
     }
 
+    public class AgendaClienteGetRequest
+    {
+        public int folioCliente { get; set; }
+        public int idEntidad { get; set; }
+        public int folioAgenda { get; set; } = 0;
+        public int idSucursal { get; set; } = 0;
+        public DateTime? fechaInicio { get; set; }
+        public DateTime? fechaFin { get; set; }
+        public bool incluirCanceladas { get; set; } = true;
+        public bool soloActivas { get; set; } = true;
+    }
+
     public class EmpleadoHorarioGetRequest
     {
         public int folioEmpleado { get; set; }

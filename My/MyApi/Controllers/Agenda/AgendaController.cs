@@ -5,6 +5,7 @@ using MyApi.Class.Tools;
 using MyApi.Models.Agenda;
 using Microsoft.Data.SqlClient;
 using MyApi.Controllers.MyTools;
+using MyApi.Models.Horario;
 
 namespace MyApi.Controllers.Agenda
 {
@@ -438,6 +439,89 @@ namespace MyApi.Controllers.Agenda
                 return new DataTable();
 
             return ds.Tables[0];
+        }
+
+        private DataSet ExecuteDataSet(string storedProcedure, Action<DataBase2> setParameters)
+        {
+            var db = new DataBase2();
+
+            try
+            {
+                db.Open();
+                db.SetCommand(storedProcedure, true);
+                setParameters(db);
+
+                return db.ExecuteWithDataSet();
+            }
+            finally
+            {
+                db.Close();
+            }
+        }
+
+
+        [HttpPost]
+        [Route("get-agendas-historia-cliente")]
+        public IActionResult GetAgendasHistoriaCliente([FromBody] AgendaClienteGetRequest request)
+        {
+
+            if (request == null)
+                return MyToolsController.ToJson(false, "La petición es obligatoria.");
+
+            if (request.folioCliente <= 0)
+                return MyToolsController.ToJson(false, "El folioCliente es obligatorio.");
+
+            if (request.idEntidad <= 0)
+                return MyToolsController.ToJson(false, "El idEntidad es obligatorio.");
+
+            if (request.folioAgenda < 0)
+                return MyToolsController.ToJson(false, "El folioAgenda no puede ser menor a 0.");
+
+            if (request.idSucursal < 0)
+                return MyToolsController.ToJson(false, "El idSucursal no puede ser menor a 0.");
+
+            if (request.fechaInicio.HasValue && request.fechaFin.HasValue && request.fechaFin < request.fechaInicio)
+                return MyToolsController.ToJson(false, "La fechaFin no puede ser menor a la fechaInicio.");
+
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+
+            try
+            {
+                ds = ExecuteDataSet("sp_se_agendaHistorialClienteDetalle", db =>
+                {
+                    db.AddParameter("folioCliente", request.folioCliente);
+                    db.AddParameter("idEntidad", request.idEntidad);
+                    db.AddParameter("folioAgenda", request.folioAgenda);
+                    db.AddParameter("idSucursal", request.idSucursal);
+                    db.AddParameter("fechaInicio", request.fechaInicio.HasValue ? request.fechaInicio.Value : DBNull.Value);
+                    db.AddParameter("fechaFin", request.fechaFin.HasValue ? request.fechaFin.Value : DBNull.Value);
+                    db.AddParameter("incluirCanceladas", request.incluirCanceladas);
+                    db.AddParameter("soloActivas", request.soloActivas);
+                });
+
+                if (ds == null || ds.Tables.Count != 4)
+                    return MyToolsController.ToJson(false, "La consulta no regresó la estructura esperada.");
+
+                ds.Tables[0].TableName = "Citas";
+                ds.Tables[1].TableName = "Servicios";
+                ds.Tables[2].TableName = "EmpleadosAsignados";
+                ds.Tables[3].TableName = "Bitacora";
+
+                Code = true;
+                Message = "Success";
+                Response = MyToolsController.ToJson(Code, Message, ds);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
         }
         #endregion
     }
