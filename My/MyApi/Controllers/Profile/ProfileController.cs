@@ -838,6 +838,8 @@ namespace MyApi.Controllers.Profile
                 db.AddParameter("@activo", cSucursal.activo);
                 db.AddParameter("@clave", cSucursal.clave);
                 db.AddParameter("@logo", cSucursal.logo);
+                db.AddParameter("@latitud", cSucursal.latitud);
+                db.AddParameter("@longitud", cSucursal.longitud);
 
                 db.ExecuteWithDataSet();
 
@@ -878,6 +880,8 @@ namespace MyApi.Controllers.Profile
                 db.AddParameter("@activo", cSucursal.activo);
                 db.AddParameter("@clave", cSucursal.clave);
                 db.AddParameter("@logo", cSucursal.logo);
+                db.AddParameter("@latitud", cSucursal.latitud);
+                db.AddParameter("@longitud", cSucursal.longitud);
 
                 db.ExecuteWithDataSet();
 

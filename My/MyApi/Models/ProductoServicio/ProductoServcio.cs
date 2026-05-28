@@ -29,6 +29,10 @@
         public int idTipoPrecio { get; set; }
         public decimal costo { get; set; }
         public string URLimagen { get; set; } = "";
+        public bool? esServicio { get; set; }
+        public decimal? duracionBaseMin { get; set; }
+        public bool? mostrarEnAgenda { get; set; }
+        public bool? esComodin { get; set; }  
 
     }
 }

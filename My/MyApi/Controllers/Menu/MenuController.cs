@@ -12,6 +12,7 @@ using Microsoft.Data.SqlClient;
 using static MyApi.Controllers.MyTools.MyToolsController;
 using MyApi.Controllers.Recurso;
 using MyApi.Models.Recurso;
+using Azure.Core;
 
 namespace MyApi.Controllers.Menu
 {
@@ -185,44 +186,46 @@ namespace MyApi.Controllers.Menu
             cProductoServicio.id = 0;
 
             RecursoController recursoController = new RecursoController();
-
+            DataBase2 db = new DataBase2();
 
             try
             {
                 /*Inicia proceso*/
-                List<Parametro> parametros = new List<Parametro>{
-                    new Parametro("id", cProductoServicio.id.ToString()),
-                    new Parametro("idTipoProductoServicio", cProductoServicio.idTipoProductoServicio.ToString()),
-                    new Parametro("folioProductoServicio", cProductoServicio.folioProductoServicio.ToString()),
-                    new Parametro("precio", cProductoServicio.precio.ToString()),
-                    new Parametro("descripcion", cProductoServicio.descripcion.ToString()),
-                    new Parametro("recurrente", cProductoServicio.recurrente.ToString()),
-                    new Parametro("requiereSerie", cProductoServicio.requiereSerie.ToString()),
-                    new Parametro("requiereFechaCaducidad", cProductoServicio.requiereFechaCaducidad.ToString()),
-                    new Parametro("requiereLote", cProductoServicio.requiereLote.ToString()),
-                    new Parametro("requiereNumeracion", cProductoServicio.requiereNumeracion.ToString()),
-                    new Parametro("idUnidadMedidaCompra", cProductoServicio.idUnidadMedidaCompra.ToString()),
-                    new Parametro("idUnidadMedidaVenta", cProductoServicio.idUnidadMedidaVenta.ToString()),
-                    new Parametro("idUnidadMedidaBase", cProductoServicio.idUnidadMedidaBase.ToString()),
-                    new Parametro("stockMin", cProductoServicio.stockMin.ToString()),
-                    new Parametro("stockMax", cProductoServicio.stockMax.ToString()),
-                    new Parametro("comentarios", cProductoServicio.comentarios.ToString()),
-                    new Parametro("activo", cProductoServicio.activo.ToString()),
-                    new Parametro("idEntidad", cProductoServicio.idEntidad.ToString()),
-                    new Parametro("idUsuarioModifica", cProductoServicio.idUsuarioAlta.ToString()),
-                    new Parametro("calificacion", cProductoServicio.calificacion.ToString()),
-                    new Parametro("popular", cProductoServicio.popular.ToString()),
-                    new Parametro("idTipoPrecio", cProductoServicio.idTipoPrecio.ToString()),
-                    new Parametro("costo", cProductoServicio.costo.ToString()),
+                db.SetCommand("sp_ui_productosServicios", true);
 
-                };
-                
-                dt = DataBase.Listar("sp_ui_productosServicios", parametros);
+                db.AddParameter("@id", cProductoServicio.id);
+                db.AddParameter("@idTipoProductoServicio", cProductoServicio.idTipoProductoServicio);
+                db.AddParameter("@folioProductoServicio", cProductoServicio.folioProductoServicio);
+                db.AddParameter("@precio", cProductoServicio.precio);
+                db.AddParameter("@descripcion", cProductoServicio.descripcion ?? "");
+                db.AddParameter("@recurrente", cProductoServicio.recurrente);
+                db.AddParameter("@requiereSerie", cProductoServicio.requiereSerie);
+                db.AddParameter("@requiereFechaCaducidad", cProductoServicio.requiereFechaCaducidad);
+                db.AddParameter("@requiereLote", cProductoServicio.requiereLote);
+                db.AddParameter("@requiereNumeracion", cProductoServicio.requiereNumeracion);
+                db.AddParameter("@idUnidadMedidaCompra", cProductoServicio.idUnidadMedidaCompra);
+                db.AddParameter("@idUnidadMedidaVenta", cProductoServicio.idUnidadMedidaVenta);
+                db.AddParameter("@idUnidadMedidaBase", cProductoServicio.idUnidadMedidaBase);
+                db.AddParameter("@stockMin", cProductoServicio.stockMin);
+                db.AddParameter("@stockMax", cProductoServicio.stockMax);
+                db.AddParameter("@comentarios", cProductoServicio.comentarios ?? "");
+                db.AddParameter("@activo", cProductoServicio.activo);
+                db.AddParameter("@idEntidad", cProductoServicio.idEntidad);
+                db.AddParameter("@idUsuarioModifica", cProductoServicio.idUsuarioAlta);
+                db.AddParameter("@calificacion", cProductoServicio.calificacion);
+                db.AddParameter("@popular", cProductoServicio.popular);
+                db.AddParameter("@idTipoPrecio", cProductoServicio.idTipoPrecio);
+                db.AddParameter("@costo", cProductoServicio.costo);
+                db.AddParameter("@esServicio", cProductoServicio.esServicio ?? false);
+                db.AddParameter("@duracionBaseMin", (object)cProductoServicio.duracionBaseMin ?? DBNull.Value);
+                db.AddParameter("@mostrarEnAgenda", cProductoServicio.mostrarEnAgenda ?? false);
+                db.AddParameter("@esComodin", cProductoServicio.esComodin ?? false);
+
+                dt = db.ExecuteWithDataSet().Tables[0];
 
                 Code = true;
                 Message = "Succes";
-                Response = MyToolsController.ToJson(Code,Message,dt);
-
+                Response = MyToolsController.ToJson(Code, Message, dt);
             }
             catch (Exception ex)
             {
@@ -230,9 +233,8 @@ namespace MyApi.Controllers.Menu
                 Message = "Ex: " + ex.Message;
                 Response = MyToolsController.ToJson(Code, Message);
             }
-            return Response;
 
-            
+            return Response;
         }
 
         [HttpPost]
@@ -244,56 +246,54 @@ namespace MyApi.Controllers.Menu
             bool Code;
             string Message;
             DataTable dt;
+            DataBase2 db = new DataBase2();
 
             try
             {
                 /*Inicia proceso*/
-                List<Parametro> parametros = new List<Parametro>{
-                    new Parametro("id", cProductoServicio.id.ToString()),
-                    new Parametro("idTipoProductoServicio", cProductoServicio.idTipoProductoServicio.ToString()),
-                    new Parametro("folioProductoServicio", cProductoServicio.folioProductoServicio.ToString()),
-                    new Parametro("precio", cProductoServicio.precio.ToString()),
-                    new Parametro("descripcion", cProductoServicio.descripcion.ToString()),
-                    new Parametro("recurrente", cProductoServicio.recurrente.ToString()),
-                    new Parametro("requiereSerie", cProductoServicio.requiereSerie.ToString()),
-                    new Parametro("requiereFechaCaducidad", cProductoServicio.requiereFechaCaducidad.ToString()),
-                    new Parametro("requiereLote", cProductoServicio.requiereLote.ToString()),
-                    new Parametro("requiereNumeracion", cProductoServicio.requiereNumeracion.ToString()),
-                    new Parametro("idUnidadMedidaCompra", cProductoServicio.idUnidadMedidaCompra.ToString()),
-                    new Parametro("idUnidadMedidaVenta", cProductoServicio.idUnidadMedidaVenta.ToString()),
-                    new Parametro("idUnidadMedidaBase", cProductoServicio.idUnidadMedidaBase.ToString()),
-                    new Parametro("stockMin", cProductoServicio.stockMin.ToString()),
-                    new Parametro("stockMax", cProductoServicio.stockMax.ToString()),
-                    new Parametro("comentarios", cProductoServicio.comentarios.ToString()),
-                    new Parametro("activo", cProductoServicio.activo.ToString()),
-                    new Parametro("idEntidad", cProductoServicio.idEntidad.ToString()),
-                    new Parametro("idUsuarioModifica", cProductoServicio.idUsuarioModifica.ToString()),
-                    new Parametro("calificacion", cProductoServicio.calificacion.ToString()),
-                    new Parametro("popular", cProductoServicio.popular.ToString()),
-                    new Parametro("idTipoPrecio", cProductoServicio.idTipoPrecio.ToString()),
-                    new Parametro("costo", cProductoServicio.costo.ToString())
-                };
+                db.SetCommand("sp_ui_productosServicios", true);
 
-                dt = DataBase.Listar("sp_ui_productosServicios", parametros);
+                db.AddParameter("@id", cProductoServicio.id);
+                db.AddParameter("@idTipoProductoServicio", cProductoServicio.idTipoProductoServicio);
+                db.AddParameter("@folioProductoServicio", cProductoServicio.folioProductoServicio);
+                db.AddParameter("@precio", cProductoServicio.precio);
+                db.AddParameter("@descripcion", cProductoServicio.descripcion ?? "");
+                db.AddParameter("@recurrente", cProductoServicio.recurrente);
+                db.AddParameter("@requiereSerie", cProductoServicio.requiereSerie);
+                db.AddParameter("@requiereFechaCaducidad", cProductoServicio.requiereFechaCaducidad);
+                db.AddParameter("@requiereLote", cProductoServicio.requiereLote);
+                db.AddParameter("@requiereNumeracion", cProductoServicio.requiereNumeracion);
+                db.AddParameter("@idUnidadMedidaCompra", cProductoServicio.idUnidadMedidaCompra);
+                db.AddParameter("@idUnidadMedidaVenta", cProductoServicio.idUnidadMedidaVenta);
+                db.AddParameter("@idUnidadMedidaBase", cProductoServicio.idUnidadMedidaBase);
+                db.AddParameter("@stockMin", cProductoServicio.stockMin);
+                db.AddParameter("@stockMax", cProductoServicio.stockMax);
+                db.AddParameter("@comentarios", cProductoServicio.comentarios ?? "");
+                db.AddParameter("@activo", cProductoServicio.activo);
+                db.AddParameter("@idEntidad", cProductoServicio.idEntidad);
+                db.AddParameter("@idUsuarioModifica", cProductoServicio.idUsuarioModifica);
+                db.AddParameter("@calificacion", cProductoServicio.calificacion);
+                db.AddParameter("@popular", cProductoServicio.popular);
+                db.AddParameter("@idTipoPrecio", cProductoServicio.idTipoPrecio);
+                db.AddParameter("@costo", cProductoServicio.costo);
+                db.AddParameter("@esServicio", cProductoServicio.esServicio ?? false);
+                db.AddParameter("@duracionBaseMin", (object)cProductoServicio.duracionBaseMin ?? DBNull.Value);
+                db.AddParameter("@mostrarEnAgenda", cProductoServicio.mostrarEnAgenda ?? false);
+                db.AddParameter("@esComodin", cProductoServicio.esComodin ?? false);
+
+                dt = db.ExecuteWithDataSet().Tables[0];
+
                 Code = true;
                 Message = "Succes";
-                Response = MyToolsController.ToJson(Code, Message,dt);
+                Response = MyToolsController.ToJson(Code, Message, dt);
+
                 return Response;
-
-
             }
             catch (Exception ex)
             {
-
-                //Code = false;
-                //Message = "Ex: " + ex.Message;
-                //Response = MyToolsController.ToJson(Code, Message);
                 return MyToolsController.ToJson(false, ex.Message);
             }
-
-
         }
-
 
 
         public class DeleteProductRequest

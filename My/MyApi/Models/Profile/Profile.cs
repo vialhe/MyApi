@@ -126,6 +126,8 @@
         public bool activo { get; set; } = true;
         public string clave { get; set; } = "";
         public string logo { get; set; } = "";
+        public string latitud { get; set; } = "";
+        public string longitud { get; set; } = "";
     }
 
     public class GetSucursalRequest
