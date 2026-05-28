@@ -876,5 +876,286 @@ namespace MyApi.Controllers.Menu
         }
 
         #endregion
+
+        #region CRUD tupoiNegocioSucursal
+
+        #region CRUD TipoNegocioSucursal
+
+        [HttpPost]
+        [Route("insert-tipo-negocio-sucursal")]
+        public IActionResult InsertTipoNegocioSucursal([FromBody] TipoNegocioSucursalInsertRequest request)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                if (request == null)
+                    return MyToolsController.ToJson(false, "Request inválido.");
+
+                if (string.IsNullOrWhiteSpace(request.descripcion))
+                    return MyToolsController.ToJson(false, "La descripción es obligatoria.");
+
+                if (request.idEntidad <= 0)
+                    return MyToolsController.ToJson(false, "La entidad es obligatoria.");
+
+                if (request.idUsuario <= 0)
+                    return MyToolsController.ToJson(false, "El usuario es obligatorio.");
+
+                db.Open();
+                db.SetCommand("sp_ui_tipoNegocioSucursal", true);
+
+                db.AddParameter("id", 0);
+                db.AddParameter("descripcion", request.descripcion.Trim());
+                db.AddParameter("comentarios", string.IsNullOrWhiteSpace(request.comentarios) ? (object)DBNull.Value : request.comentarios.Trim());
+                db.AddParameter("activo", request.activo ?? true);
+                db.AddParameter("idEntidad", request.idEntidad);
+                db.AddParameter("idUsuario", request.idUsuario);
+
+                ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                if (ds == null || ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
+                    return MyToolsController.ToJson(false, "No fue posible registrar el tipo de negocio de sucursal.");
+
+                Code = Convert.ToBoolean(ds.Tables[0].Rows[0]["Code"]);
+                Message = ds.Tables[0].Rows[0]["Mensaje"].ToString();
+
+                if (!Code)
+                    return MyToolsController.ToJson(false, Message);
+
+                if (ds.Tables.Count > 1)
+                {
+                    ds.Tables[1].TableName = "Data";
+                    Response = MyToolsController.ToJson(true, Message, ds.Tables[1]);
+                }
+                else
+                {
+                    ds.Tables[0].TableName = "Data";
+                    Response = MyToolsController.ToJson(true, Message, ds.Tables[0]);
+                }
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    db.Close();
+                }
+                catch
+                {
+                }
+
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("update-tipo-negocio-sucursal")]
+        public IActionResult UpdateTipoNegocioSucursal([FromBody] TipoNegocioSucursalUpdateRequest request)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                if (request == null)
+                    return MyToolsController.ToJson(false, "Request inválido.");
+
+                if (request.id <= 0)
+                    return MyToolsController.ToJson(false, "El id es obligatorio.");
+
+                if (string.IsNullOrWhiteSpace(request.descripcion))
+                    return MyToolsController.ToJson(false, "La descripción es obligatoria.");
+
+                if (request.idEntidad <= 0)
+                    return MyToolsController.ToJson(false, "La entidad es obligatoria.");
+
+                if (request.idUsuario <= 0)
+                    return MyToolsController.ToJson(false, "El usuario es obligatorio.");
+
+                db.Open();
+                db.SetCommand("sp_ui_tipoNegocioSucursal", true);
+
+                db.AddParameter("id", request.id);
+                db.AddParameter("descripcion", request.descripcion.Trim());
+                db.AddParameter("comentarios", string.IsNullOrWhiteSpace(request.comentarios) ? (object)DBNull.Value : request.comentarios.Trim());
+                db.AddParameter("activo", request.activo.HasValue ? request.activo.Value : (object)DBNull.Value);
+                db.AddParameter("idEntidad", request.idEntidad);
+                db.AddParameter("idUsuario", request.idUsuario);
+
+                ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                if (ds == null || ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
+                    return MyToolsController.ToJson(false, "No fue posible actualizar el tipo de negocio de sucursal.");
+
+                Code = Convert.ToBoolean(ds.Tables[0].Rows[0]["Code"]);
+                Message = ds.Tables[0].Rows[0]["Mensaje"].ToString();
+
+                if (!Code)
+                    return MyToolsController.ToJson(false, Message);
+
+                if (ds.Tables.Count > 1)
+                {
+                    ds.Tables[1].TableName = "Data";
+                    Response = MyToolsController.ToJson(true, Message, ds.Tables[1]);
+                }
+                else
+                {
+                    ds.Tables[0].TableName = "Data";
+                    Response = MyToolsController.ToJson(true, Message, ds.Tables[0]);
+                }
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    db.Close();
+                }
+                catch
+                {
+                }
+
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("get-tipos-negocio-sucursal")]
+        public IActionResult GetTiposNegocioSucursal([FromBody] TipoNegocioSucursalGetRequest request)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                if (request == null)
+                    return MyToolsController.ToJson(false, "Request inválido.");
+
+                if (request.idEntidad <= 0)
+                    return MyToolsController.ToJson(false, "La entidad es obligatoria.");
+
+                db.Open();
+                db.SetCommand("sp_se_tipoNegocioSucursal", true);
+
+                db.AddParameter("id", request.id);
+                db.AddParameter("idEntidad", request.idEntidad);
+                db.AddParameter("soloActivos", request.soloActivos);
+                db.AddParameter("busqueda", string.IsNullOrWhiteSpace(request.busqueda) ? (object)DBNull.Value : request.busqueda.Trim());
+
+                ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                if (ds == null || ds.Tables.Count == 0)
+                    return MyToolsController.ToJson(false, "No fue posible obtener los tipos de negocio de sucursal.");
+
+                ds.Tables[0].TableName = "Data";
+
+                Code = true;
+                Message = "Success";
+                Response = MyToolsController.ToJson(Code, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    db.Close();
+                }
+                catch
+                {
+                }
+
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("delete-tipo-negocio-sucursal")]
+        public IActionResult DeleteTipoNegocioSucursal([FromBody] TipoNegocioSucursalDeleteRequest request)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+            DataBase2 db = new DataBase2();
+
+            try
+            {
+                if (request == null)
+                    return MyToolsController.ToJson(false, "Request inválido.");
+
+                if (request.id <= 0)
+                    return MyToolsController.ToJson(false, "El id es obligatorio.");
+
+                if (request.idEntidad <= 0)
+                    return MyToolsController.ToJson(false, "La entidad es obligatoria.");
+
+                if (request.idUsuario <= 0)
+                    return MyToolsController.ToJson(false, "El usuario es obligatorio.");
+
+                db.Open();
+                db.SetCommand("sp_del_tipoNegocioSucursal", true);
+
+                db.AddParameter("id", request.id);
+                db.AddParameter("idEntidad", request.idEntidad);
+                db.AddParameter("idUsuario", request.idUsuario);
+
+                ds = db.ExecuteWithDataSet();
+                db.Close();
+
+                if (ds == null || ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
+                    return MyToolsController.ToJson(false, "No fue posible eliminar el tipo de negocio de sucursal.");
+
+                Code = Convert.ToBoolean(ds.Tables[0].Rows[0]["Code"]);
+                Message = ds.Tables[0].Rows[0]["Mensaje"].ToString();
+
+                if (!Code)
+                    return MyToolsController.ToJson(false, Message);
+
+                ds.Tables[0].TableName = "Data";
+                Response = MyToolsController.ToJson(true, Message, ds.Tables[0]);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    db.Close();
+                }
+                catch
+                {
+                }
+
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        #endregion
+
+        #endregion
     }
 }
