@@ -502,13 +502,14 @@ namespace MyApi.Controllers.Agenda
                     db.AddParameter("soloActivas", request.soloActivas);
                 });
 
-                if (ds == null || ds.Tables.Count != 4)
+                if (ds == null || ds.Tables.Count != 5)
                     return MyToolsController.ToJson(false, "La consulta no regresó la estructura esperada.");
 
                 ds.Tables[0].TableName = "Citas";
                 ds.Tables[1].TableName = "Servicios";
                 ds.Tables[2].TableName = "EmpleadosAsignados";
                 ds.Tables[3].TableName = "Bitacora";
+                ds.Tables[4].TableName = "Reprogramacion";
 
                 Code = true;
                 Message = "Success";
