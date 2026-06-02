@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
+using MyApi.Controllers.MyTools;
 using MyApi.Models.MyDB;
 using MyApi.Models.Notificacion;
-using MyApi.Controllers.MyTools;
+using MyApi.Services.Firebase;
+using System.Data;
 
 namespace MyApi.Controllers.Notificacion
 {
@@ -10,6 +11,54 @@ namespace MyApi.Controllers.Notificacion
     [Route("[controller]")]
     public class NotificacionController : ControllerBase
     {
+        private readonly IFirebasePushService _firebasePushService;
+
+        public NotificacionController(IFirebasePushService firebasePushService)
+        {
+            _firebasePushService = firebasePushService;
+        }
+        #region Notificaciones Push
+        [HttpPost]
+        [Route("send-push-token")]
+        public async Task<IActionResult> EnviaPushToken([FromBody] EnviaPushTokenRequest request)
+        {
+            JsonResult Response;
+            bool Code;
+            string Message;
+
+            try
+            {
+                var pushRequest = new FirebasePushRequest
+                {
+                    Token = request.token,
+                    Titulo = request.titulo,
+                    Mensaje = request.mensaje,
+                    ImagenUrl = request.imagenUrl,
+                    TipoNotificacion = request.tipoNotificacion,
+                    ReferenciaTipo = request.referenciaTipo,
+                    ReferenciaId = request.referenciaId,
+                    Data = request.data ?? new Dictionary<string, string>()
+                };
+
+                var result = await _firebasePushService.SendToTokenAsync(pushRequest);
+
+                Code = result.Success;
+                Message = result.Success
+                    ? $"Notificación enviada correctamente. MessageId: {result.MessageId}"
+                    : $"No se pudo enviar la notificación. Error: {result.Error}";
+
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Ex: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+        #endregion
 
         #region Tokens FCM
 
