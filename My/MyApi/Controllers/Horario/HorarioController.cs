@@ -68,6 +68,7 @@ namespace MyApi.Controllers.Agenda
                     db.AddParameter("idSucursal", request.idSucursal);
                     db.AddParameter("intervaloMin", request.intervaloMin);
                     db.AddParameter("idEntidad", request.idEntidad);
+                    db.AddParameter("duracionPersonalizadaMin", request.duracionPersonalizadaMin ?? 0);
                 });
 
                 ds.Tables[0].TableName = "Data";

@@ -72,6 +72,10 @@
         public bool activo { get; set; }
         public int idEntidad { get; set; }
         public int idUsuarioModifica { get; set; }
+        public string fotoPreview { get; set; } = "";
+        public string URLfotoPreview { get; set; } = "";
+        public string habilidades { get; set; } = "";
+        public string experiencia { get; set; } = "";
     }
 
     public class DelCliente

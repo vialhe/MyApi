@@ -426,6 +426,10 @@ namespace MyApi.Controllers.Profile
                 db.AddParameter("@activo", cEmpleado.activo);
                 db.AddParameter("@idEntidad", cEmpleado.idEntidad);
                 db.AddParameter("@idUsuarioModifica", cEmpleado.idUsuarioModifica);
+                db.AddParameter("@fotoPreview", cEmpleado.fotoPreview ?? "");
+                db.AddParameter("@URLfotoPreview", cEmpleado.URLfotoPreview ?? "");
+                db.AddParameter("@habilidades", cEmpleado.habilidades ?? "");
+                db.AddParameter("@experiencia", cEmpleado.experiencia ?? "");
 
                 dt = db.ExecuteWithDataSet().Tables[0];
                 Code = true;
@@ -507,6 +511,10 @@ namespace MyApi.Controllers.Profile
                 db.AddParameter("@activo", cEmpleado.activo);
                 db.AddParameter("@idEntidad", cEmpleado.idEntidad);
                 db.AddParameter("@idUsuarioModifica", cEmpleado.idUsuarioModifica);
+                db.AddParameter("@fotoPreview", cEmpleado.fotoPreview ?? "");
+                db.AddParameter("@URLfotoPreview", cEmpleado.URLfotoPreview ?? "");
+                db.AddParameter("@habilidades", cEmpleado.habilidades ?? "");
+                db.AddParameter("@experiencia", cEmpleado.experiencia ?? "");
 
                 dt = db.ExecuteWithDataSet().Tables[0];
                 Code = true;
