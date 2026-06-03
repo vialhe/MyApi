@@ -524,6 +524,53 @@ namespace MyApi.Controllers.Agenda
 
             return Response;
         }
+
+        [HttpPost]
+        [Route("get-agendas-pendientes-confirmacion")]
+        public IActionResult GetAgendasPendientesConfirmacion([FromBody] AgendaPendientesConfirmacionGetRequest request)
+        {
+
+            if (request == null)
+                return MyToolsController.ToJson(false, "La petición es obligatoria.");
+
+            if (request.idEntidad <= 0)
+                return MyToolsController.ToJson(false, "El idEntidad es obligatorio.");
+
+            if (request.idSucursal < 0)
+                return MyToolsController.ToJson(false, "El idSucursal no puede ser menor a 0.");
+
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+
+            try
+            {
+                ds = ExecuteDataSet("sp_se_agendasPendientesConfirmacion", db =>
+                {
+                    db.AddParameter("idEntidad", request.idEntidad);
+                    db.AddParameter("idSucursal", request.idSucursal);
+                    db.AddParameter("top", request.top);
+                });
+
+                if (ds == null || ds.Tables.Count != 1)
+                    return MyToolsController.ToJson(false, "La consulta no regresó la estructura esperada.");
+
+                ds.Tables[0].TableName = "Data";
+
+                Code = true;
+                Message = "Success";
+                Response = MyToolsController.ToJson(Code, Message, ds);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
         #endregion
     }
 }

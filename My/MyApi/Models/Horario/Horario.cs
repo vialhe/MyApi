@@ -41,6 +41,13 @@ namespace MyApi.Models.Horario
         public bool soloActivas { get; set; } = true;
     }
 
+    public class AgendaPendientesConfirmacionGetRequest
+    {
+        public int idEntidad { get; set; }
+        public int idSucursal { get; set; } = 0;
+        public int top { get; set; } = 0;
+    }
+
     public class EmpleadoHorarioGetRequest
     {
         public int folioEmpleado { get; set; }
