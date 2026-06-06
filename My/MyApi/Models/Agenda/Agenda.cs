@@ -83,7 +83,6 @@ namespace MyApi.Models.Agenda
     public class AgendaPaymentRequest
     {
         public int folioAgenda { get; set; }
-        public int idTipoMovimientoPagoAgenda { get; set; }
         public int idTipoPago { get; set; }
         public decimal montoPago { get; set; }
         public string? numeroAutorizacion { get; set; }

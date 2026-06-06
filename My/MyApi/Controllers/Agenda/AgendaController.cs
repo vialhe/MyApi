@@ -179,7 +179,6 @@ namespace MyApi.Controllers.Agenda
                 dt = ExecuteDataTable("sp_ui_agendaPago", db =>
                 {
                     db.AddParameter("@folioAgenda", request.folioAgenda);
-                    db.AddParameter("@idTipoMovimientoPagoAgenda", request.idTipoMovimientoPagoAgenda);
                     db.AddParameter("@idTipoPago", request.idTipoPago);
                     db.AddParameter("@montoPago", request.montoPago);
                     db.AddParameter("@numeroAutorizacion", request.numeroAutorizacion ?? "");
