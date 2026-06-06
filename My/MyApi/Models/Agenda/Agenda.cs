@@ -92,6 +92,8 @@ namespace MyApi.Models.Agenda
         public string comentarios { get; set; } = "";
         public int idEntidad { get; set; }
         public int idUsuarioAlta { get; set; }
+        public int folioCorteCaja { get; set; } 
+        public int folioCorteTienda { get; set; }
     }
 
     public class AgendaDetailStatusRequest
@@ -152,6 +154,16 @@ namespace MyApi.Models.Agenda
         public string motivoCancelacion { get; set; } = "";
         public int idEntidad { get; set; }
         public int idUsuarioAlta { get; set; }
+    }
+
+    public class CitasPendientesPagoGetRequest
+    {
+        public int idEntidad { get; set; }
+        public int idSucursal { get; set; }
+        public int folioAgenda { get; set; } = 0;
+        public DateTime? fechaInicio { get; set; }
+        public DateTime? fechaFin { get; set; }
+        public int top { get; set; } = 0;
     }
 
     #endregion

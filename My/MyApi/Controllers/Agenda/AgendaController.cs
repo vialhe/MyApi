@@ -188,6 +188,8 @@ namespace MyApi.Controllers.Agenda
                     db.AddParameter("@comentarios", request.comentarios ?? "");
                     db.AddParameter("@idEntidad", request.idEntidad);
                     db.AddParameter("@idUsuarioAlta", request.idUsuarioAlta);
+                    db.AddParameter("@folioCorteCaja", request.folioCorteCaja);
+                    db.AddParameter("@folioCorteTienda", request.folioCorteTienda);
                 });
 
                 Code = true;
@@ -536,9 +538,6 @@ namespace MyApi.Controllers.Agenda
             if (request.idEntidad <= 0)
                 return MyToolsController.ToJson(false, "El idEntidad es obligatorio.");
 
-            if (request.idSucursal < 0)
-                return MyToolsController.ToJson(false, "El idSucursal no puede ser menor a 0.");
-
             JsonResult Response;
             bool Code;
             string Message;
@@ -557,6 +556,69 @@ namespace MyApi.Controllers.Agenda
                     return MyToolsController.ToJson(false, "La consulta no regresó la estructura esperada.");
 
                 ds.Tables[0].TableName = "Data";
+
+                Code = true;
+                Message = "Success";
+                Response = MyToolsController.ToJson(Code, Message, ds);
+            }
+            catch (Exception ex)
+            {
+                Code = false;
+                Message = "Exception: " + ex.Message;
+                Response = MyToolsController.ToJson(Code, Message);
+            }
+
+            return Response;
+        }
+
+        [HttpPost]
+        [Route("get-citas-pendientes-pago")]
+        public IActionResult GetCitasPendientesPago([FromBody] CitasPendientesPagoGetRequest request)
+        {
+            if (request == null)
+                return MyToolsController.ToJson(false, "La petición es obligatoria.");
+
+            if (request.idEntidad <= 0)
+                return MyToolsController.ToJson(false, "El idEntidad es obligatorio.");
+
+            if (request.idSucursal <= 0)
+                return MyToolsController.ToJson(false, "El idSucursal es obligatorio.");
+
+            if (request.folioAgenda < 0)
+                return MyToolsController.ToJson(false, "El folioAgenda no puede ser menor a 0.");
+
+            if (request.top < 0)
+                return MyToolsController.ToJson(false, "El top no puede ser menor a 0.");
+
+            if (request.fechaInicio.HasValue &&
+                request.fechaFin.HasValue &&
+                request.fechaFin.Value.Date < request.fechaInicio.Value.Date)
+            {
+                return MyToolsController.ToJson(false, "La fechaFin no puede ser menor a la fechaInicio.");
+            }
+
+            JsonResult Response;
+            bool Code;
+            string Message;
+            DataSet ds;
+
+            try
+            {
+                ds = ExecuteDataSet("sp_se_citasPendientesPago", db =>
+                {
+                    db.AddParameter("idEntidad", request.idEntidad);
+                    db.AddParameter("idSucursal", request.idSucursal);
+                    db.AddParameter("folioAgenda", request.folioAgenda);
+                    db.AddParameter("fechaInicio", request.fechaInicio.HasValue ? request.fechaInicio.Value.Date : (object)DBNull.Value);
+                    db.AddParameter("fechaFin", request.fechaFin.HasValue ? request.fechaFin.Value.Date : (object)DBNull.Value);
+                    db.AddParameter("top", request.top);
+                });
+
+                if (ds == null || ds.Tables.Count != 2)
+                    return MyToolsController.ToJson(false, "La consulta no regresó la estructura esperada.");
+
+                ds.Tables[0].TableName = "Citas";
+                ds.Tables[1].TableName = "Servicios";
 
                 Code = true;
                 Message = "Success";
