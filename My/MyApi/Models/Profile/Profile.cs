@@ -76,6 +76,7 @@
         public string URLfotoPreview { get; set; } = "";
         public string habilidades { get; set; } = "";
         public string experiencia { get; set; } = "";
+        public int? nivelAcceso { get; set; }
     }
 
     public class DelCliente

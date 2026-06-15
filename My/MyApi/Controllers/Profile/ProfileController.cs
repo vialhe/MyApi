@@ -430,6 +430,8 @@ namespace MyApi.Controllers.Profile
                 db.AddParameter("@URLfotoPreview", cEmpleado.URLfotoPreview ?? "");
                 db.AddParameter("@habilidades", cEmpleado.habilidades ?? "");
                 db.AddParameter("@experiencia", cEmpleado.experiencia ?? "");
+                db.AddParameter("@nivelAcceso", cEmpleado.nivelAcceso.HasValue ? cEmpleado.nivelAcceso.Value : DBNull.Value);
+
 
                 dt = db.ExecuteWithDataSet().Tables[0];
                 Code = true;
@@ -515,6 +517,7 @@ namespace MyApi.Controllers.Profile
                 db.AddParameter("@URLfotoPreview", cEmpleado.URLfotoPreview ?? "");
                 db.AddParameter("@habilidades", cEmpleado.habilidades ?? "");
                 db.AddParameter("@experiencia", cEmpleado.experiencia ?? "");
+                db.AddParameter("@nivelAcceso", cEmpleado.nivelAcceso.HasValue ? cEmpleado.nivelAcceso.Value : DBNull.Value);
 
                 dt = db.ExecuteWithDataSet().Tables[0];
                 Code = true;
