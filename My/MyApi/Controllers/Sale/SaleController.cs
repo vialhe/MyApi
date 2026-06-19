@@ -694,6 +694,7 @@ namespace MyApi.Controllers.Sale
             db.AddParameter("@activo", cSaleH.activo);
             db.AddParameter("@idEntidad", cSaleH.idEntidad);
             db.AddParameter("@idUsuarioModifica", cSaleH.idUsuarioModifica);
+            db.AddParameter("@costo", d.costo.HasValue ? d.costo.Value : DBNull.Value); 
             db.Execute();
         }
         private InventoryD CreateInventoryDetail(SaleH saleHeader, SaleD saleDetail)
@@ -710,7 +711,8 @@ namespace MyApi.Controllers.Sale
                 numeracion = saleDetail.numeracion,
                 comentarios = saleDetail.comentarios,
                 idEntidad = saleHeader.idEntidad,
-                idUsuarioModifica = saleHeader.idUsuarioModifica
+                idUsuarioModifica = saleHeader.idUsuarioModifica,
+                costoUnitario = saleDetail.costo.HasValue ? saleDetail.costo.Value : (decimal?)null
             };
         }
         private void ExecuteSalePayment(DataBase2 db, SaleH saleHeader, SalePay salePay)

@@ -32,6 +32,7 @@ namespace MyApi.Models.Sale
         public string? serie { get; set; } = "";
         public int idUnidadMedida { get; set; }
         public string comentarios { get; set; } = "";
+        public int? costo {  get; set; }
     }
 
     public class SalePay
