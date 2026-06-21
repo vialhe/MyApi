@@ -57,6 +57,7 @@ namespace MyApi.Controllers.Inventory
                 db.AddParameter("@activo", cInventoryH.activo);
                 db.AddParameter("@idEntidad", cInventoryH.idEntidad);
                 db.AddParameter("@idUsuarioModifica", cInventoryH.idUsuarioModifica);
+                db.AddParameter("@idSucursal", cInventoryH.idSucursal.HasValue ? cInventoryH.idSucursal.Value : DBNull.Value);
                 db.Execute();
 
                 // Ejecutar SP para insertar los detalles del movimiento de inventario
@@ -77,6 +78,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@activo", d.activo);
                     db.AddParameter("@idEntidad", d.idEntidad);
                     db.AddParameter("@idUsuarioModifica", d.idUsuarioModifica);
+                    db.AddParameter("@idSucursal", d.idSucursal.HasValue ? d.idSucursal.Value : DBNull.Value);
                     db.Execute();
                 }
 
@@ -333,6 +335,7 @@ namespace MyApi.Controllers.Inventory
                 db.AddParameter("@activo", cInventoryH.activo);
                 db.AddParameter("@idEntidad", cInventoryH.idEntidad);
                 db.AddParameter("@idUsuarioModifica", cInventoryH.idUsuarioModifica);
+                db.AddParameter("@idSucursal", cInventoryH.idSucursal.HasValue ? cInventoryH.idSucursal.Value: DBNull.Value);
                 db.Execute();
 
                 // Ejecutar SP para insertar los detalles del movimiento de inventario
@@ -353,6 +356,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@activo", d.activo);
                     db.AddParameter("@idEntidad", d.idEntidad);
                     db.AddParameter("@idUsuarioModifica", d.idUsuarioModifica);
+                    db.AddParameter("@idSucursal",d.idSucursal.HasValue ? d.idSucursal.Value: DBNull.Value);
                     db.Execute();
                 }
 
