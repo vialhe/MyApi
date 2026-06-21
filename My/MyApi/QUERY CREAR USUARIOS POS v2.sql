@@ -109,7 +109,7 @@ BEGIN TRY
 	/* =========================
      1) MAGNITUDES
      ========================= */
-  DECLARE @idMagnConteo INT, @idMagnMasa INT, @idMagnVolumen INT;
+  DECLARE @idMagnConteo INT, @idMagnMasa INT, @idMagnVolumen INT, @idMagnLongitud INT;
 
   SELECT @idMagnConteo = id
   FROM cat_magnitudMedida
@@ -153,6 +153,20 @@ BEGIN TRY
     SET @idMagnVolumen = SCOPE_IDENTITY();
   END
 
+  SELECT @idMagnLongitud = id
+	FROM cat_magnitudMedida
+	WHERE idEntidad=@idEntidad AND descripcion='Longitud';
+
+	IF @idMagnLongitud IS NULL
+	BEGIN
+	  INSERT INTO cat_magnitudMedida
+		(descripcion, comentarios, activo, idEntidad, fechaAlta, idUsuarioAlta)
+	  VALUES
+		('Longitud','cm, m',1,@idEntidad,GETDATE(),@idUsuarioSistema);
+
+	  SET @idMagnLongitud = SCOPE_IDENTITY();
+	END
+
   /* =========================
      2) UNIDADES (UPSERT)
      Clave práctica: (idEntidad, abreviatura)
@@ -161,7 +175,7 @@ BEGIN TRY
   DECLARE @idUM_pza INT, @idUM_doc INT;
   DECLARE @idUM_mg  INT, @idUM_g   INT, @idUM_kg INT;
   DECLARE @idUM_ml  INT, @idUM_l   INT, @idUM_cc INT;
-
+  DECLARE @idUM_cm  INT, @idUM_m   INT;
   /* --- Conteo --- */
   SELECT @idUM_pza = id FROM cat_unidadesMedida WHERE idEntidad=@idEntidad AND abreviatura='pza';
   IF @idUM_pza IS NULL
@@ -373,6 +387,72 @@ BEGIN TRY
           activo=1
     WHERE id=@idUM_cc AND idEntidad=@idEntidad;
   END
+
+  /* --- Longitud (Base = cm) --- */
+	SELECT @idUM_cm = id 
+	FROM cat_unidadesMedida 
+	WHERE idEntidad=@idEntidad AND abreviatura='cm';
+
+	IF @idUM_cm IS NULL
+	BEGIN
+	  INSERT INTO cat_unidadesMedida
+		(descripcion, comentarios, activo, idEntidad, fechaAlta, idUsuarioAlta,
+		 abreviatura, idMagnitud, factorAUnidadBaseMagnitud, esUnidadBaseMagnitud, precisionRedondeo, requiereFactorProducto)
+	  VALUES
+		('Centímetro','Unidad base de longitud',1,@idEntidad,GETDATE(),@idUsuarioSistema,
+		 'cm',@idMagnLongitud,1,1,2,0);
+
+	  SET @idUM_cm = SCOPE_IDENTITY();
+	END
+	ELSE
+	BEGIN
+	  UPDATE cat_unidadesMedida
+		SET descripcion='Centímetro',
+			comentarios='Unidad base de longitud',
+			idMagnitud=@idMagnLongitud,
+			factorAUnidadBaseMagnitud=1,
+			esUnidadBaseMagnitud=1,
+			precisionRedondeo=2,
+			requiereFactorProducto=0,
+			activo=1
+	  WHERE id=@idUM_cm AND idEntidad=@idEntidad;
+	END
+
+	-- Asegura 1 sola base en Longitud
+	UPDATE cat_unidadesMedida
+	  SET esUnidadBaseMagnitud=0
+	WHERE idEntidad=@idEntidad 
+	  AND idMagnitud=@idMagnLongitud 
+	  AND id<>@idUM_cm;
+
+	SELECT @idUM_m = id 
+	FROM cat_unidadesMedida 
+	WHERE idEntidad=@idEntidad AND abreviatura='m';
+
+	IF @idUM_m IS NULL
+	BEGIN
+	  INSERT INTO cat_unidadesMedida
+		(descripcion, comentarios, activo, idEntidad, fechaAlta, idUsuarioAlta,
+		 abreviatura, idMagnitud, factorAUnidadBaseMagnitud, esUnidadBaseMagnitud, precisionRedondeo, requiereFactorProducto)
+	  VALUES
+		('Metro','Equivale a 100 centímetros',1,@idEntidad,GETDATE(),@idUsuarioSistema,
+		 'm',@idMagnLongitud,100,0,3,0);
+
+	  SET @idUM_m = SCOPE_IDENTITY();
+	END
+	ELSE
+	BEGIN
+	  UPDATE cat_unidadesMedida
+		SET descripcion='Metro',
+			comentarios='Equivale a 100 centímetros',
+			idMagnitud=@idMagnLongitud,
+			factorAUnidadBaseMagnitud=100,
+			esUnidadBaseMagnitud=0,
+			precisionRedondeo=3,
+			requiereFactorProducto=0,
+			activo=1
+	  WHERE id=@idUM_m AND idEntidad=@idEntidad;
+	END
 
   /* =========================
      3) CONVERSIONES (matriz por magnitud)

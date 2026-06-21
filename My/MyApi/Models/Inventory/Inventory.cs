@@ -17,6 +17,7 @@ namespace MyApi.Models.Inventory
         public bool activo { get; set; }
         public int idEntidad { get; set; }
         public int idUsuarioModifica { get; set; }
+        public int? idSucursal { get; set; }
     }
 
     public class InventoryD
@@ -35,6 +36,7 @@ namespace MyApi.Models.Inventory
         public bool activo { get; set; }
         public int idEntidad { get; set; }
         public int idUsuarioModifica { get; set; }
+        public int? idSucursal { get; set; }
     }
 
     public class InventoryMovementData

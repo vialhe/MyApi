@@ -18,6 +18,7 @@ namespace MyApi.Models.Sale
         public decimal suCambio { get; set; }
         public int folioCorteCaja { get; set; }
         public int folioCorteTienda { get; set; }
+        public int? idSucursal { get; set; }
     }
 
     public class SaleD
@@ -33,6 +34,7 @@ namespace MyApi.Models.Sale
         public int idUnidadMedida { get; set; }
         public string comentarios { get; set; } = "";
         public int? costo {  get; set; }
+        public int? idSucursal {  get; set; }
     }
 
     public class SalePay
@@ -41,6 +43,7 @@ namespace MyApi.Models.Sale
         public decimal montoPago { get; set; }
         public string numeroAutorizacion { get; set; }
         public string comentarios { get; set; } = "";
+        public int? idSucursal { get; set; };
     }
     public class SaleData
     {
