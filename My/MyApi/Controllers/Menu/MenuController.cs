@@ -28,6 +28,7 @@ namespace MyApi.Controllers.Menu
             public int IdEntidad { get; set; }
             public int IsAdmin { get; set; }
             public int idTipoProductoServicio { get; set; }
+            public int? idSucursal { get; set;}
         }
 
         public class UnidadMedidaRequest
@@ -74,6 +75,7 @@ namespace MyApi.Controllers.Menu
                 db.AddParameter("idEntidad", request.IdEntidad);
                 db.AddParameter("isAdmin", request.IsAdmin);
                 db.AddParameter("idTipoProductoServicio", request.idTipoProductoServicio);
+                db.AddParameter("idSucursal", request.idSucursal.HasValue ? request.idSucursal.Value : DBNull.Value);
 
 
                 DataSet ds = db.ExecuteWithDataSet();

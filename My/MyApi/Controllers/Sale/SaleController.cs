@@ -207,6 +207,7 @@ namespace MyApi.Controllers.Sale
                 db.SetCommand("sp_se_corteCaja", true);
                 db.AddParameter("@idUsuarioIniciaCorte", data.idUsuarioIniciaCorte);
                 db.AddParameter("@idEntidad", data.idEntidad);
+                db.AddParameter("@idSucursal", data.idSucursal.HasValue ? data.idSucursal.Value : DBNull.Value);
                 DataSet ds = db.ExecuteWithDataSet();
                 ds.Tables[0].TableName = "Data";
                 db.Close();
@@ -259,6 +260,7 @@ namespace MyApi.Controllers.Sale
                 db.AddParameter("@fechaFin", data.fechaFin);
                 db.AddParameter("@idEntidad", data.idEntidad);
                 db.AddParameter("@idEstadoTicket", data.idEstatusTicket);
+                db.AddParameter("@idSucursal", data.idSucursal.HasValue ? data.idSucursal.Value : DBNull.Value);
                 DataSet ds = db.ExecuteWithDataSet();
                 db.Close();
 
@@ -492,6 +494,7 @@ namespace MyApi.Controllers.Sale
                 db.AddParameter("@idUsuarioIniciaCorte", data.idUsuarioIniciaCorte.HasValue ? data.idUsuarioIniciaCorte.Value : DBNull.Value);
                 db.AddParameter("@fechaInicio", data.fechaInicio.HasValue ? data.fechaInicio.Value : DBNull.Value);
                 db.AddParameter("@fechaFin", data.fechaFin.HasValue ? data.fechaFin.Value : DBNull.Value);
+                db.AddParameter("@idSucursal", data.idSucursal.HasValue ? data.idSucursal.Value : DBNull.Value);
                 DataSet ds = db.ExecuteWithDataSet();
                 ds.Tables[0].TableName = "Data";
                 db.Close();
@@ -546,6 +549,7 @@ namespace MyApi.Controllers.Sale
                 db.AddParameter("@fechaFin", data.fechaFin);
                 db.AddParameter("@idEntidad", data.idEntidad);
                 db.AddParameter("@idUsuario", data.idUsuario.HasValue ? data.idUsuario.Value : DBNull.Value);
+                db.AddParameter("@idSucursal", data.idSucursal.HasValue ? data.idSucursal.Value : DBNull.Value);
                 DataSet ds = db.ExecuteWithDataSet();
                 ds.Tables[0].TableName = "Data";
                 ds.Tables[1].TableName = "DataD";
