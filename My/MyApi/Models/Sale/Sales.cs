@@ -43,7 +43,7 @@ namespace MyApi.Models.Sale
         public decimal montoPago { get; set; }
         public string numeroAutorizacion { get; set; }
         public string comentarios { get; set; } = "";
-        public int? idSucursal { get; set; };
+        public int? idSucursal { get; set; }
     }
     public class SaleData
     {
@@ -62,8 +62,9 @@ namespace MyApi.Models.Sale
     {
         public DateTime fechaInicio { get; set; }
         public DateTime fechaFin { get; set; }
-        public int idEntidad { get; set; } 
+        public int idEntidad { get; set; }
         public int? idUsuario { get; set; }
+        public int? idSucursal { get; set; }
     }
 
     public class RequestGetCashRegister
@@ -72,6 +73,7 @@ namespace MyApi.Models.Sale
         public int idEntidad { get; set; }
         public DateTime? fechaInicio { get; set; }
         public DateTime? fechaFin { get; set; }
+        public int? idSucursal { get; set; }
     }
 
     public class RequestGetDashboard
@@ -80,7 +82,7 @@ namespace MyApi.Models.Sale
         public DateTime fechaFin { get; set; }
         public int idEntidad { get; set; }
         public int? idEstatusTicket { get; set; }
-
+        public int? idSucursal { get; set; }
     }
 
     public class RequestInicioCorteDeCaja

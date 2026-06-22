@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using MyApi.Models.Sale;
 using static MyApi.Controllers.Menu.MenuController;
+using System.Data.Common;
 
 namespace MyApi.Controllers.Inventory
 {
@@ -100,6 +101,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@precioVenta", d.precioVentaUnitario);
                     db.AddParameter("@idEntidad", d.idEntidad);
                     db.AddParameter("@idUsuarioModifica", d.idUsuarioModifica);
+                    db.AddParameter("@idSucursal", d.idSucursal.HasValue ? d.idSucursal.Value : DBNull.Value);
                     db.Execute();
                 }
                 db.Commit();
@@ -199,6 +201,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@precioVenta", d.precioVentaUnitario);
                     db.AddParameter("@idEntidad", d.idEntidad);
                     db.AddParameter("@idUsuarioModifica", d.idUsuarioModifica);
+                    db.AddParameter("@idSucursal", d.idSucursal.HasValue ? d.idSucursal.Value : DBNull.Value);
                     db.Execute();
                 }
 
@@ -378,6 +381,7 @@ namespace MyApi.Controllers.Inventory
                     db.AddParameter("@precioVenta", d.precioVentaUnitario);
                     db.AddParameter("@idEntidad", d.idEntidad);
                     db.AddParameter("@idUsuarioModifica", d.idUsuarioModifica);
+                    db.AddParameter("@idSucursal", d.idSucursal.HasValue ? d.idSucursal.Value : DBNull.Value);
                     db.Execute();
                 }
 
