@@ -33,7 +33,7 @@ namespace MyApi.Models.Sale
         public string? serie { get; set; } = "";
         public int idUnidadMedida { get; set; }
         public string comentarios { get; set; } = "";
-        public int? costo {  get; set; }
+        public decimal? costo {  get; set; }
         public int? idSucursal {  get; set; }
     }
 
@@ -91,7 +91,7 @@ namespace MyApi.Models.Sale
         public int idCaja { get; set; }
         public decimal saldoInicial { get; set; }
         public int idEntidad { get;set; }
-
+        public int? idSucursal { get; set; }
     }
 
     public class RequestCierreCorteDeCaja
@@ -102,7 +102,9 @@ namespace MyApi.Models.Sale
         public int idEntidad { get; set; }
         public int folioCorteCaja { get; set; }
         public int folioCorteTienda { get; set; }
-        public string? comentarios { get; set; } 
+        public string? comentarios { get; set; }
+        public int? idSucursal { get; set; }
+
 
     }
 
@@ -112,6 +114,7 @@ namespace MyApi.Models.Sale
         public int idEntidad { get; set; }
         public decimal saldoFinal { get; set; }
         public int folioCorteTienda { get; set; }
+        public int? idSucursal { get; set; }
 
     }
 }

@@ -41,7 +41,7 @@ namespace MyApi.Controllers.Inventory
             {
                 db.BeginTransaction();
                 // Generar folio para el movimiento de inventario
-                FolioMovimiento = tools.generatFolio(idFoliadorMovInv, cInventoryH.idEntidad, cInventoryH.idUsuarioModifica, db);
+                FolioMovimiento = tools.generatFolio(idFoliadorMovInv, cInventoryH.idEntidad, cInventoryH.idUsuarioModifica, db, cInventoryH.idSucursal ?? 0);
                 cInventoryH.folioMovimientoInventario = Convert.ToInt32(FolioMovimiento);
 
                 // Ejecutar SP para insertar el encabezado del movimiento de inventario
@@ -142,7 +142,7 @@ namespace MyApi.Controllers.Inventory
                 db.BeginTransaction();
 
                 // Generar folio para el movimiento de inventario
-                FolioMovimiento = tools.generatFolio(idFoliadorMovInv, cInventoryH.idEntidad, cInventoryH.idUsuarioModifica, db);
+                FolioMovimiento = tools.generatFolio(idFoliadorMovInv, cInventoryH.idEntidad, cInventoryH.idUsuarioModifica, db, cInventoryH.idSucursal ?? 0);
                 cInventoryH.folioMovimientoInventario = Convert.ToInt32(FolioMovimiento);
 
                 // Ejecutar SP para insertar el encabezado del movimiento de inventario
@@ -285,6 +285,7 @@ namespace MyApi.Controllers.Inventory
                 db.AddParameter("idEntidad", request.idEntidad);
                 db.AddParameter("@fechaInicio", request.fechaInicio);
                 db.AddParameter("@fechaFin", request.fechaFin);
+                db.AddParameter("@idSucursal", request.idSucursal.HasValue ? request.idSucursal.Value : DBNull.Value);
 
                 /*Define return success*/
                 ds = db.ExecuteWithDataSet();

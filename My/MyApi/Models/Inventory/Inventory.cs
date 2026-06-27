@@ -86,6 +86,7 @@ public class KardexRequest
 
         [JsonPropertyName("fechaFin")]
         public DateTime fechaFin { get; set; }
+        public int? idSucursal { get; set; }
     }
 
 }

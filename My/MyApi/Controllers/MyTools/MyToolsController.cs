@@ -192,7 +192,7 @@ namespace MyApi.Controllers.MyTools
         #endregion
 
         #region Config 
-        public DataTable generatFolio(int idFolio, int idEntidad, int idUsuarioModifica)
+        public DataTable generatFolio(int idFolio, int idEntidad, int idUsuarioModifica, int idSucursal)
         {
             /*Declara variables*/
             JsonResult Response;
@@ -210,6 +210,7 @@ namespace MyApi.Controllers.MyTools
                 db.AddParameter("idFolio", idFolio);
                 db.AddParameter("idEntidad", idEntidad);
                 db.AddParameter("idUsuarioModifica", idUsuarioModifica);
+                db.AddParameter("idSucursal", idSucursal);
 
                 ds = db.ExecuteWithDataSet();
 
@@ -225,7 +226,7 @@ namespace MyApi.Controllers.MyTools
 
         }
 
-        public String generatFolio(int idFolio, int idEntidad, int idUsuarioModifica, DataBase2 db)
+        public String generatFolio(int idFolio, int idEntidad, int idUsuarioModifica, DataBase2 db, int idSucursal = 0)
         {
             /*Declara variables*/
             JsonResult Response;
@@ -240,6 +241,7 @@ namespace MyApi.Controllers.MyTools
                 db.AddParameter("idFolio", idFolio);
                 db.AddParameter("idEntidad", idEntidad);
                 db.AddParameter("idUsuarioModifica", idUsuarioModifica);
+                db.AddParameter("idSucursal", idSucursal);
 
                 ds = db.ExecuteWithDataSet();
                 folioTraslado = ds.Tables.Count > 0 ? ds.Tables[0].Rows[0]["nuevoFolio"].ToString() : "";

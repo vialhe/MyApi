@@ -49,8 +49,8 @@ namespace MyApi.Controllers.Sale
             { 
                 db.BeginTransaction();
 
-                FolioEntradaSalida = tools.generatFolio(idFoliadorEntradaSalida, cSaleH.idEntidad, cSaleH.idUsuarioModifica, db);
-                FolioMovimiento = tools.generatFolio(idFoliadorMovInv, cSaleH.idEntidad, cSaleH.idUsuarioModifica, db);
+                FolioEntradaSalida = tools.generatFolio(idFoliadorEntradaSalida, cSaleH.idEntidad, cSaleH.idUsuarioModifica, db, cSaleH.idSucursal ?? 0);
+                FolioMovimiento = tools.generatFolio(idFoliadorMovInv, cSaleH.idEntidad, cSaleH.idUsuarioModifica, db, cSaleH.idSucursal ?? 0);
                 cSaleH.folioEntradaSalida = Convert.ToInt32(FolioEntradaSalida);
                 cSaleH.folioMovimientoInventario = Convert.ToInt32(FolioMovimiento);
 
@@ -583,6 +583,7 @@ namespace MyApi.Controllers.Sale
                 db.AddParameter("idEntidad", data.idEntidad);
                 db.AddParameter("folioCorteCaja", 0);
                 db.AddParameter("folioCorteTienda", 0);
+                db.AddParameter("@idSucursal", data.idSucursal.HasValue ? data.idSucursal.Value : (object)DBNull.Value);
                 DataSet ds = db.ExecuteWithDataSet();
 
                 db.Close();
@@ -610,6 +611,8 @@ namespace MyApi.Controllers.Sale
                 db.AddParameter("folioCorteCaja", data.folioCorteCaja);
                 db.AddParameter("folioCorteTienda", data.folioCorteTienda);
                 db.AddParameter("comentarios", data.comentarios);
+                db.AddParameter("idSucursal", data.idSucursal.HasValue ? data.idSucursal.Value : DBNull.Value);
+
                 DataSet ds = db.ExecuteWithDataSet();
 
                 db.Close();
@@ -634,6 +637,7 @@ namespace MyApi.Controllers.Sale
                 db.AddParameter("saldoFinal", data.saldoFinal);
                 db.AddParameter("idEntidad", data.idEntidad);
                 db.AddParameter("folioCorteTienda", data.folioCorteTienda);
+                db.AddParameter("idSucursal", data.idSucursal.HasValue ? data.idSucursal.Value : DBNull.Value);
                 DataSet ds = db.ExecuteWithDataSet();
 
                 db.Close();
