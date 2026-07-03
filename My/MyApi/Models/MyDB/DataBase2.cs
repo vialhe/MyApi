@@ -53,6 +53,15 @@ namespace MyApi.Models.MyDB
             command.Parameters.AddWithValue(parameterName, value);
         }
 
+        // Para parametros tipo tabla (TVP), ej. tvp_creditoCarritoItem / tvp_creditoPago.
+        // typeName debe incluir el esquema, ej. "dbo.tvp_creditoPago".
+        public void AddTableParameter(string parameterName, DataTable table, string typeName)
+        {
+            var parameter = command.Parameters.AddWithValue(parameterName, table);
+            parameter.SqlDbType = SqlDbType.Structured;
+            parameter.TypeName = typeName;
+        }
+
         public void Execute()
         {
             try

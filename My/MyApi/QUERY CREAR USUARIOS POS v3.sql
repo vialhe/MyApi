@@ -6,8 +6,10 @@
 --exec sp_ui_entidad 0 , 'POS Pruebas',9998,'',1,1
 
 DECLARE @idEntidad INT = 10011;
-DECLARE @idEntidadCopy INT = 10007;
 DECLARE @idUsuarioSistema INT = 1;
+-- @idEntidadCopy ya no se usa: los catalogos de agenda (seccion 7) quedaron
+-- con valores fijos, tomados de lo que tenia la entidad 10007 el 2026-07-03,
+-- en vez de copiarse en vivo de una entidad que podria cambiar o no existir.
 
 DECLARE @usuarioAdmin VARCHAR(50) = 'POSQA'; -- <----- Asegura no duplicar usuarios
 DECLARE @correoAdmin  VARCHAR(150)= '';
@@ -15,7 +17,7 @@ DECLARE @telefonoAdmin VARCHAR(30)= '';
 DECLARE @fechaNacimiento DATE = '1998-12-21';
 DECLARE @nombreAdmin  VARCHAR(100)= 'QA';
 
-/* ---------- Validación mínima ---------- */
+/* ---------- ValidaciÃ³n mÃ­nima ---------- */
 IF NOT EXISTS (SELECT 1 FROM sys_entidades WHERE id = @idEntidad)
 BEGIN
 	RAISERROR('La entidad %d no existe en sys_entidades.', 16, 1, @idEntidad);
@@ -84,7 +86,7 @@ BEGIN TRY
 
 	/* =========================================================
 	   4) USUARIO ADMIN
-	   (password/salt vacíos: se setean por tu endpoint ChangePassword)
+	   (password/salt vacÃ­os: se setean por tu endpoint ChangePassword)
 	   ========================================================= */
 	IF NOT EXISTS (SELECT 1 FROM sys_usuarios WHERE idEntidad=@idEntidad AND usuario=@usuarioAdmin)
 	BEGIN
@@ -169,7 +171,7 @@ BEGIN TRY
 
   /* =========================
      2) UNIDADES (UPSERT)
-     Clave práctica: (idEntidad, abreviatura)
+     Clave prÃ¡ctica: (idEntidad, abreviatura)
      ========================= */
 
   DECLARE @idUM_pza INT, @idUM_doc INT;
@@ -370,14 +372,14 @@ BEGIN TRY
       (descripcion, comentarios, activo, idEntidad, fechaAlta, idUsuarioAlta,
        abreviatura, idMagnitud, factorAUnidadBaseMagnitud, esUnidadBaseMagnitud, precisionRedondeo, requiereFactorProducto)
     VALUES
-      ('Centímetro cúbico','Equivale a 1 ml',1,@idEntidad,GETDATE(),@idUsuarioSistema,'cc',@idMagnVolumen,1,0,0,0);
+      ('CentÃ­metro cÃºbico','Equivale a 1 ml',1,@idEntidad,GETDATE(),@idUsuarioSistema,'cc',@idMagnVolumen,1,0,0,0);
 
     SET @idUM_cc = SCOPE_IDENTITY();
   END
   ELSE
   BEGIN
     UPDATE cat_unidadesMedida
-      SET descripcion='Centímetro cúbico',
+      SET descripcion='CentÃ­metro cÃºbico',
           comentarios='Equivale a 1 ml',
           idMagnitud=@idMagnVolumen,
           factorAUnidadBaseMagnitud=1,
@@ -399,7 +401,7 @@ BEGIN TRY
 		(descripcion, comentarios, activo, idEntidad, fechaAlta, idUsuarioAlta,
 		 abreviatura, idMagnitud, factorAUnidadBaseMagnitud, esUnidadBaseMagnitud, precisionRedondeo, requiereFactorProducto)
 	  VALUES
-		('Centímetro','Unidad base de longitud',1,@idEntidad,GETDATE(),@idUsuarioSistema,
+		('CentÃ­metro','Unidad base de longitud',1,@idEntidad,GETDATE(),@idUsuarioSistema,
 		 'cm',@idMagnLongitud,1,1,2,0);
 
 	  SET @idUM_cm = SCOPE_IDENTITY();
@@ -407,7 +409,7 @@ BEGIN TRY
 	ELSE
 	BEGIN
 	  UPDATE cat_unidadesMedida
-		SET descripcion='Centímetro',
+		SET descripcion='CentÃ­metro',
 			comentarios='Unidad base de longitud',
 			idMagnitud=@idMagnLongitud,
 			factorAUnidadBaseMagnitud=1,
@@ -435,7 +437,7 @@ BEGIN TRY
 		(descripcion, comentarios, activo, idEntidad, fechaAlta, idUsuarioAlta,
 		 abreviatura, idMagnitud, factorAUnidadBaseMagnitud, esUnidadBaseMagnitud, precisionRedondeo, requiereFactorProducto)
 	  VALUES
-		('Metro','Equivale a 100 centímetros',1,@idEntidad,GETDATE(),@idUsuarioSistema,
+		('Metro','Equivale a 100 centÃ­metros',1,@idEntidad,GETDATE(),@idUsuarioSistema,
 		 'm',@idMagnLongitud,100,0,3,0);
 
 	  SET @idUM_m = SCOPE_IDENTITY();
@@ -444,7 +446,7 @@ BEGIN TRY
 	BEGIN
 	  UPDATE cat_unidadesMedida
 		SET descripcion='Metro',
-			comentarios='Equivale a 100 centímetros',
+			comentarios='Equivale a 100 centÃ­metros',
 			idMagnitud=@idMagnLongitud,
 			factorAUnidadBaseMagnitud=100,
 			esUnidadBaseMagnitud=0,
@@ -505,11 +507,11 @@ BEGIN TRY
 	   ========================================================= */
 	IF NOT EXISTS (SELECT 1 FROM cat_tiposProductosServicios WHERE idEntidad=@idEntidad)
 	BEGIN
-		-- Catálogo genérico depurado: cat_tiposProductosServicios
+		-- CatÃ¡logo genÃ©rico depurado: cat_tiposProductosServicios
 		EXEC sp_ui_catalogos 0,'Frutas y Verduras','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
-		EXEC sp_ui_catalogos 0,'Lácteos','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
+		EXEC sp_ui_catalogos 0,'LÃ¡cteos','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Carnes y Embutidos','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
-		EXEC sp_ui_catalogos 0,'Panadería y Tortillería','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
+		EXEC sp_ui_catalogos 0,'PanaderÃ­a y TortillerÃ­a','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Congelados','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Abarrotes (Granos/Harinas/Cereales)','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Pastas y Sopas','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
@@ -518,208 +520,166 @@ BEGIN TRY
 		EXEC sp_ui_catalogos 0,'Snacks (Botanas y Galletas)','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Dulces y Chocolates','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Bebidas','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
-		EXEC sp_ui_catalogos 0,'Bebés','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
+		EXEC sp_ui_catalogos 0,'BebÃ©s','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Higiene Personal','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Limpieza del Hogar','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Mascotas','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
-		EXEC sp_ui_catalogos 0,'Papelería','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
-		EXEC sp_ui_catalogos 0,'Ferretería y Pilas','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
+		EXEC sp_ui_catalogos 0,'PapelerÃ­a','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
+		EXEC sp_ui_catalogos 0,'FerreterÃ­a y Pilas','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Farmacia','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Productos de Temporada','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Lo Nuevo','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Servicios','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
-		EXEC sp_ui_catalogos 0,'Farmacia','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Desechables','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
-		EXEC sp_ui_catalogos 0,'Bebidas alcohólicas','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
+		EXEC sp_ui_catalogos 0,'Bebidas alcohÃ³licas','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Cigarros','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 		EXEC sp_ui_catalogos 0,'Otros','',@idEntidad,1,@idUsuarioSistema,'cat_tiposProductosServicios';
 	END;
-	/* =========================================================
-	   7) COPIA DE CATALOGOS PARA AGENDAS
-	   ========================================================= */
-	
-	Insert into cat_estatusAgenda(
-		descripcion,
-		clave, 
-		orden,
-		esFinal,
-		comentarios,
-		activo, 
-		idEntidad,
-		fechaAlta,
-		idusuarioAlta
-	)
-	Select 
-		descripcion
-		,clave
-		,orden
-		,esFinal
-		,comentarios
-		,activo
-		,@idEntidad as idEntidad
-		,getdate() as fechaAlta
-		,idUsuarioAlta
-	From cat_estatusAgenda						Where idEntidad = @idEntidadCopy
 
-	Insert into cat_estatusAgendaDetalleServicio(
-		descripcion	,
-		clave	,
-		orden	,
-		esFinal	,
-		comentarios	,
-		activo	,
-		idEntidad	,
-		fechaAlta 	,
-		idUsuarioAlta
-	)
-	Select 
-		descripcion
-		,clave
-		,orden
-		,esFinal
-		,comentarios
-		,activo
-		,@idEntidad as idEntidad
-		,getdate() as fechaAlta
-		,idUsuarioAlta
-	From cat_estatusAgendaDetalleServicio		Where idEntidad = @idEntidadCopy
-	
-	Insert into cat_estatusPagoAgenda(
-		descripcion
-		,clave
-		,comentarios
-		,activo
-		,idEntidad
-		,fechaAlta
-		,idUsuarioAlta
+	IF NOT EXISTS (SELECT 1 FROM cat_tipoMovimientoCredito WHERE idEntidad=@idEntidad)
+	BEGIN
+		INSERT INTO [dbo].[cat_tipoMovimientoCredito] ([clave],[descripcion],[signo],[activo],[idEntidad],[fechaAlta],[idUsuarioAlta])
+		SELECT 'CARGO',         'Cargo (venta a credito)',                    1, 1, @idEntidad , dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'ABONO',         'Abono (pago parcial de saldo)',             -1, 1, @idEntidad , dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'LIQUIDACION',   'Liquidacion (pago total del saldo)',        -1, 1, @idEntidad , dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'AJUSTE',        'Ajuste manual (condonacion / correccion)', NULL, 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'REVERSA_CARGO', 'Reversa de cargo (cancelacion/devolucion)', -1, 1, @idEntidad , dbo.fn_GetDateMX(), @idUsuarioSistema
+	END
+
+	-- Config inicial de credito (recargo en 0, inerte hasta que se configure de verdad
+	-- desde la pantalla de Configuracion). Solo si no hay ya una config activa.
+	IF NOT EXISTS (SELECT 1 FROM cat_configuracionCredito WHERE idEntidad=@idEntidad AND vigenteHasta IS NULL)
+	BEGIN
+		INSERT INTO [dbo].[cat_configuracionCredito]
+		(
+			[tipoValorRecargo],[nivelAplicacion],[valorRecargo],[diasVencimientoCargo],
+			[limiteCreditoDefaultExpress],[vigenteDesde],[vigenteHasta],[activo],[idEntidad],
+			[fechaAlta],[idUsuarioAlta]
 		)
-	Select 
-		descripcion
-		,clave
-		,comentarios
-		,activo
-		,@idEntidad As idEntidad
-		,GetDate() As fechaAlta
-		,idUsuarioAlta
-	From cat_estatusPagoAgenda					Where idEntidad = @idEntidadCopy
+		VALUES
+		(
+			'Porcentaje','Carrito',0,15,500,dbo.fn_GetDateMX(),NULL,1,@idEntidad,
+			dbo.fn_GetDateMX(),@idUsuarioSistema
+		);
+	END
 
-	Insert into cat_origenAgenda(
-		descripcion
-		,clave
-		,comentarios
-		,activo
-		,idEntidad
-		,fechaAlta
-		,idUsuarioAlta
-	)
-	Select 
-		descripcion
-		,clave
-		,comentarios
-		,activo
-		,@idEntidad As idEntidad
-		,GetDate() As fechaAlta
-		,idUsuarioAlta
-	From cat_origenAgenda						Where idEntidad = @idEntidadCopy
+	-- Alta de "Credito" como forma de pago para que aparezca seleccionable en el POS.
+	IF NOT EXISTS (SELECT 1 FROM cat_tiposPago WHERE idEntidad=@idEntidad AND descripcion='Credito')
+	BEGIN
+		INSERT INTO [dbo].[cat_tiposPago] ([descripcion],[comentarios],[activo],[idEntidad],[fechaAlta],[idUsuarioAlta])
+		VALUES ('Credito','Pago mediante credito/fiado del cliente',1,@idEntidad,dbo.fn_GetDateMX(),@idUsuarioSistema);
+	END
+	/* =========================================================
+	   7) CATALOGOS DE AGENDA (valores fijos, ya no depende de
+	      @idEntidadCopy ni de que otra entidad exista o siga
+	      teniendo estas filas)
+	   ========================================================= */
 
-	Insert into cat_tipoMovimientoAgenda(
-		descripcion
-		,clave
-		,comentarios
-		,activo
-		,idEntidad
-		,fechaAlta
-		,idUsuarioAlta
-	)
-	Select 
-		descripcion
-		,clave
-		,comentarios
-		,activo
-		,@idEntidad As idEntidad
-		,GetDate() As fechaAlta
-		,idUsuarioAlta
-	From cat_tipoMovimientoAgenda				Where idEntidad = @idEntidadCopy
+	IF NOT EXISTS (SELECT 1 FROM cat_estatusAgenda WHERE idEntidad=@idEntidad)
+	BEGIN
+		INSERT INTO cat_estatusAgenda (descripcion, clave, orden, esFinal, activo, idEntidad, fechaAlta, idUsuarioAlta)
+		SELECT 'Registrada',  'REGISTRADA', 1, 0, 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Confirmada',  'CONFIRMADA', 2, 0, 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'En proceso',  'ENPROCESO',  3, 0, 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Concluida',   'CONCLUIDA',  4, 1, 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Cancelada',   'CANCELADA',  5, 1, 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'No asistio',  'NOASISTIO',  6, 1, 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema;
+	END
 
-	Insert into cat_tipoMovimientoPagoAgenda(
-		descripcion
-		,clave
-		,comentarios
-		,activo
-		,idEntidad
-		,fechaAlta
-		,idUsuarioAlta
-	)
-	Select 
-		descripcion
-		,clave
-		,comentarios
-		,activo
-		,@idEntidad As idEntidad
-		,GetDate() As fechaAlta
-		,idUsuarioAlta
-	From cat_tipoMovimientoPagoAgenda			Where idEntidad = @idEntidadCopy
+	IF NOT EXISTS (SELECT 1 FROM cat_estatusAgendaDetalleServicio WHERE idEntidad=@idEntidad)
+	BEGIN
+		INSERT INTO cat_estatusAgendaDetalleServicio (descripcion, clave, orden, esFinal, activo, idEntidad, fechaAlta, idUsuarioAlta)
+		SELECT 'Pendiente',   'PENDIENTE',  1, 0, 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Confirmada',  'CONFIRMADA', 2, 0, 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'En proceso',  'ENPROCESO',  3, 0, 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Concluido',   'CONCLUIDO',  4, 1, 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Cancelado',   'CANCELADO',  5, 1, 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema;
+	END
 
-	Insert into cat_tipoBloqueoHorario(
-		descripcion
-		,clave
-		,comentarios
-		,activo
-		,idEntidad
-		,fechaAlta
-		,idUsuarioAlta
-	)
-	Select 
-		descripcion
-		,clave
-		,comentarios
-		,activo
-		,@idEntidad As idEntidad
-		,GetDate() As fechaAlta
-		,idUsuarioAlta
-	From cat_tipoBloqueoHorario				Where idEntidad = @idEntidadCopy
+	IF NOT EXISTS (SELECT 1 FROM cat_estatusPagoAgenda WHERE idEntidad=@idEntidad)
+	BEGIN
+		INSERT INTO cat_estatusPagoAgenda (descripcion, clave, activo, idEntidad, fechaAlta, idUsuarioAlta)
+		VALUES ('Aplicado', 'APLICADO', 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema);
+	END
 
-	
-	Insert into cat_tipoNegocioSucursal(
-		descripcion
-		,comentarios
-		,activo
-		,idEntidad
-		, fechaAlta
-		,idUsuarioAlta
-	)
-	Select 
-		descripcion
-		,comentarios
-		,activo
-		,@idEntidad as idEntidad
-		, getdate() as fechaAlta
-		,idUsuarioAlta
-	From cat_tipoNegocioSucursal where idEntidad = @idEntidadCopy
+	IF NOT EXISTS (SELECT 1 FROM cat_origenAgenda WHERE idEntidad=@idEntidad)
+	BEGIN
+		INSERT INTO cat_origenAgenda (descripcion, clave, activo, idEntidad, fechaAlta, idUsuarioAlta)
+		SELECT 'POS',              'POS',       1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'WhatsApp',         'WHATSAPP',  1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Web',              'WEB',       1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Manual',           'MANUAL',    1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Aplicacion Movil', 'App',       1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema;
+	END
 
-	
-	Insert into cat_rolParticipacionServicio (
-		descripcion
-		,clave
-		,comentarios
-		,activo
-		,idEntidad
-		,fechaAlta
-		,idUsuarioAlta
-	)
-	Select 
-		descripcion
-		,clave
-		,comentarios
-		,activo
-		,@idEntidad As idEntidad
-		,Getdate() as fechaAlta
-		,idUsuarioAlta
-	From cat_rolParticipacionServicio where idEntidad = @idEntidadCopy
+	IF NOT EXISTS (SELECT 1 FROM cat_tipoMovimientoAgenda WHERE idEntidad=@idEntidad)
+	BEGIN
+		INSERT INTO cat_tipoMovimientoAgenda (descripcion, clave, activo, idEntidad, fechaAlta, idUsuarioAlta)
+		SELECT 'Alta',           'ALTA',          1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Edicion',        'EDICION',       1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Cambio estatus', 'CAMBIOESTATUS', 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Pago',           'PAGO',          1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema;
+	END
+
+	IF NOT EXISTS (SELECT 1 FROM cat_tipoMovimientoPagoAgenda WHERE idEntidad=@idEntidad)
+	BEGIN
+		INSERT INTO cat_tipoMovimientoPagoAgenda (descripcion, clave, activo, idEntidad, fechaAlta, idUsuarioAlta)
+		SELECT 'Anticipo',    'ANTICIPO',    1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Liquidacion', 'LIQUIDACION', 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema;
+	END
+
+	IF NOT EXISTS (SELECT 1 FROM cat_tipoBloqueoHorario WHERE idEntidad=@idEntidad)
+	BEGIN
+		INSERT INTO cat_tipoBloqueoHorario (descripcion, clave, activo, idEntidad, fechaAlta, idUsuarioAlta)
+		SELECT 'Comida',           'COMIDA',     1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Descanso',         'DESCANSO',   1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Vacaciones',       'VACACIONES', 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Manual',           'MANUAL',     1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Reserva Temporal', 'TEMPORAL',   1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema;
+	END
+
+	IF NOT EXISTS (SELECT 1 FROM cat_tipoNegocioSucursal WHERE idEntidad=@idEntidad)
+	BEGIN
+		INSERT INTO cat_tipoNegocioSucursal (descripcion, activo, idEntidad, fechaAlta, idUsuarioAlta)
+		VALUES ('Tienda', 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema);
+	END
+
+	IF NOT EXISTS (SELECT 1 FROM cat_rolParticipacionServicio WHERE idEntidad=@idEntidad)
+	BEGIN
+		INSERT INTO cat_rolParticipacionServicio (descripcion, clave, activo, idEntidad, fechaAlta, idUsuarioAlta)
+		SELECT 'Principal', 'PRINCIPAL', 1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema
+		UNION ALL
+		SELECT 'Apoyo',     'APOYO',     1, @idEntidad, dbo.fn_GetDateMX(), @idUsuarioSistema;
+	END
 
 	COMMIT;
 
-	/* ---------- Resumen rápido ---------- */
+	/* ---------- Resumen rÃ¡pido ---------- */
 	SELECT 'TiposPersona' AS bloque, * FROM cat_tiposPersonas WHERE idEntidad=@idEntidad;
 	SELECT 'PersonaAdmin' AS bloque, * FROM cat_personas WHERE idEntidad=@idEntidad AND id=@idPersonaAdmin;
 	SELECT 'Perfil' AS bloque, * FROM sys_perfiles WHERE idEntidad=@idEntidad;
@@ -736,7 +696,7 @@ END TRY
 BEGIN CATCH
 	IF @@TRANCOUNT > 0 ROLLBACK;
 	DECLARE @err NVARCHAR(4000) = ERROR_MESSAGE();
-	RAISERROR('Setup tienda falló: %s',16,1,@err);
+	RAISERROR('Setup tienda fallÃ³: %s',16,1,@err);
 END CATCH;
 
 
