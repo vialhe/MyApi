@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
+using System.Linq;
 using MyApi.Models.MyDB;
 using MyApi.Models.Sale;
 using MyApi.Models.Inventory;
@@ -28,6 +29,7 @@ namespace MyApi.Controllers.Sale
             int idFoliadorMovInv = 4; // FOLIO DE MOVIMIENTO INVETNARIO
             int idTipoMovInv = 2; //VENTA POR PUBLICO GENERAL
             int idTipoEntradaSalida = 3; //VENTA POR PUBLICO GENERAL
+            int idTipoPagoCredito = 4; //FORMA DE PAGO CREDITO
             string FolioEntradaSalida = "";
             string Message;
             string FolioMovimiento = "";
@@ -67,6 +69,20 @@ namespace MyApi.Controllers.Sale
                 foreach (SalePay p in cSalePay)
                 {
                     ExecuteSalePayment(db,cSaleH,p);
+                }
+
+                var pagosCredito = cSalePay.Where(p => p.idTipoPago == idTipoPagoCredito).ToList();
+                if (pagosCredito.Count > 1)
+                {
+                    throw new Exception("Solo se permite un pago con forma de pago Credito por venta.");
+                }
+                if (pagosCredito.Count == 1)
+                {
+                    if (!cSaleH.idPersona.HasValue)
+                    {
+                        throw new Exception("Debe especificar el cliente (idPersona) para ventas con pago a credito.");
+                    }
+                    ExecuteCreditoCargo(db, cSaleH, pagosCredito[0].montoPago, cSaleH.idPersona.Value);
                 }
 
                 inventoryData.cDB = db;
@@ -739,6 +755,17 @@ namespace MyApi.Controllers.Sale
             db.AddParameter("@idEntidad", saleHeader.idEntidad);
             db.AddParameter("@idUsuarioModifica", saleHeader.idUsuarioModifica);
             db.AddParameter("@idSucursal", saleHeader.idSucursal.HasValue ? saleHeader.idSucursal.Value : DBNull.Value);
+            db.Execute();
+        }
+        private void ExecuteCreditoCargo(DataBase2 db, SaleH saleHeader, decimal montoConRecargo, int idPersona)
+        {
+            db.SetCommand("sp_ui_creditoInsertCargo", true);
+            db.AddParameter("@folioEntradaSalida", saleHeader.folioEntradaSalida);
+            db.AddParameter("@idPersona", idPersona);
+            db.AddParameter("@montoConRecargo", montoConRecargo);
+            db.AddParameter("@idEntidad", saleHeader.idEntidad);
+            db.AddParameter("@idSucursal", saleHeader.idSucursal ?? 0);
+            db.AddParameter("@idUsuarioAlta", saleHeader.idUsuarioModifica);
             db.Execute();
         }
     }

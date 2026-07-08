@@ -19,6 +19,7 @@ namespace MyApi.Models.Sale
         public int folioCorteCaja { get; set; }
         public int folioCorteTienda { get; set; }
         public int? idSucursal { get; set; }
+        public int? idPersona { get; set; }
     }
 
     public class SaleD
