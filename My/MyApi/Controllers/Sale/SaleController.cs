@@ -33,7 +33,7 @@ namespace MyApi.Controllers.Sale
             string FolioEntradaSalida = "";
             string Message;
             string FolioMovimiento = "";
-            
+
 
             //Referencias
             var db = new DataBase2();
@@ -48,7 +48,7 @@ namespace MyApi.Controllers.Sale
             cSaleH.idTipoEntradaSalida = idTipoEntradaSalida;
 
             try
-            { 
+            {
                 db.BeginTransaction();
 
                 FolioEntradaSalida = tools.generatFolio(idFoliadorEntradaSalida, cSaleH.idEntidad, cSaleH.idUsuarioModifica, db, cSaleH.idSucursal ?? 0);
@@ -59,7 +59,7 @@ namespace MyApi.Controllers.Sale
                 inventoryData.CInventoryH = CreateInventoryHeader(cSaleH,idTipoMovInv);
                 DataSet ds = ExecuteSaleHeader(db, cSaleH);
 
-                foreach (SaleD d in cSaleD) 
+                foreach (SaleD d in cSaleD)
                 {
                     ExecuteSaleDetail(db,cSaleH,d);
                     cMovInvD.Add(CreateInventoryDetail(cSaleH, d));
@@ -76,6 +76,10 @@ namespace MyApi.Controllers.Sale
                 {
                     throw new Exception("Solo se permite un pago con forma de pago Credito por venta.");
                 }
+                if (pagosCredito.Count == 1 && cSalePay.Count > 1)
+                {
+                    throw new Exception("El pago con Credito no se puede combinar con otras formas de pago.");
+                }
                 if (pagosCredito.Count == 1)
                 {
                     if (!cSaleH.idPersona.HasValue)
@@ -87,7 +91,7 @@ namespace MyApi.Controllers.Sale
 
                 inventoryData.cDB = db;
                 var res = invmov.InventoryMovementPutSale(inventoryData);
-                
+
                 db.Commit();
 
                 Code = true;
@@ -350,7 +354,7 @@ namespace MyApi.Controllers.Sale
 
                 if (ds.Tables[0].Rows.Count > 0)
                 {
-                    
+
                     ds.Tables[0].TableName = "totalSales";
                     ds.Tables[1].TableName = "totalNeto";
                     ds.Tables[2].TableName = "valorPromedio";
@@ -551,7 +555,7 @@ namespace MyApi.Controllers.Sale
             }
             /*Declara variables*/
             JsonResult Response;
-            bool Code;            
+            bool Code;
             string Message;
 
             //Referencias
@@ -720,7 +724,7 @@ namespace MyApi.Controllers.Sale
             db.AddParameter("@activo", cSaleH.activo);
             db.AddParameter("@idEntidad", cSaleH.idEntidad);
             db.AddParameter("@idUsuarioModifica", cSaleH.idUsuarioModifica);
-            db.AddParameter("@costo", d.costo.HasValue ? d.costo.Value : DBNull.Value); 
+            db.AddParameter("@costo", d.costo.HasValue ? d.costo.Value : DBNull.Value);
             db.AddParameter("@idSucursal", d.idSucursal.HasValue ? d.idSucursal.Value : DBNull.Value);
             db.Execute();
         }
